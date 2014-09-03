@@ -60,7 +60,13 @@ import org.libspark.betweenas3.tweens.ITween;
 class Global {
 	public static var _key:Array = new Array ( 256 ) ;
 	public static var _canvas:BitmapData = new BitmapData ( 465 , 465 , false , 0 ) ;
+
+
+	[Embed(source="background.png")]
+	private static var BMClass:Class;
+	private static var BM:Bitmap = new BMClass();
 	public static var _back:BitmapData = new BitmapData ( 465 , 465 , false , 0 ) ;
+	_back.draw(new BMClass());
 	public static var _world_shake:int = 0 ;
 }
 
@@ -1285,17 +1291,17 @@ class SceneBattle extends SceneBase {
 		B.fillRect ( new Rectangle ( 0 ,    0 , B.width , B.height ) , 0x91ACCE ) ;
 		B.fillRect ( new Rectangle ( 0 , ZMAX , B.width , B.height ) , 0x75D36D ) ;
 
-		var L2:Loader = new Loader;
-		L2.contentLoaderInfo.addEventListener ( Event.COMPLETE, compLoad2 ) ;
-		L2.contentLoaderInfo.addEventListener ( IOErrorEvent.IO_ERROR , function ():void { } ) ;
-		L2.load ( new URLRequest ( FILENAME2 ) , new LoaderContext ( true ) ) ;
+//		var L2:Loader = new Loader;
+//		L2.contentLoaderInfo.addEventListener ( Event.COMPLETE, compLoad2 ) ;
+//		L2.contentLoaderInfo.addEventListener ( IOErrorEvent.IO_ERROR , function ():void { } ) ;
+//		L2.load ( new URLRequest ( FILENAME2 ) , new LoaderContext ( true ) ) ;
 
 	}
 
-	public function compLoad2 ( e:Event ) :void {
-		var B:Bitmap = e.target.content as Bitmap ;
-		Global._back.draw ( B ) ;
-	}
+//	public function compLoad2 ( e:Event ) :void {
+//		var B:Bitmap = e.target.content as Bitmap ;
+//		Global._back.draw ( B ) ;
+//	}
 
 	////////////////////////////////////
 	public override function release ( ) :void {
@@ -1583,8 +1589,8 @@ class Hero extends CharctorBase {
 }
 
 ////////////////////////////////////
-const FILENAME:String = "http://assets.wonderfl.net/images/related_images/a/a7/a79f/a79f6550f46ab03e548ec7fee72569ee99b89823" ;
-const FILENAME2:String = "http://assets.wonderfl.net/images/related_images/3/37/37b4/37b4ec1f74efac5568eedd817dab449d42ff1eb4" ;
+const FILENAME:String = "actor.png" ;
+//const FILENAME2:String = "http://assets.wonderfl.net/images/related_images/3/37/37b4/37b4ec1f74efac5568eedd817dab449d42ff1eb4" ;
 const ZERO_POINT:Point = new Point ( 0 , 0 ) ;
 const ZMAX:int = 300 ;
 var _score:uint = 0 ;
