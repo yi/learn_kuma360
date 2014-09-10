@@ -140,10 +140,10 @@ package
 		////////////////////////////////////
 		public override function core ( ):void {
 
-			var TH1:Hero ;
-			var TH2:Hero ;
-			var ITEM:Item ;
-			var SB:Iactor ;
+			var hero1:Hero ;
+			var hero2:Hero ;
+			var item:Item ;
+			var renderableObject:Iactor ;
 
 			//背景
 			if ( 0 < Global._world_shake ) {
@@ -165,14 +165,14 @@ package
 				return ;
 			}
 
-			//アイテム更新
-			for each ( ITEM in items ) {
-				ITEM.update ( ) ;
+			//アイテム更新 更新道具状态
+			for each ( item in items ) {
+				item.update ( ) ;
 			}
 
-			//入力
-			for each ( TH1 in heroes ) {
-				if ( TH1 == _mainHero ) {
+			// 角色操作输入
+			for each ( hero1 in heroes ) {
+				if ( hero1 == _mainHero ) {
 					_mainHero.input (
 						Global._key[90] ,
 						Global._key[88] ,
@@ -182,36 +182,36 @@ package
 						Global._key[40]
 					) ;
 				} else {
-					TH1.inputAuto() ;
+					hero1.inputAuto() ;
 				}
 			}
 
 			//更新
-			for each ( TH1 in heroes ) {
-				TH1.update ( items , _mainHero ) ;
+			for each ( hero1 in heroes ) {
+				hero1.update ( items , _mainHero ) ;
 			}
 
-			//攻撃判定1
-			for each ( TH1 in heroes ) {
-				_mainHero.attackChk ( TH1 , _effect ) ;
+			//攻撃判定1  玩家所操作的角色的攻击判断
+			for each ( hero1 in heroes ) {
+				_mainHero.attackChk ( hero1 , _effect ) ;
 			}
 
-			//攻撃判定2
-			for each ( TH1 in heroes ) {
-				TH1.attackChk ( _mainHero , _effect ) ;
+			//攻撃判定2  敌人攻击玩家控制的角色
+			for each ( hero1 in heroes ) {
+				hero1.attackChk ( _mainHero , _effect ) ;
 			}
 
-			//アイテムの攻撃判定
-			for each ( ITEM in items ) {
-				for each ( TH1 in heroes ) {
-					ITEM.attackChk ( TH1 , _effect ) ;
+			//アイテムの攻撃判定  投掷道具攻击人
+			for each ( item in items ) {
+				for each ( hero1 in heroes ) {
+					item.attackChk ( hero1 , _effect ) ;
 				}
 			}
 
 			//移動判定
-			for each ( TH1 in heroes ) {
-				for each ( TH2 in heroes ) {
-					TH1.moveChk ( TH2 ) ;
+			for each ( hero1 in heroes ) {
+				for each ( hero2 in heroes ) {
+					hero1.moveChk ( hero2 ) ;
 				}
 			}
 
@@ -222,13 +222,13 @@ package
 			_rendering_container.sort ( function ( A:Iactor , B:Iactor ) :Number { return A.pos.z - B.pos.z ; } ) ;
 
 			//影描画
-			for each ( SB in _rendering_container ) {
-				SB.render_shadow ( ) ;
+			for each ( renderableObject in _rendering_container ) {
+				renderableObject.render_shadow ( ) ;
 			}
 
 			//描画
-			for each ( SB in _rendering_container ) {
-				SB.render ( ) ;
+			for each ( renderableObject in _rendering_container ) {
+				renderableObject.render ( ) ;
 			}
 
 			while ( _rendering_container.length ) {

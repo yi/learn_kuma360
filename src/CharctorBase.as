@@ -104,8 +104,16 @@ package
 		}
 
 
-
-		////////////////////////////////////
+		/**
+		 * 玩家操作输入
+		 * @param keyA
+		 * @param keyJ
+		 * @param keyL
+		 * @param keyR
+		 * @param keyU
+		 * @param keyD
+		 *
+		 */
 		public function input (
 			keyA:Boolean , //攻撃ボタン   攻击按钮
 			keyJ:Boolean , //ジャンプボタン  跳转按钮
@@ -166,10 +174,10 @@ package
 		////////////////////////////////////
 		public function update ( item:Vector.<Item> , mainHero:CharctorBase ):void {
 
-			var CHK:Boolean = true ;
-			var TC:int = motionToInputAllowance[_action][_actionstep] ;
-			var Ba:int = _action;
-			var Bas:int = _actionstep;
+			var isChecked:Boolean = true ;
+			var currentInputAllowance:int = motionToInputAllowance[_action][_actionstep] ;
+			var currentAction:int = _action;
+			var currentActionStep:int = _actionstep;
 			var X:Number = 0 ;
 			var Y:Number = 0 ;
 			var L:Number = 0 ;
@@ -196,12 +204,12 @@ package
 
 			if ( 0 < _damage_shake ) {
 
-				CHK = false ;
+				isChecked = false ;
 				-- _damage_shake ;
 
 				for ( I = 0 ; I < item.length ; ++ I ) {
 
-					//石を持っていたら落としてしまう
+					//石を持っていたら落としてしまう  持续僵直
 					if ( item[J].isreservation ( id ) ) {
 						item[J].drop ( _pos ) ;
 						break;
@@ -212,13 +220,13 @@ package
 			}
 
 			if ( 0 < _attack_shake ) {
-				CHK = false ;
+				isChecked = false ;
 				-- _attack_shake ;
 			}
 
 			{//入力の反映
 
-				if ( 1 & TC ) {
+				if ( 1 & currentInputAllowance ) {
 
 					X = _pos.x - _target_x ;
 					Y = _pos.z - _target_z ;
@@ -228,7 +236,7 @@ package
 
 				}
 
-				if ( 2 & TC ) {
+				if ( 2 & currentInputAllowance ) {
 
 					if ( _input_attack == 1 ) {
 
@@ -260,14 +268,14 @@ package
 
 				}
 
-				if ( 4 & TC ) {
+				if ( 4 & currentInputAllowance ) {
 					if ( _input_jump == 1 ) {
 						_action = 2 ;
 						_animwait = 0 ;
 					}
 				}
 
-				if ( 8 & TC ) {
+				if ( 8 & currentInputAllowance ) {
 
 					if ( _input_attack == 1 ) {
 
@@ -299,7 +307,7 @@ package
 
 				}
 
-				if ( 16 & TC ) {
+				if ( 16 & currentInputAllowance ) {
 
 					if ( _command1 == 3 ) {
 						_command1 = 0 ;
@@ -321,7 +329,7 @@ package
 
 				}
 
-				if ( 32 & TC ) {
+				if ( 32 & currentInputAllowance ) {
 					//ブレーキ
 					if ( _inputLeft ) { if ( 0 < _velocity.x ) _velocity.x *= .9 ; }
 					if ( _inputRight ) { if ( _velocity.x < 0 ) _velocity.x *= .9 ; }
@@ -333,14 +341,14 @@ package
 					_damage_action = 0 ;
 				}
 
-				if ( Ba != _action ) {
+				if ( currentAction != _action ) {
 					_actionstep = 0 ;
 					_animwait = 0 ;
 				}
 
 			}
 
-			if ( CHK )
+			if ( isChecked )
 			{//アニメーション
 
 				var TD:int = $D[_action][_actionstep];
@@ -406,7 +414,7 @@ package
 
 			}
 
-			if ( CHK && ( 1 & TC ) )
+			if ( isChecked && ( 1 & currentInputAllowance ) )
 			{//加速
 
 				_dirc = ( _target_x < _pos.x ) ;
@@ -432,7 +440,7 @@ package
 
 			}
 
-			if ( CHK )
+			if ( isChecked )
 			{//移動
 
 				_pos.x += _velocity.x * SCALE ;
@@ -475,18 +483,18 @@ package
 		}
 
 		////////////////////////////////////
-		public function attackChk ( e:Hero , effect:Effect ):void {
+		public function attackChk ( attacker:Hero , effect:Effect ):void {
 
-			if ( this == e ) {
+			if ( this == attacker ) {
 				return ;
 			}
 
-			if ( e._death ) {
+			if ( attacker._death ) {
 				return ;
 			}
 
 			for each ( var N:int in _hitRegist ) {
-				if ( N == e.id ) {
+				if ( N == attacker.id ) {
 					return ;
 				}
 			}
@@ -500,7 +508,7 @@ package
 					_lastAtkChk = 1 ;
 				}
 
-				var V1:Vector3D = _pos.subtract ( e._pos ) ;
+				var V1:Vector3D = _pos.subtract ( attacker._pos ) ;
 
 				if ( _dirc ) {
 					V1.x -= 8 * SCALE ;
@@ -522,9 +530,9 @@ package
 						_attack_shake = 5 ;
 					}
 
-					e.damage ( _dirc , _pos.z , 1 ) ;
-					_hitRegist.push ( e.id ) ;
-					effect.push ( e.pos.x , e.pos.z + e.pos.y ) ;
+					attacker.damage ( _dirc , _pos.z , 1 ) ;
+					_hitRegist.push ( attacker.id ) ;
+					effect.push ( attacker.pos.x , attacker.pos.z + attacker.pos.y ) ;
 
 				}
 
@@ -537,7 +545,7 @@ package
 					_lastAtkChk = 2 ;
 				}
 
-				var V2:Vector3D = _pos.subtract ( e._pos ) ;
+				var V2:Vector3D = _pos.subtract ( attacker._pos ) ;
 
 				if ( _dirc ) {
 					V2.x -= 16 * SCALE ;
@@ -554,9 +562,9 @@ package
 					}
 
 					_attack_shake = 15 ;
-					e.damage ( _dirc , _pos.z , 2 ) ;
-					_hitRegist.push ( e.id ) ;
-					effect.push ( e.pos.x , e.pos.z + e.pos.y ) ;
+					attacker.damage ( _dirc , _pos.z , 2 ) ;
+					_hitRegist.push ( attacker.id ) ;
+					effect.push ( attacker.pos.x , attacker.pos.z + attacker.pos.y ) ;
 
 				}
 
