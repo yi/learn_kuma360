@@ -18,8 +18,8 @@ package
 	class SceneBattle extends SceneBase {
 
 		private var _rendering_container:Vector.<Iactor> = new Vector.<Iactor> ( ) ;
-		private var _h:Vector.<Hero> = null ;
-		private var _i:Vector.<Item> = null ;
+		private var heroes:Vector.<Hero> = null ;
+		private var items:Vector.<Item> = null ;
 		private var _mainHero:Hero = null ;
 		private var _effect:Effect = null ;
 		private var _scoreText:TextField = new TextField ;
@@ -47,13 +47,13 @@ package
 			_limit = 4000 ;
 
 			//キャラクター用
-			_h = new Vector.<Hero>;
+			heroes = new Vector.<Hero>;
 
 			//アイテム用
-			_i = new Vector.<Item>;
-			_i.push ( new Item ( ) ) ;
+			items = new Vector.<Item>;
+			items.push ( new Item ( ) ) ;
 
-			//ヒットマーク用
+			//ヒットマーク用 Hit Mark
 			_effect = new Effect ;
 
 			//キャラクタ画像読み込み(雑魚)
@@ -85,7 +85,7 @@ package
 
 			var B:BitmapData = Global._back ;
 
-			//キャラクタ画像読み込み(雑魚)
+			//キャラクタ画像読み込み(雑魚)  Character image loading (small fish)
 			B.fillRect ( new Rectangle ( 0 ,    0 , B.width , B.height ) , 0x91ACCE ) ;
 			B.fillRect ( new Rectangle ( 0 , ZMAX , B.width , B.height ) , 0x75D36D ) ;
 
@@ -108,12 +108,12 @@ package
 
 			_effect.release ( ) ;
 
-			for each ( var H:Hero in _h ) {
-				H.release ( ) ;
+			for each ( var hero:Hero in heroes ) {
+				hero.release ( ) ;
 			}
 
-			for each ( var I:Item in _i ) {
-				I.release ( ) ;
+			for each ( var item:Item in items ) {
+				item.release ( ) ;
 			}
 
 		}
@@ -124,12 +124,12 @@ package
 			var B:Bitmap = e.target.content as Bitmap ;
 
 			_mainHero = new Hero ( B ) ;
-			_h.push ( _mainHero ) ;
+			heroes.push ( _mainHero ) ;
 
-			_h.push ( new Hero ( B , new ColorTransform ( .4 , 1 , .4 , 1 ) ) ) ;
-			_h.push ( new Hero ( B , new ColorTransform (  1 , 1 , .2 , 1 ) ) ) ;
-			_h.push ( new Hero ( B , new ColorTransform ( .2 , .2,  1 , 1 ) ) ) ;
-			_h.push ( new Hero ( B , new ColorTransform (  1 , .2,  1 , 1 ) ) ) ;
+			heroes.push ( new Hero ( B , new ColorTransform ( .4 , 1 , .4 , 1 ) ) ) ;
+			heroes.push ( new Hero ( B , new ColorTransform (  1 , 1 , .2 , 1 ) ) ) ;
+			heroes.push ( new Hero ( B , new ColorTransform ( .2 , .2,  1 , 1 ) ) ) ;
+			heroes.push ( new Hero ( B , new ColorTransform (  1 , .2,  1 , 1 ) ) ) ;
 
 		}
 
@@ -162,12 +162,12 @@ package
 			}
 
 			//アイテム更新
-			for each ( ITEM in _i ) {
+			for each ( ITEM in items ) {
 				ITEM.update ( ) ;
 			}
 
 			//入力
-			for each ( TH1 in _h ) {
+			for each ( TH1 in heroes ) {
 				if ( TH1 == _mainHero ) {
 					_mainHero.input (
 						Global._key[90] ,
@@ -183,38 +183,38 @@ package
 			}
 
 			//更新
-			for each ( TH1 in _h ) {
-				TH1.update ( _i , _mainHero ) ;
+			for each ( TH1 in heroes ) {
+				TH1.update ( items , _mainHero ) ;
 			}
 
 			//攻撃判定1
-			for each ( TH1 in _h ) {
+			for each ( TH1 in heroes ) {
 				_mainHero.attackChk ( TH1 , _effect ) ;
 			}
 
 			//攻撃判定2
-			for each ( TH1 in _h ) {
+			for each ( TH1 in heroes ) {
 				TH1.attackChk ( _mainHero , _effect ) ;
 			}
 
 			//アイテムの攻撃判定
-			for each ( ITEM in _i ) {
-				for each ( TH1 in _h ) {
+			for each ( ITEM in items ) {
+				for each ( TH1 in heroes ) {
 					ITEM.attackChk ( TH1 , _effect ) ;
 				}
 			}
 
 			//移動判定
-			for each ( TH1 in _h ) {
-				for each ( TH2 in _h ) {
+			for each ( TH1 in heroes ) {
+				for each ( TH2 in heroes ) {
 					TH1.moveChk ( TH2 ) ;
 				}
 			}
 
 
 			//描画順決定
-			_rendering_container = _rendering_container.concat ( _h ) ;
-			_rendering_container = _rendering_container.concat ( _i ) ;
+			_rendering_container = _rendering_container.concat ( heroes ) ;
+			_rendering_container = _rendering_container.concat ( items ) ;
 			_rendering_container.sort ( function ( A:Iactor , B:Iactor ) :Number { return A.pos.z - B.pos.z ; } ) ;
 
 			//影描画
