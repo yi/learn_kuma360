@@ -118,18 +118,22 @@ package
 
 		}
 
-		////////////////////////////////////
+		/**
+		 * 当完成人物图片下载的时候
+		 * @param e
+		 *
+		 */
 		private function compLoad( e:Event ):void {
 
-			var B:Bitmap = e.target.content as Bitmap ;
+			var heroBitmap:Bitmap = e.target.content as Bitmap ;
 
-			_mainHero = new Hero ( B ) ;
+			_mainHero = new Hero ( heroBitmap ) ;
 			heroes.push ( _mainHero ) ;
 
-			heroes.push ( new Hero ( B , new ColorTransform ( .4 , 1 , .4 , 1 ) ) ) ;
-			heroes.push ( new Hero ( B , new ColorTransform (  1 , 1 , .2 , 1 ) ) ) ;
-			heroes.push ( new Hero ( B , new ColorTransform ( .2 , .2,  1 , 1 ) ) ) ;
-			heroes.push ( new Hero ( B , new ColorTransform (  1 , .2,  1 , 1 ) ) ) ;
+			heroes.push ( new Hero ( heroBitmap , new ColorTransform ( .4 , 1 , .4 , 1 ) ) ) ;
+			heroes.push ( new Hero ( heroBitmap , new ColorTransform (  1 , 1 , .2 , 1 ) ) ) ;
+			heroes.push ( new Hero ( heroBitmap , new ColorTransform ( .2 , .2,  1 , 1 ) ) ) ;
+			heroes.push ( new Hero ( heroBitmap , new ColorTransform (  1 , .2,  1 , 1 ) ) ) ;
 
 		}
 

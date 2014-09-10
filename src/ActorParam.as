@@ -12,11 +12,11 @@ package
 	//
 	public class ActorParam extends BaseActor {
 
-		//キャラクタのスケール
+		//キャラクタのスケール  图像素材到实际人物的缩放
 		protected const SCALE:Number = 1.5 ;
 
-		//キャラクタの実サイズ
-		protected var SIZE :int = 0 ;
+		//キャラクタの実サイズ  字符的实际尺寸
+		protected var scaledSize :int = 0 ;
 		protected var _render_rect:Rectangle = null ;
 
 		//画像
@@ -28,51 +28,51 @@ package
 
 			super ( ) ;
 
-			SIZE = charctorSize * SCALE ;
+			scaledSize = charctorSize * SCALE ;
 
-			var M:Matrix = new Matrix ;
-			var S:Sprite = new Sprite;
-			var G:Graphics = S.graphics;
+			var scaleMatrix:Matrix = new Matrix ;
+			var sprite:Sprite = new Sprite;
+			var graphic:Graphics = sprite.graphics;
 			var I:int = 0 ;
 			var J:int = 0 ;
 
-			var S1:Number = SIZE/4   * SCALE ;
-			var S2:Number = SIZE/8   * SCALE ;
-			var S3:Number = B.width  * SCALE ;
-			var S4:Number = B.height * SCALE ;
+			var oneForthOfSize:Number = scaledSize/4   * SCALE ;
+			var oneEighthOfSize:Number = scaledSize/8   * SCALE ;
+			var scaledWidth:Number = B.width  * SCALE ;
+			var scaleHeight:Number = B.height * SCALE ;
 
 			//スケーリング
-			M.scale ( SCALE , SCALE ) ;
+			scaleMatrix.scale ( SCALE , SCALE ) ;
 
 			//影
-			G.beginFill ( 0 , .5 ) ;
-			G.drawEllipse ( 0 , 0 , S1 , S2 ) ;
-			G.endFill () ;
-			_shadow = new BitmapData ( S1 , S2 , true , 0 ) ;
-			_shadow.draw ( S ) ;
+			graphic.beginFill ( 0 , .5 ) ;
+			graphic.drawEllipse ( 0 , 0 , oneForthOfSize , oneEighthOfSize ) ;
+			graphic.endFill () ;
+			_shadow = new BitmapData ( oneForthOfSize , oneEighthOfSize , true , 0 ) ;
+			_shadow.draw ( sprite ) ;
 
-			//キャラクタ-
-			_img = new BitmapData ( S3 , S4 , true , 0 ) ;
-			_img.draw ( B , M , C ) ;
+			// 绘制人物
+			_img = new BitmapData ( scaledWidth , scaleHeight , true , 0 ) ;
+			_img.draw ( B , scaleMatrix , C ) ;
 
-			//反転キャラクター
-			_img_r = new BitmapData ( S3 , S4 , true , 0 ) ;
-			for ( I = 0 ; I < S3 ; I += SIZE ) {
-				for ( J = 0 ; J < SIZE ; ++ J ) {
+			// 绘制 人物的镜像
+			_img_r = new BitmapData ( scaledWidth , scaleHeight , true , 0 ) ;
+			for ( I = 0 ; I < scaledWidth ; I += scaledSize ) {
+				for ( J = 0 ; J < scaledSize ; ++ J ) {
 					_img_r.copyPixels (
 						_img ,
-						new Rectangle ( I + J , 0 , 1 , S4 ) ,
-						new Point ( I + SIZE - J , 0 )
+						new Rectangle ( I + J , 0 , 1 , scaleHeight ) ,
+						new Point ( I + scaledSize - J , 0 )
 					) ;
 				}
 			}
 
-			//
+			// 随机出生点
 			_pos.x = Math.random ( ) * 465 ;
 			_pos.y = 0 ;
 			_pos.z = Math.random ( ) * 100 + 300 ;
 
-			_render_rect  = new Rectangle ( 0 , 0 , SIZE , SIZE ) ;
+			_render_rect  = new Rectangle ( 0 , 0 , scaledSize , scaledSize ) ;
 
 		}
 

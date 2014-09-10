@@ -622,8 +622,8 @@ package
 
 		////////////////////////////////////
 		public function render_shadow ( ):void {
-			_shadowpos.x = _pos.x - SIZE/4/2 * SCALE ;
-			_shadowpos.y = _pos.z - SIZE/8/2 * SCALE ;
+			_shadowpos.x = _pos.x - scaledSize/4/2 * SCALE ;
+			_shadowpos.y = _pos.z - scaledSize/8/2 * SCALE ;
 			Global._canvas.copyPixels ( _shadow , _shadow.rect , _shadowpos ) ;
 		}
 
@@ -637,11 +637,11 @@ package
 			}
 
 			_anim %= 40 ;
-			_render_rect.x = Math.floor ( _anim % 8 ) * SIZE ;
-			_render_rect.y = Math.floor ( _anim / 8 ) * SIZE ;
+			_render_rect.x = Math.floor ( _anim % 8 ) * scaledSize ;
+			_render_rect.y = Math.floor ( _anim / 8 ) * scaledSize ;
 
-			_renderpos.x = _pos.x          - SIZE /2 ;
-			_renderpos.y = _pos.z + _pos.y - SIZE ;
+			_renderpos.x = _pos.x          - scaledSize /2 ;
+			_renderpos.y = _pos.z + _pos.y - scaledSize ;
 
 			if ( _damage_shake ) {
 				_renderpos.x += Math.random() * 10 - 5 ;
@@ -655,20 +655,20 @@ package
 			}
 
 			_r.x = _renderpos.x ;
-			_r.y = _renderpos.y + SIZE ;
-			_r.width = SIZE ;
+			_r.y = _renderpos.y + scaledSize ;
+			_r.width = scaledSize ;
 			_r.height = 5 ;
 			Global._canvas.fillRect ( _r , 0x000000 ) ;
 
 			_r.x = _renderpos.x + 1 ;
-			_r.y = _renderpos.y + SIZE + 1 ;
-			_r.width = SIZE - 2 ;
+			_r.y = _renderpos.y + scaledSize + 1 ;
+			_r.width = scaledSize - 2 ;
 			_r.height = 5 - 2 ;
 			Global._canvas.fillRect ( _r , 0xFF0000 ) ;
 
 			_r.x = _renderpos.x + 1 ;
-			_r.y = _renderpos.y + SIZE + 1 ;
-			_r.width = ( SIZE * _hp / 10 ) - 2 ;
+			_r.y = _renderpos.y + scaledSize + 1 ;
+			_r.width = ( scaledSize * _hp / 10 ) - 2 ;
 			_r.height = 5 - 2 ;
 			Global._canvas.fillRect ( _r , 0x00FF00 ) ;
 
