@@ -13,16 +13,19 @@ package
 		public static var _score:uint = 0 ;
 		public static var _end:Boolean = false ;
 
+		/**
+		 * 最大允许的宽度纵深
+		 */
 		public const ZMAX:int = 300 ;
 
 
 		//アニメーションテーブル
-		private var $A:Array = null ;
-		private var $B:Array = null ;
-		private var $C:Array = null ;
+		private var motionToAssetFrameIds:Array = null ;
+		private var motionToWeight:Array = null ;
+		private var motionToInputAllowance:Array = null ;
 		private var $D:Array = null ;
-		private var $E:Array = null ;
-		private var $F:Array = null ;
+		private var motionContinue:Array = null ;
+		private var motionToHitDetection:Array = null ;
 
 		//体力
 		private var _hp:int = 0 ;
@@ -42,7 +45,7 @@ package
 		private var _target_z:int = 0 ;
 		private var _speed:Number = 0 ;
 
-		//ジャンプ管理
+		// 跳跃管理
 		private var _jump_state:Boolean = false;
 
 		//攻撃管理
@@ -50,17 +53,17 @@ package
 		private var _attack_shake:int = 0 ;
 		private var _hitRegist:Vector.<int> = new Vector.<int> ;
 
-		//被ダメージ管理
+		//被ダメージ管理  伤害管理
 		private var _damage_action:int = 0 ;
 		private var _damage_shake:int = 0 ;
 
-		//入力チェック用
+		//入力チェック用  输入检查
 		private var _input_attack:int = 0 ;
 		private var _input_jump  :int = 0 ;
-		private var _inputL:int = 0 ;
-		private var _inputR:int = 0 ;
-		private var _inputU:int = 0 ;
-		private var _inputD:int = 0 ;
+		private var _inputLeft:int = 0 ;
+		private var _inputRight:int = 0 ;
+		private var _inputUp:int = 0 ;
+		private var _inputDown:int = 0 ;
 		private var _command1:int = 0 ;
 		private var _command1CNT:int = 0 ;
 		private var _command2:int = 0 ;
@@ -71,16 +74,16 @@ package
 		private var _r:Rectangle = new Rectangle ( ) ;
 
 		////////////////////////////////////
-		public function CharctorBase ( B:Bitmap , C:ColorTransform , $$A:Array , $$B:Array , $$C:Array , $$D:Array , $$E:Array , $$F:Array ) {
+		public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform , _motionToAssetFrameIds:Array , _motionToWeight:Array , _motionToInputAllowance:Array , $$D:Array , _motionContinue:Array , _motionToHitDetection:Array ) {
 
-			super ( B , C , 64 ) ;
+			super ( srcCharacterAtlasBitmap , colorTransform , 64 ) ;
 
-			$A = $$A ;
-			$B = $$B ;
-			$C = $$C ;
+			motionToAssetFrameIds = _motionToAssetFrameIds ;
+			motionToWeight = _motionToWeight ;
+			motionToInputAllowance = _motionToInputAllowance ;
 			$D = $$D ;
-			$E = $$E ;
-			$F = $$F ;
+			motionContinue = _motionContinue ;
+			motionToHitDetection = _motionToHitDetection ;
 
 			_hp = 10 ;
 			_death = false ;
@@ -104,8 +107,8 @@ package
 
 		////////////////////////////////////
 		public function input (
-			keyA:Boolean , //攻撃ボタン
-			keyJ:Boolean , //ジャンプボタン
+			keyA:Boolean , //攻撃ボタン   攻击按钮
+			keyJ:Boolean , //ジャンプボタン  跳转按钮
 			keyL:Boolean , //左
 			keyR:Boolean , //右
 			keyU:Boolean , //上
@@ -114,24 +117,24 @@ package
 
 			if ( keyA ) { ++ _input_attack ; } else { _input_attack = 0 ; }
 			if ( keyJ ) { ++ _input_jump ; }   else { _input_jump = 0 ; }
-			if ( keyL ) { ++ _inputL ; } else { _inputL = 0 ; }
-			if ( keyR ) { ++ _inputR ; } else { _inputR = 0 ; }
-			if ( keyU ) { ++ _inputU ; } else { _inputU = 0 ; }
-			if ( keyD ) { ++ _inputD ; } else { _inputD = 0 ; }
-			_target_x = _pos.x + ( (_inputL) ? -50 : 0 ) + ( (_inputR) ? 50 : 0 ) + ( (_dirc)? -1 : 1 ) ;
-			_target_z = _pos.z + ( (_inputU) ? -50 : 0 ) + ( (_inputD) ? 50 : 0 ) + ( (_dirc)? -1 : 1 ) ;
+			if ( keyL ) { ++ _inputLeft ; } else { _inputLeft = 0 ; }
+			if ( keyR ) { ++ _inputRight ; } else { _inputRight = 0 ; }
+			if ( keyU ) { ++ _inputUp ; } else { _inputUp = 0 ; }
+			if ( keyD ) { ++ _inputDown ; } else { _inputDown = 0 ; }
+			_target_x = _pos.x + ( (_inputLeft) ? -50 : 0 ) + ( (_inputRight) ? 50 : 0 ) + ( (_dirc)? -1 : 1 ) ;
+			_target_z = _pos.z + ( (_inputUp) ? -50 : 0 ) + ( (_inputDown) ? 50 : 0 ) + ( (_dirc)? -1 : 1 ) ;
 
 			//左方向ステップ////////////////////////////////////////////////
 			++ _command1CNT;
 			if ( 10 < _command1CNT ) { _command1 = 0 ; }
 			if ( _input_jump == 1 && _command1 == 0 )                      { _command1 = 2 ; _command1CNT = 0; }
-			if ( _inputL     == 1 && _command1 == 2 && _command1CNT < 10 ) { _command1 = 3 ; _command1CNT = 0; }
+			if ( _inputLeft     == 1 && _command1 == 2 && _command1CNT < 10 ) { _command1 = 3 ; _command1CNT = 0; }
 
 			//右方向ステップ////////////////////////////////////////////////
 			++ _command2CNT;
 			if ( 10 < _command2CNT ) { _command2 = 0 ; }
 			if ( _input_jump == 1 && _command2 == 0 )                      { _command2 = 2 ; _command2CNT = 0; }
-			if ( _inputR     == 1 && _command2 == 2 && _command2CNT < 10 ) { _command2 = 3 ; _command2CNT = 0; }
+			if ( _inputRight     == 1 && _command2 == 2 && _command2CNT < 10 ) { _command2 = 3 ; _command2CNT = 0; }
 
 		}
 
@@ -164,7 +167,7 @@ package
 		public function update ( item:Vector.<Item> , mainHero:CharctorBase ):void {
 
 			var CHK:Boolean = true ;
-			var TC:int = $C[_action][_actionstep] ;
+			var TC:int = motionToInputAllowance[_action][_actionstep] ;
 			var Ba:int = _action;
 			var Bas:int = _actionstep;
 			var X:Number = 0 ;
@@ -320,8 +323,8 @@ package
 
 				if ( 32 & TC ) {
 					//ブレーキ
-					if ( _inputL ) { if ( 0 < _velocity.x ) _velocity.x *= .9 ; }
-					if ( _inputR ) { if ( _velocity.x < 0 ) _velocity.x *= .9 ; }
+					if ( _inputLeft ) { if ( 0 < _velocity.x ) _velocity.x *= .9 ; }
+					if ( _inputRight ) { if ( _velocity.x < 0 ) _velocity.x *= .9 ; }
 				}
 
 				//強制動作
@@ -366,15 +369,15 @@ package
 						break;
 				}
 
-				if ( $B[_action][_actionstep] <= _animwait ) {
+				if ( motionToWeight[_action][_actionstep] <= _animwait ) {
 
 					_animwait = 0 ;
 
 					var jumpPower:Number = 0 ;
-					if ( _inputL != 0 ) { jumpPower = -3; }
-					if ( _inputR != 0 ) { jumpPower =  3; }
+					if ( _inputLeft != 0 ) { jumpPower = -3; }
+					if ( _inputRight != 0 ) { jumpPower =  3; }
 
-					switch ( $E[_action][_actionstep] ) {
+					switch ( motionContinue[_action][_actionstep] ) {
 						case 1: _velocity.y = -5 ; _velocity.x = jumpPower; break;
 						case 2: _action = ( _jump_state) ? 12 : 0 ; break ;
 						case 3:
@@ -387,11 +390,11 @@ package
 						}
 							break;
 						case 4: _velocity.y = -2 ; _velocity.x = _stepPower; break;
-						case 5: _dirc = ( _inputL ) ? true : ( (_inputR) ? false : _dirc ) ; break;
+						case 5: _dirc = ( _inputLeft ) ? true : ( (_inputRight) ? false : _dirc ) ; break;
 						default: break;
 					}
 
-					if ( $A[_action].length <= ++ _actionstep ) {
+					if ( motionToAssetFrameIds[_action].length <= ++ _actionstep ) {
 						_actionstep = 0 ;
 					}
 
@@ -467,7 +470,7 @@ package
 
 			}
 
-			_anim = $A[_action][_actionstep] ;
+			_anim = motionToAssetFrameIds[_action][_actionstep] ;
 
 		}
 
@@ -488,7 +491,7 @@ package
 				}
 			}
 
-			var temp:int = $F[_action][_actionstep] ;
+			var temp:int = motionToHitDetection[_action][_actionstep] ;
 
 			//弱い攻撃
 			if ( temp == 1 ) {
@@ -649,9 +652,9 @@ package
 			}
 
 			if ( _dirc ) {
-				Global._canvas.copyPixels ( _img_r , _render_rect , _renderpos ) ;
+				Global._canvas.copyPixels ( imgCharacterFlipped , _render_rect , _renderpos ) ;
 			} else {
-				Global._canvas.copyPixels ( _img   , _render_rect , _renderpos ) ;
+				Global._canvas.copyPixels ( imgCharacter   , _render_rect , _renderpos ) ;
 			}
 
 			_r.x = _renderpos.x ;

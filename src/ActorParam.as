@@ -9,7 +9,7 @@ package
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
-	//
+	// 这个类实现演员的逐帧绘制 和 出生点定位
 	public class ActorParam extends BaseActor {
 
 		//キャラクタのスケール  图像素材到实际人物的缩放
@@ -20,11 +20,11 @@ package
 		protected var _render_rect:Rectangle = null ;
 
 		//画像
-		protected var _img:BitmapData = null ;
-		protected var _img_r:BitmapData = null ;
+		protected var imgCharacter:BitmapData = null ;
+		protected var imgCharacterFlipped:BitmapData = null ;
 		protected var _shadow:BitmapData = null ;
 
-		public function ActorParam ( B:Bitmap , C:ColorTransform , charctorSize:int ) {
+		public function ActorParam ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform , charctorSize:int ) {
 
 			super ( ) ;
 
@@ -38,8 +38,8 @@ package
 
 			var oneForthOfSize:Number = scaledSize/4   * SCALE ;
 			var oneEighthOfSize:Number = scaledSize/8   * SCALE ;
-			var scaledWidth:Number = B.width  * SCALE ;
-			var scaleHeight:Number = B.height * SCALE ;
+			var scaledWidth:Number = srcCharacterAtlasBitmap.width  * SCALE ;
+			var scaleHeight:Number = srcCharacterAtlasBitmap.height * SCALE ;
 
 			//スケーリング
 			scaleMatrix.scale ( SCALE , SCALE ) ;
@@ -52,15 +52,15 @@ package
 			_shadow.draw ( sprite ) ;
 
 			// 绘制人物
-			_img = new BitmapData ( scaledWidth , scaleHeight , true , 0 ) ;
-			_img.draw ( B , scaleMatrix , C ) ;
+			imgCharacter = new BitmapData ( scaledWidth , scaleHeight , true , 0 ) ;
+			imgCharacter.draw ( srcCharacterAtlasBitmap , scaleMatrix , colorTransform ) ;
 
 			// 绘制 人物的镜像
-			_img_r = new BitmapData ( scaledWidth , scaleHeight , true , 0 ) ;
+			imgCharacterFlipped = new BitmapData ( scaledWidth , scaleHeight , true , 0 ) ;
 			for ( I = 0 ; I < scaledWidth ; I += scaledSize ) {
 				for ( J = 0 ; J < scaledSize ; ++ J ) {
-					_img_r.copyPixels (
-						_img ,
+					imgCharacterFlipped.copyPixels (
+						imgCharacter ,
 						new Rectangle ( I + J , 0 , 1 , scaleHeight ) ,
 						new Point ( I + scaledSize - J , 0 )
 					) ;
@@ -78,11 +78,11 @@ package
 
 		public function release ( ):void {
 
-			_img.dispose ( ) ;
-			_img = null ;
+			imgCharacter.dispose ( ) ;
+			imgCharacter = null ;
 
-			_img_r.dispose ( ) ;
-			_img_r = null ;
+			imgCharacterFlipped.dispose ( ) ;
+			imgCharacterFlipped = null ;
 
 			_shadow.dispose ( ) ;
 			_shadow = null ;

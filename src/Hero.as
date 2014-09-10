@@ -8,9 +8,9 @@ package
 	class Hero extends CharctorBase {
 
 		//アニメパターン  动漫图案
-		private const $HERO_A:Array = [
-			[ 0 , 1 , 2 , 3 ] , //歩く  步行
-			[ 32 , 33 , 34 , 35 , 36 , 37 ] , //走る  运行
+		private const $HERO_ASSET_FRAMES:Array = [
+			[ 0 , 1 , 2 , 3 ] , //歩く  站立
+			[ 32 , 33 , 34 , 35 , 36 , 37 ] , //走る  行走
 			[ 4 , 5 , 6 , 7 , 4 ] , //飛ぶ  飞
 			[ 8 , 9 , 9 ] , //パンチ 冲床
 			[ 10 , 11 , 12 , 12 ] , //強いパンチ  强冲
@@ -29,7 +29,7 @@ package
 		];
 
 		//ウェイト  重量
-		private const $HERO_B:Array = [
+		private const $HERO_MOTION_TO_WEIGTH:Array = [
 			[ 8 , 8 , 8 , 8 ] , //歩く
 			[ 5 , 5 , 5 , 5 , 5 , 5 ] , //走る
 			[ 8 , 2 , 5 , 2 , 5 ] , //飛ぶ
@@ -50,7 +50,7 @@ package
 		] ;
 
 		//入力の許可  允许输入, bit_flag  1=移動 + 2=攻撃 + 4=ジャンプ + 8=投擲 + 16=ステップ + 32 = 慣性操作
-		private const $HERO_C:Array = [
+		private const $HERO_INPUT_ALLOWANCE:Array = [
 			[ 15, 15, 15, 15] , //歩く
 			[ 15, 15, 15, 15, 15, 15] , //走る
 			[ 16, 2 , 2 , 2 , 0 ] , //飛ぶ
@@ -94,7 +94,7 @@ package
 
 		//アニメーション切り替わりの際の特殊動作ＩＤ 1=ジャンプ 2=[歩くor落下]状態に戻る 3=飛び道具発生 4=ステップ移動 5=振り向き判定
 		// 在动画切换专项行动的ID  1= 跳转  2= 回到状态[歩くor落下] 3=新一代导弹 4=步进运动 5=判决转身
-		private const $HERO_E:Array = [
+		private const $HERO_MOTION_CONTINUE_SETTINGS:Array = [
 			[ 0 , 0 , 0 , 0 ] , //歩く
 			[ 0 , 0 , 0 , 0 , 0 , 0 ] , //走る
 			[ 1 , 0 , 0 , 0 , 2 ] , //飛ぶ
@@ -115,7 +115,7 @@ package
 		] ;
 
 		//攻撃判定
-		private const $HERO_F:Array = [
+		private const $HERO_HIT_DETECTIONS:Array = [
 			[ 0 , 0 , 0 , 0 ] , //歩く
 			[ 0 , 0 , 0 , 0 , 0 , 0 ] , //走る
 			[ 0 , 0 , 0 , 0 , 0 ] , //飛ぶ
@@ -135,8 +135,8 @@ package
 			[ 0 ] , //石ひろい
 		] ;
 
-		public function Hero ( B:Bitmap , C:ColorTransform = null ) :void {
-			super ( B , C , $HERO_A , $HERO_B , $HERO_C , $HERO_D , $HERO_E , $HERO_F ) ;
+		public function Hero ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform = null ) :void {
+			super ( srcCharacterAtlasBitmap , colorTransform , $HERO_ASSET_FRAMES , $HERO_MOTION_TO_WEIGTH , $HERO_INPUT_ALLOWANCE , $HERO_D , $HERO_MOTION_CONTINUE_SETTINGS , $HERO_HIT_DETECTIONS ) ;
 		}
 
 	}
