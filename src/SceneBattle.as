@@ -2,14 +2,9 @@ package
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.display.Loader;
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
 	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.net.URLRequest;
-	import flash.system.LoaderContext;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 
@@ -23,6 +18,11 @@ package
 		private var _mainHero:Hero = null ;
 		private var _effect:Effect = null ;
 		private var _scoreText:TextField = new TextField ;
+
+
+		[Embed(source="actor.png")]
+		private static var BMPActorClass:Class;
+		private static var BMActor:Bitmap = new BMPActorClass();
 
 
 
@@ -48,6 +48,13 @@ package
 
 			//キャラクター用
 			heroes = new Vector.<Hero>;
+			_mainHero = new Hero ( BMActor ) ;
+			heroes.push ( _mainHero ) ;
+
+			heroes.push ( new Hero ( BMActor , new ColorTransform ( .4 , 1 , .4 , 1 ) ) ) ;
+			heroes.push ( new Hero ( BMActor , new ColorTransform (  1 , 1 , .2 , 1 ) ) ) ;
+			heroes.push ( new Hero ( BMActor , new ColorTransform ( .2 , .2,  1 , 1 ) ) ) ;
+			heroes.push ( new Hero ( BMActor , new ColorTransform (  1 , .2,  1 , 1 ) ) ) ;
 
 			//アイテム用
 			items = new Vector.<Item>;
@@ -55,12 +62,6 @@ package
 
 			//ヒットマーク用 Hit Mark
 			_effect = new Effect ;
-
-			//キャラクタ画像読み込み(雑魚)
-			var L:Loader = new Loader;
-			L.contentLoaderInfo.addEventListener ( Event.COMPLETE, compLoad ) ;
-			L.contentLoaderInfo.addEventListener ( IOErrorEvent.IO_ERROR , function ():void { } ) ;
-			L.load ( new URLRequest ( FILENAME ) , new LoaderContext ( true ) ) ;
 
 			addChild ( new Bitmap ( Global._canvas ) ) ;
 
@@ -71,17 +72,6 @@ package
 			_scoreText.defaultTextFormat = new TextFormat ( null , 50 , 0x000000 ) ;
 			_scoreText.text = _score.toString () ;
 			addChild ( _scoreText ) ;
-
-			//		_S0 = new PushButton ( this, 465-100 , 0, "Ad:kuma-flashgame" ) ;
-			//		_S0.addEventListener ( MouseEvent.CLICK , function ( ) :void { var url:URLRequest = new URLRequest ( "http://kuma-flashgame.blogspot.com/" ) ; navigateToURL ( url ) ; } ) ;
-
-			//		_S1 = new PushButton ( this , 0 , 0 , "Tweet" );
-			//		_S1.x = ( 465 - _S1.width  ) / 2 ;
-			//		_S1.y = ( 465 - _S1.height ) / 2 ;
-			//		_S1.visible = false ;
-			//		_S1.addEventListener ( MouseEvent.CLICK , function ():void { navigateToURL ( new URLRequest ( "http://twitter.com/home?status=" + escapeMultiByte ( "【" + _score + "人葬りました。】http://wonderfl.net/c/A2p6 #ZAKOgame2" ) ) ); } ) ;
-
-			//////////////////////////////////////////////////////////
 
 			var B:BitmapData = Global._back ;
 
@@ -95,11 +85,6 @@ package
 			//		L2.load ( new URLRequest ( FILENAME2 ) , new LoaderContext ( true ) ) ;
 
 		}
-
-		//	public function compLoad2 ( e:Event ) :void {
-		//		var B:Bitmap = e.target.content as Bitmap ;
-		//		Global._back.draw ( B ) ;
-		//	}
 
 		////////////////////////////////////
 		public override function release ( ) :void {
@@ -115,25 +100,6 @@ package
 			for each ( var item:Item in items ) {
 				item.release ( ) ;
 			}
-
-		}
-
-		/**
-		 * 当完成人物图片下载的时候
-		 * @param e
-		 *
-		 */
-		private function compLoad( e:Event ):void {
-
-			var heroBitmap:Bitmap = e.target.content as Bitmap ;
-
-			_mainHero = new Hero ( heroBitmap ) ;
-			heroes.push ( _mainHero ) ;
-
-			heroes.push ( new Hero ( heroBitmap , new ColorTransform ( .4 , 1 , .4 , 1 ) ) ) ;
-			heroes.push ( new Hero ( heroBitmap , new ColorTransform (  1 , 1 , .2 , 1 ) ) ) ;
-			heroes.push ( new Hero ( heroBitmap , new ColorTransform ( .2 , .2,  1 , 1 ) ) ) ;
-			heroes.push ( new Hero ( heroBitmap , new ColorTransform (  1 , .2,  1 , 1 ) ) ) ;
 
 		}
 
