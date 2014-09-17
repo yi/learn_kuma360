@@ -2,9 +2,14 @@ package
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.net.URLRequest;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 
@@ -20,14 +25,36 @@ package
 		private var _scoreText:TextField = new TextField ;
 
 
-		[Embed(source="actor.png")]
-		private static var BMPActorClass:Class;
-		private static var BMActor:Bitmap = new BMPActorClass();
-
+//		[Embed(source="actor.png")]
+//		private static var BMPActorClass:Class;
+//		private static var BMActor:Bitmap = new BMPActorClass();
+		/**
+		 * (error)
+		 */
+		private static var onComplete:Function ;
+		public static function init(handler:Function):void
+		{
+			onComplete = handler;
+			var loader:Loader = new Loader;
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE,completeHandler);
+			loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,errorHandler);
+			loader.load(new URLRequest("assets/actor.png"));
+		}
+		public static var BMActor:Bitmap ;
+		private static function errorHandler(e:IOErrorEvent):void
+		{
+			onComplete(e.text);
+		}
+		private static function completeHandler(e:Event):void
+		{
+			var li:LoaderInfo = e.target as LoaderInfo;
+			BMActor = Bitmap(li.content);
+			onComplete();
+		}
 
 
 		////////////////////////////////////
-		public static const FILENAME:String = "actor.png" ;
+//		public static const FILENAME:String = "actor.png" ;
 		//const FILENAME2:String = "http://assets.wonderfl.net/images/related_images/3/37/37b4/37b4ec1f74efac5568eedd817dab449d42ff1eb4" ;
 		public static const ZERO_POINT:Point = new Point ( 0 , 0 ) ;
 		public static const ZMAX:int = 300 ;
@@ -76,8 +103,8 @@ package
 			var B:BitmapData = Global._back ;
 
 			//キャラクタ画像読み込み(雑魚)  Character image loading (small fish)
-			B.fillRect ( new Rectangle ( 0 ,    0 , B.width , B.height ) , 0x91ACCE ) ;
-			B.fillRect ( new Rectangle ( 0 , ZMAX , B.width , B.height ) , 0x75D36D ) ;
+//			B.fillRect ( new Rectangle ( 0 ,    0 , B.width , B.height ) , 0x91ACCE ) ;
+//			B.fillRect ( new Rectangle ( 0 , ZMAX , B.width , B.height ) , 0x75D36D ) ;
 
 			//		var L2:Loader = new Loader;
 			//		L2.contentLoaderInfo.addEventListener ( Event.COMPLETE, compLoad2 ) ;
@@ -110,7 +137,7 @@ package
 			var hero2:Hero ;
 			var item:Item ;
 			var renderableObject:Iactor ;
-
+			Global._canvas.fillRect(Global._canvas.rect,0);
 			//背景
 			if ( 0 < Global._world_shake ) {
 				-- Global._world_shake ;

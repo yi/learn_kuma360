@@ -9,7 +9,7 @@ package
 
 	//
 	public class CharctorBase extends ActorParam implements Iactor {
-
+		private static const DEFAULT_HP:int = 50 ;
 		public static var _score:uint = 0 ;
 		public static var _end:Boolean = false ;
 
@@ -85,7 +85,7 @@ package
 			motionContinue = _motionContinue ;
 			motionToHitDetection = _motionToHitDetection ;
 
-			_hp = 10 ;
+			_hp = DEFAULT_HP ;
 			_death = false ;
 			_death_cnt = 0 ;
 			input ( false , false , false , false , false , false ) ;
@@ -187,7 +187,7 @@ package
 
 				if ( 60 < ++ _death_cnt && this != mainHero ) {
 
-					_hp = 10 ;
+					_hp = DEFAULT_HP ;
 					_death = false ;
 					_death_cnt = 0 ;
 
@@ -679,7 +679,7 @@ package
 
 			_r.x = _renderpos.x + 1 ;
 			_r.y = _renderpos.y + scaledSize + 1 ;
-			_r.width = ( scaledSize * _hp / 10 ) - 2 ;
+			_r.width = ( scaledSize * _hp / DEFAULT_HP ) - 2 ;
 			_r.height = 5 - 2 ;
 			Global._canvas.fillRect ( _r , 0x00FF00 ) ;
 
