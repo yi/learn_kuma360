@@ -13,7 +13,7 @@ package
 	public class ActorParam extends BaseActor {
 
 		//キャラクタのスケール  图像素材到实际人物的缩放
-		protected const SCALE:Number = 1.5 ;
+		protected const SCALE:Number = 1 ;
 
 		//キャラクタの実サイズ  字符的实际尺寸
 		protected var scaledSize :int = 0 ;

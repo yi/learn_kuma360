@@ -71,7 +71,7 @@ package
 		////////////////////////////////////
 		public function SceneBattle ( ) {
 
-			_limit = 4000 ;
+			_limit = 40000 ;
 
 			//キャラクター用
 			heroes = new Vector.<Hero>;

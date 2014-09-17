@@ -1,0 +1,194 @@
+//最后编辑时间:20140917 13:00
+var DOM_WIDTH = 2048
+// 素材图像的大小
+var SLICE_SIZE = 256;
+// 动画图片的源目录
+var sourceFolder = fw.currentScriptDir;//fw.browseForFolderURL("请选包含动画帧图片的目录",fw.currentScriptDir);
+// 自动剔除的字符
+var splitStr = sourceFolder.substring(sourceFolder.lastIndexOf('/')+1);
+
+var queue = [];
+poll(sourceFolder);
+// 轮询 是否为 sgf - dir
+function poll(dir)
+{
+	var files = Files.enumFiles(dir);
+	var pngs = [];
+	var dirs = [];
+	// 结尾是png文件
+	for(var i in files)
+	{
+		if(files[i].indexOf('所有合并的文件在这里') != -1) 
+		{
+			continue;
+		}
+		if (files[i].lastIndexOf(".png") == files[i].length -4)
+		{
+				pngs.push(files[i]);
+		}
+		else if(Files.isDirectory(files[i]))
+		{
+			dirs.push(files[i]);
+		}
+	}
+	if(pngs.length == 0)
+	{
+	//alert("错误！！\n你选择的目录下找不到素材PNG文件");
+		for(var j in dirs)
+		{
+			poll(dirs[j]);
+		}
+		return;
+	}
+	pngs.sort();
+	queue.push(pngs);
+}
+
+var outputFolder = sourceFolder + '/out';//fw.browseForFolderURL("请选包含动画帧图片的目录",sourceFolder + '/所有合并的文件在这里');
+Files.createDirectory(outputFolder);
+
+// 开始执行
+main();
+function main()
+{
+var pngs = [];
+	for(var i in queue)
+	{
+		pngs = queue[i];
+		// create a new canvas
+		var mainCanvas = fw.createDocument();
+		var bottom = (pngs.length / (DOM_WIDTH/SLICE_SIZE>>0)) * SLICE_SIZE
+		mainCanvas.setDocumentCanvasSize({left:0, top:0, right:DOM_WIDTH, bottom:bottom}, true);
+		mainCanvas.setDocumentCanvasColor("#ffffff00", true);
+		// 素材位置信息列表
+		var sliceInfoList = [];
+		// 临时打开素材的DOM
+		var tempDom;
+		// 素材合并图片的Y坐标指证
+		var yPox = 0;
+		var cmd = ''; 
+
+		// 合并素材
+		var len = pngs.length;
+		for(var i=0; i<len; i++)
+		{
+			tempDom =  fw.openDocument(pngs[i],true);
+			if(tempDom == null)
+			{
+				alert("错误！！\n无法打开文件："+(pngs[i]));
+				return;
+			}
+			cmd += '-';
+			
+			var sliceInfo = getSliceInfo(tempDom);			
+			//sliceInfoList.push(sliceInfo);
+			xpos = (i%8) * SLICE_SIZE;
+			yPox = (i/8>>0) * SLICE_SIZE;
+			
+			copySourceToCanvas(tempDom, mainCanvas,sliceInfo.x + xpos,sliceInfo.y+ yPox);
+
+			//yPox += sliceInfo.h;
+			fw.closeDocument(tempDom, false);
+		}
+		// 去掉合并后的冗余区域
+		//mainCanvas.setDocumentCanvasSizeToDocumentExtents(true);
+		// 使用PNG32导出
+		mainCanvas.setExportOptions({ animAutoCrop:true, animAutoDifference:true, applyScale:false, colorMode:"32 bit", crop:false, cropBottom:0, cropLeft:0, cropRight:0, cropTop:0, 
+		ditherMode:"none", ditherPercent:0, exportFormat:"PNG", frameInfo:[  ], interlacedGIF:false, jpegQuality:80, jpegSelPreserveButtons:false, jpegSelPreserveText:true, jpegSelQuality:90, jpegSelQualityEnabled:false, jpegSmoothness:0, jpegSubsampling:0, localAdaptive:true, lossyGifAmount:0, macCreator:"", macFileType:"", name:null, numCustomEntries:0, numEntriesRequested:0, numGridEntries:6, optimized:true, paletteEntries:null, paletteInfo:null, paletteMode:"adaptive", paletteTransparency:"rgba", percentScale:100, progressiveJPEG:false, savedAnimationRepeat:0, sorting:"none", useScale:true, webSnapAdaptive:false, webSnapTolerance:14, xSize:0, ySize:0 });
+		//var args = sliceInfoList.join(",") + ',' + cmd + ',256,256,' +  SLICE_SIZE + ',' + SLICE_SIZE ;
+		exportCanvas(mainCanvas);
+	}
+	//fw.launchApp(infoPatcherPath ,[outputFolder]);
+}
+
+
+
+
+	// 获取一个素材源图片中的有效图片信息，返回{x,y,w,h}
+function getSliceInfo(dom){
+	
+	// 如果画布大小超过512 自动缩放
+	if(dom.width != SLICE_SIZE || dom.height != SLICE_SIZE)
+	{
+		var newDocRect = {
+			left:0, top:0, right:SLICE_SIZE, bottom:SLICE_SIZE
+		};
+		var newDocResolution = {
+		pixelsPerUnit:dom.resolution,
+		units:dom.resolutionUnits,
+		};
+	
+		dom.setDocumentImageSize(newDocRect, newDocResolution);
+	}
+	
+	dom.selectNone();
+	dom.selectAll();
+	dom.flattenSelection();
+	dom.selectNone();
+	dom.selectAll();
+	var rect = dom.getSelectionBounds();
+
+	return {
+		x:rect.left,
+		y:rect.top,
+		w:rect.right - rect.left,
+		h:rect.bottom - rect.top,
+		toString:function(){
+			return this.x+","+this.y+","+this.w+","+this.h;
+		}
+	}
+}
+
+function copySourceToCanvas(sourceDom, destDom, xpos, yPox)
+{
+	sourceDom.selectNone();
+	sourceDom.selectAll();
+	sourceDom.clipCopy();
+	destDom.selectNone();
+	destDom.clipPaste("do not resample", "image");
+	destDom.moveSelectionTo({x:xpos, y:yPox}, false, false);
+}
+// 导出图片
+function exportCanvas(dom){
+	var outputFilePath = outputFolder + "/actor.png";
+	
+	// 整图导出
+	var es = new ExportSettings;
+	es.SkipNonURLSliceArea= false;
+	es.discardUnspecifiedSlices= true;
+	es.fileExtension= undefined;
+	es.generateDemoHtml= false;
+	es.htmlDestination= "same";
+	es.setByUser= false;
+	es.shimGeneration= "none";
+	es.sliceAlongGuides= true;
+	es.sliceAutoNaming1= "doc.name";
+	es.sliceAutoNaming2= "underscore";
+	es.sliceAutoNaming3= "numeric01";
+	es.sliceAutoNaming4= "none";
+	es.sliceAutoNaming5= "none";
+	es.sliceAutoNaming6= "none";
+	es.sliceFrameNaming1= "none";
+	es.sliceFrameNaming2= "none";
+	es.sliceUsingUrls= false;
+	dom.setExportSettings(es);
+	try{
+		fw.exportHtmlAndImages(dom, null, outputFilePath);
+	}catch(e){};
+
+	//fw.saveJsCommand(args, out + "info");
+
+	fw.closeDocument(dom, false);
+}
+
+function pad(n){return n<10 ? '0'+n : n}
+function padd(n){return n<100 ? '0'+pad(n) : n}
+function timeStamp(){
+	var d= new Date;
+	return d.getFullYear()
+      + pad(d.getMonth()+1)
+      + pad(d.getDate())+'_'
+      + pad(d.getHours())
+      + pad(d.getMinutes())
+      + pad(d.getSeconds());
+}	
