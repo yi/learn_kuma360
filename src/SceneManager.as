@@ -25,7 +25,7 @@ package
 			if ( null == _scene ) {
 
 				_scene = _next ;
-				stage.addChild ( _scene ) ;
+				addChild ( _scene ) ;
 				_scene.alpha = 0 ;
 
 				_next = null ;

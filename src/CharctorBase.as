@@ -597,14 +597,15 @@ package
 				X = (_target_x - _pos.x);
 				Y = (_target_z - _pos.z);
 				L = X * X + Y * Y;
-				if (10 * 10 < L)
+				var maxSp:int = Global.MAX_SPEED;
+//				if (10 * 10 < L)
 				{
-					_velocity.x += X * .004;
-					_velocity.z += Y * .004;
+					_velocity.x += X * .002 * maxSp;
+					_velocity.z += Y * .002 * maxSp;
 				}
 
 				_speed = _velocity.length;
-				_speed = (2 < _speed) ? 2 : _speed;
+				_speed = (maxSp < _speed) ? maxSp : _speed;
 
 				_velocity.normalize();
 				_velocity.scaleBy(_speed);
@@ -807,7 +808,7 @@ package
 				_velocity.y = -2;
 				_damage_shake = 8;
 				_damage_action = 11;
-				_hp = 0;
+				_hp = _hp >> 1;
 				Global._world_shake = 10;
 			}
 

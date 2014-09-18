@@ -6,7 +6,11 @@
 
 package
 {
+	import com.bit101.components.HSlider;
+	import com.bit101.components.NumericStepper;
+
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
@@ -36,6 +40,12 @@ package
 			});
 
 			Global.init(init1);
+
+		}
+		private function changeSpHandler(e:Event):void
+		{
+			var hs:NumericStepper = e.target as NumericStepper;
+			Global.MAX_SPEED = hs.value;
 		}
 
 		private function init1(err:String=null):void
@@ -66,6 +76,10 @@ package
 			//ゲーム開始
 			_sceneManager = new SceneManager;
 			addChild(_sceneManager);
+
+			var ns:NumericStepper = new NumericStepper(this,10,10,changeSpHandler);
+			ns.step = 1;
+			ns.value = 2;
 		}
 
 	}

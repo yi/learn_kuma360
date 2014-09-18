@@ -41,6 +41,8 @@ package
 //		private static var BM:Bitmap = new BMClass();
 //		_back.draw(new BMClass());
 		public static var _world_shake:int = 0 ;
+
+		public static var MAX_SPEED:Number = 2 ;
 	}
 
 }
