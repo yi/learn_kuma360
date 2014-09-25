@@ -62,6 +62,7 @@ package
 
 		}
 
+		// 被别的玩家拾取了
 		public function reservation ( manage_id:uint ) :void {
 			_resavation = true ;
 			_manage_id = manage_id ;
@@ -127,7 +128,6 @@ package
 				_manage_id = -1 ;
 			}
 
-			var common:Boolean = false ;
 			if ( _pos.x < 10 ) {
 				_pos.x = 10 ;
 				_velocity.x = - _velocity.x * .2 ;
@@ -212,7 +212,8 @@ package
 				return false ;
 			}
 
-			var L:Number = Math.sqrt ( ( pos.x - _pos.x ) * ( pos.x - _pos.x ) + ( pos.y - _pos.y ) * ( pos.y - _pos.y ) + ( pos.z - _pos.z ) * ( pos.z - _pos.z ) ) ;
+			var L:Number = Vector3D.distance(pos, _pos)
+			// var L:Number = Math.sqrt ( ( pos.x - _pos.x ) * ( pos.x - _pos.x ) + ( pos.y - _pos.y ) * ( pos.y - _pos.y ) + ( pos.z - _pos.z ) * ( pos.z - _pos.z ) ) ;
 			return ( L < 30 ) ;
 		}
 
