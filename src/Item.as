@@ -127,7 +127,7 @@ package
 				_manage_id = -1 ;
 			}
 
-			var common:Boolean = false ;
+//			var common:Boolean = false ;
 			if ( _pos.x < 10 ) {
 				_pos.x = 10 ;
 				_velocity.x = - _velocity.x * .2 ;

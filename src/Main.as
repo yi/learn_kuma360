@@ -44,7 +44,7 @@ package
 		}
 		private function changeSpHandler(e:Event):void
 		{
-			var hs:NumericStepper = e.target as NumericStepper;
+			var hs:NumericStepper = e.target as NumericStepper;   
 			Global.MAX_SPEED = hs.value;
 		}
 
