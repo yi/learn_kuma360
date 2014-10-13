@@ -572,23 +572,27 @@ package
 				var TD:int = playheadCondition[_action][_actionstep];
 				switch ( TD ) {
 
-					case 0 :
+					// case 0 :
+					case PlayheadCondition.WHATEVER :
 						++ _animwait;
 						break ;
 
-					case 1 :
+					// case 1 :
+					case PlayheadCondition.ONLY_IN_AIR :
 						if ( 0 < _velocity.y ) {
 							++ _animwait ;
 						}
 						break ;
 
-					case 2:
+					// case 2:
+					case PlayheadCondition.ONLY_ON_GROUND:
 						if ( false == _jump_state ) {
 							++ _animwait ;
 						}
 						break;
 
-					case 3:
+					// case 3:
+					case PlayheadCondition.IS_ALIVE:
 						if ( 0 < _hp ) {
 							++ _animwait;
 						}
