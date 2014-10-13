@@ -4,103 +4,227 @@ package
 	import flash.geom.ColorTransform;
 	import flash.geom.Rectangle;
 	import flash.geom.Vector3D;
-
-
-
 	//
 	public class CharctorBase extends ActorParam implements Iactor {
-
-		public static var _score:uint = 0 ;
 		public static var _end:Boolean = false ;
 
-		/**
-		 * 最大允许的宽度纵深
-		 */
-		public const ZMAX:int = 300 ;
-
-
-		//アニメーションテーブル
-		private var motionToAssetFrameIds:Array = null ;
-		private var motionToWeight:Array = null ;
-		private var motionToInputAllowance:Array = null ;
-		private var $D:Array = null ;
-		private var motionContinue:Array = null ;
-		private var motionToHitDetection:Array = null ;
-
-		//体力
-		private var _hp:int = 0 ;
-		public var _death:Boolean = false ;
-		private var _death_cnt:int = 0;
-
-		//アニメーション用
-		private var _anim:int = 0 ;
-		private var _animwait:int = 0 ;
-		private var _action:int = 0 ;
-		private var _actionstep:int = 0 ;
-		private var _dirc:Boolean = false;
-
-		//入力用
-		private var _input_damage:Boolean = false ;
-		private var _target_x:int = 0 ;
-		private var _target_z:int = 0 ;
-		private var _speed:Number = 0 ;
-
-		// 跳跃管理
-		private var _jump_state:Boolean = false;
-
-		//攻撃管理
-		private var _attack_state:int = 0 ; //連続技判定
-		private var _attack_shake:int = 0 ;
-		private var _hitRegist:Vector.<int> = new Vector.<int> ;
-
-		//被ダメージ管理  伤害管理
-		private var _damage_action:int = 0 ;
-		private var _damage_shake:int = 0 ;
-
-		//入力チェック用  输入检查
-		private var _input_attack:int = 0 ;
-		private var _input_jump  :int = 0 ;
-		private var _inputLeft:int = 0 ;
-		private var _inputRight:int = 0 ;
-		private var _inputUp:int = 0 ;
-		private var _inputDown:int = 0 ;
-		private var _command1:int = 0 ;
-		private var _command1CNT:int = 0 ;
-		private var _command2:int = 0 ;
-		private var _command2CNT:int = 0 ;
-		private var _stepPower:Number = 0 ;
-		private var _lastAtkChk:int = 0 ;
-
-		private var _r:Rectangle = new Rectangle ( ) ;
+		public static var _score:uint = 0 ;
 
 		////////////////////////////////////
-		public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform , _motionToAssetFrameIds:Array , _motionToWeight:Array , _motionToInputAllowance:Array , $$D:Array , _motionContinue:Array , _motionToHitDetection:Array ) {
+		public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform , _motionToAssetFrameIds:Array , _motionToWeight:Array , _motionToInputAllowance:Array , _playheadCondition:Array , _motionContinue:Array , _motionToHitDetection:Array ) {
 
 			super ( srcCharacterAtlasBitmap , colorTransform , 64 ) ;
 
 			motionToAssetFrameIds = _motionToAssetFrameIds ;
 			motionToWeight = _motionToWeight ;
 			motionToInputAllowance = _motionToInputAllowance ;
-			$D = $$D ;
+			playheadCondition = _playheadCondition ;
 			motionContinue = _motionContinue ;
 			motionToHitDetection = _motionToHitDetection ;
 
 			_hp = 10 ;
-			_death = false ;
-			_death_cnt = 0 ;
+			isDead = false ;
+			countAfterDeath = 0 ;
 			input ( false , false , false , false , false , false ) ;
 
 		}
 
+		/**
+		 * 最大允许的宽度纵深
+		 */
+		public const ZMAX:int = 300 ;
+		public var isDead:Boolean = false ;
+		private var playheadCondition:Array = null ;
+		private var _action:int = 0 ;
+		private var _actionstep:int = 0 ;
+
+		//アニメーション用
+		private var _anim:int = 0 ;
+		private var _animwait:int = 0 ;
+		private var _attack_shake:int = 0 ;
+
+		//攻撃管理
+		private var _attack_state:int = 0 ; //連続技判定
+		private var _command1:int = 0 ;
+		private var _command1CNT:int = 0 ;
+		private var _command2:int = 0 ;
+		private var _command2CNT:int = 0 ;
+
+		//被ダメージ管理  伤害管理
+		private var _damage_action:int = 0 ;
+		private var _damage_shake:int = 0 ;
+		private var countAfterDeath:int = 0;
+		private var _dirc:Boolean = false;
+		private var _hitRegist:Vector.<int> = new Vector.<int> ;
+
+		//体力
+		private var _hp:int = 0 ;
+		private var _inputDown:int = 0 ;
+		private var _inputLeft:int = 0 ;
+		private var _inputRight:int = 0 ;
+		private var _inputUp:int = 0 ;
+
+		//入力チェック用  输入检查
+		private var _input_attack:int = 0 ;
+
+		//入力用
+		private var _input_damage:Boolean = false ;
+		private var _input_jump  :int = 0 ;
+
+		// 跳跃管理
+		private var _jump_state:Boolean = false;
+		private var _lastAtkChk:int = 0 ;
+
+		private var _r:Rectangle = new Rectangle ( ) ;
+		private var _speed:Number = 0 ;
+		private var _stepPower:Number = 0 ;
+		private var _target_x:int = 0 ;
+		private var _target_z:int = 0 ;
+		private var motionContinue:Array = null ;
+
+
+		//アニメーションテーブル
+		private var motionToAssetFrameIds:Array = null ;
+		private var motionToHitDetection:Array = null ;
+		private var motionToInputAllowance:Array = null ;
+		private var motionToWeight:Array = null ;
 
 		////////////////////////////////////
-		public function setDie ( ) :void {
-			if ( _death == false ) {
-				_death = true ;
-				_death_cnt = 0 ;
+		public function attackChk ( attacker:Hero , effect:Effect ):void {
+
+			if ( this == attacker ) {
+				return ;
+			}
+
+			if ( attacker.isDead ) {
+				return ;
+			}
+
+			for each ( var N:int in _hitRegist ) {
+				if ( N == attacker.id ) {
+					return ;
+				}
+			}
+
+			var temp:int = motionToHitDetection[_action][_actionstep] ;
+
+			//弱い攻撃
+			if ( temp == 1 ) {
+
+				if ( _lastAtkChk == 0 ) {
+					_lastAtkChk = 1 ;
+				}
+
+				var V1:Vector3D = _pos.subtract ( attacker._pos ) ;
+
+				if ( _dirc ) {
+					V1.x -= 8 * SCALE ;
+				} else {
+					V1.x += 8 * SCALE ;
+				}
+
+				if ( V1.length < 30 ) {
+
+					_lastAtkChk = -1 ;
+
+					if ( _attack_state== 0 ) {
+						_attack_state = 1 ;
+					}
+
+					if ( _pos.y != 0 ) {
+						_attack_shake = 11 ;
+					} else {
+						_attack_shake = 5 ;
+					}
+
+					attacker.damage ( _dirc , _pos.z , 1 ) ;
+					_hitRegist.push ( attacker.id ) ;
+					effect.push ( attacker.pos.x , attacker.pos.z + attacker.pos.y ) ;
+
+				}
+
+			}
+
+			//強い攻撃
+			if ( temp == 2 ) {
+
+				if ( _lastAtkChk == 0 ) {
+					_lastAtkChk = 2 ;
+				}
+
+				var V2:Vector3D = _pos.subtract ( attacker._pos ) ;
+
+				if ( _dirc ) {
+					V2.x -= 16 * SCALE ;
+				} else {
+					V2.x += 16 * SCALE ;
+				}
+
+				if ( V2.length < 30 ) {
+
+					_lastAtkChk = -1 ;
+
+					if ( _attack_state== 0 ) {
+						_attack_state = 1 ;
+					}
+
+					_attack_shake = 15 ;
+					attacker.damage ( _dirc , _pos.z , 2 ) ;
+					_hitRegist.push ( attacker.id ) ;
+					effect.push ( attacker.pos.x , attacker.pos.z + attacker.pos.y ) ;
+
+				}
+
+			}
+
+		}
+
+		////////////////////////////////////
+		public function damage ( Hdirc:Boolean , z:int , type:int ) :void {
+
+			_pos.z = z ;
+			_velocity.z = 0 ;
+
+			//ノックバック弱
+			if ( type == 1 ) {
+				_velocity.x = (Hdirc)? -1 : 1 ;
+				_velocity.y = 0 ;
+				_damage_shake = 20 ;
+				_damage_action = 8 + Math.floor ( Math.random() * 3 ) ;
+			}
+
+			//ノックバック強
+			if ( type == 2 ) {
+				_velocity.x = (Hdirc)? -3 : 3 ;
+				_velocity.y = -2 ;
+				_damage_shake = 5 ;
+				_damage_action = 11 ;
+			}
+
+			//石ヒット
+			if ( type == 3 ) {
+				_velocity.x = (Hdirc)? -3 : 3 ;
+				_velocity.y = -2 ;
+				_damage_shake = 8 ;
 				_damage_action = 11 ;
 				_hp = 0 ;
+				Global._world_shake = 10 ;
 			}
+
+			//死亡チェック
+			if ( -- _hp <= 0 ) {
+				isDead = true ;
+				countAfterDeath = 0 ;
+				_damage_action = 11 ;
+				if ( _end == false ) {
+					++ _score ;
+				}
+			}
+		}
+
+		////////////////////////////////////
+		public function getDeath ( ) :Boolean {
+			return isDead ;
 		}
 
 
@@ -137,8 +261,14 @@ package
 			if ( 10 < _command1CNT ) {
 				_command1 = 0 ;
 			}
-			if ( _input_jump == 1 && _command1 == 0 )                      { _command1 = 2 ; _command1CNT = 0; }
-			if ( _inputLeft     == 1 && _command1 == 2 && _command1CNT < 10 ) { _command1 = 3 ; _command1CNT = 0; }
+			if ( _input_jump == 1 && _command1 == 0 ){
+				_command1 = 2 ;
+				_command1CNT = 0;
+			}
+			if ( _inputLeft     == 1 && _command1 == 2 && _command1CNT < 10 ) {
+				_command1 = 3 ;
+				_command1CNT = 0;
+			}
 
 			//右方向ステップ////////////////////////////////////////////////
 			++ _command2CNT;
@@ -169,8 +299,84 @@ package
 		}
 
 		////////////////////////////////////
-		public function getDeath ( ) :Boolean {
-			return _death ;
+		public function moveChk ( e:Hero ):void {
+
+			if ( this == e ) {
+				return ;
+			}
+
+			var V:Vector3D = _pos.subtract ( e._pos ) ;
+			if ( V.length < 10 * SCALE ) {
+				V.normalize();
+				_velocity.x = V.x * 1 ;
+				_velocity.z = V.z * 1 ;
+			}
+
+		}
+
+		////////////////////////////////////
+		public function render ( ):void {
+
+			if ( isDead ) {
+				if ( countAfterDeath % 10 < 5 ) {
+					return ;
+				}
+			}
+
+			_anim %= 40 ;
+			_render_rect.x = Math.floor ( _anim % 8 ) * scaledSize ;
+			_render_rect.y = Math.floor ( _anim / 8 ) * scaledSize ;
+
+			_renderpos.x = _pos.x          - scaledSize /2 ;
+			_renderpos.y = _pos.z + _pos.y - scaledSize ;
+
+			if ( _damage_shake ) {
+				_renderpos.x += Math.random() * 10 - 5 ;
+				_renderpos.y += Math.random() * 10 - 5 ;
+			}
+
+			if ( _dirc ) {
+				Global._canvas.copyPixels ( imgCharacterFlipped , _render_rect , _renderpos ) ;
+			} else {
+				Global._canvas.copyPixels ( imgCharacter   , _render_rect , _renderpos ) ;
+			}
+
+			_r.x = _renderpos.x ;
+			_r.y = _renderpos.y + scaledSize ;
+			_r.width = scaledSize ;
+			_r.height = 5 ;
+			Global._canvas.fillRect ( _r , 0x000000 ) ;
+
+			_r.x = _renderpos.x + 1 ;
+			_r.y = _renderpos.y + scaledSize + 1 ;
+			_r.width = scaledSize - 2 ;
+			_r.height = 5 - 2 ;
+			Global._canvas.fillRect ( _r , 0xFF0000 ) ;
+
+			_r.x = _renderpos.x + 1 ;
+			_r.y = _renderpos.y + scaledSize + 1 ;
+			_r.width = ( scaledSize * _hp / 10 ) - 2 ;
+			_r.height = 5 - 2 ;
+			Global._canvas.fillRect ( _r , 0x00FF00 ) ;
+
+		}
+
+		////////////////////////////////////
+		public function render_shadow ( ):void {
+			_shadowpos.x = _pos.x - scaledSize/4/2 * SCALE ;
+			_shadowpos.y = _pos.z - scaledSize/8/2 * SCALE ;
+			Global._canvas.copyPixels ( _shadow , _shadow.rect , _shadowpos ) ;
+		}
+
+
+		////////////////////////////////////
+		public function setDie ( ) :void {
+			if ( isDead == false ) {
+				isDead = true ;
+				countAfterDeath = 0 ;
+				_damage_action = 11 ;
+				_hp = 0 ;
+			}
 		}
 
 		////////////////////////////////////
@@ -180,18 +386,19 @@ package
 			var currentInputAllowance:int = motionToInputAllowance[_action][_actionstep] ;
 			var currentAction:int = _action;
 			var currentActionStep:int = _actionstep;
+
 			var X:Number = 0 ;
 			var Y:Number = 0 ;
 			var L:Number = 0 ;
 			var I:int = 0 ;
 
-			if ( _death ) {
+			if ( isDead ) {
 
-				if ( 60 < ++ _death_cnt && this != mainHero ) {
-
+				if ( 60 < ++ countAfterDeath && this != mainHero ) {
+					// 死亡足够长时间以后，从高处掉落下来重生
 					_hp = 10 ;
-					_death = false ;
-					_death_cnt = 0 ;
+					isDead = false ;
+					countAfterDeath = 0 ;
 
 					_pos.x = Math.random() * 465 ;
 					_pos.y = -500 ;
@@ -200,9 +407,7 @@ package
 
 					_action = Motions.FALL ;
 					// _action = 12 ;
-
 				}
-
 			}
 
 			if ( 0 < _damage_shake ) {
@@ -362,9 +567,9 @@ package
 			}
 
 			if ( isChecked )
-			{//アニメーション
+			{//アニメーション   Animation
 
-				var TD:int = $D[_action][_actionstep];
+				var TD:int = playheadCondition[_action][_actionstep];
 				switch ( TD ) {
 
 					case 0 :
@@ -494,209 +699,5 @@ package
 			_anim = motionToAssetFrameIds[_action][_actionstep] ;
 
 		}
-
-		////////////////////////////////////
-		public function attackChk ( attacker:Hero , effect:Effect ):void {
-
-			if ( this == attacker ) {
-				return ;
-			}
-
-			if ( attacker._death ) {
-				return ;
-			}
-
-			for each ( var N:int in _hitRegist ) {
-				if ( N == attacker.id ) {
-					return ;
-				}
-			}
-
-			var temp:int = motionToHitDetection[_action][_actionstep] ;
-
-			//弱い攻撃
-			if ( temp == 1 ) {
-
-				if ( _lastAtkChk == 0 ) {
-					_lastAtkChk = 1 ;
-				}
-
-				var V1:Vector3D = _pos.subtract ( attacker._pos ) ;
-
-				if ( _dirc ) {
-					V1.x -= 8 * SCALE ;
-				} else {
-					V1.x += 8 * SCALE ;
-				}
-
-				if ( V1.length < 30 ) {
-
-					_lastAtkChk = -1 ;
-
-					if ( _attack_state== 0 ) {
-						_attack_state = 1 ;
-					}
-
-					if ( _pos.y != 0 ) {
-						_attack_shake = 11 ;
-					} else {
-						_attack_shake = 5 ;
-					}
-
-					attacker.damage ( _dirc , _pos.z , 1 ) ;
-					_hitRegist.push ( attacker.id ) ;
-					effect.push ( attacker.pos.x , attacker.pos.z + attacker.pos.y ) ;
-
-				}
-
-			}
-
-			//強い攻撃
-			if ( temp == 2 ) {
-
-				if ( _lastAtkChk == 0 ) {
-					_lastAtkChk = 2 ;
-				}
-
-				var V2:Vector3D = _pos.subtract ( attacker._pos ) ;
-
-				if ( _dirc ) {
-					V2.x -= 16 * SCALE ;
-				} else {
-					V2.x += 16 * SCALE ;
-				}
-
-				if ( V2.length < 30 ) {
-
-					_lastAtkChk = -1 ;
-
-					if ( _attack_state== 0 ) {
-						_attack_state = 1 ;
-					}
-
-					_attack_shake = 15 ;
-					attacker.damage ( _dirc , _pos.z , 2 ) ;
-					_hitRegist.push ( attacker.id ) ;
-					effect.push ( attacker.pos.x , attacker.pos.z + attacker.pos.y ) ;
-
-				}
-
-			}
-
-		}
-
-		////////////////////////////////////
-		public function damage ( Hdirc:Boolean , z:int , type:int ) :void {
-
-			_pos.z = z ;
-			_velocity.z = 0 ;
-
-			//ノックバック弱
-			if ( type == 1 ) {
-				_velocity.x = (Hdirc)? -1 : 1 ;
-				_velocity.y = 0 ;
-				_damage_shake = 20 ;
-				_damage_action = 8 + Math.floor ( Math.random() * 3 ) ;
-			}
-
-			//ノックバック強
-			if ( type == 2 ) {
-				_velocity.x = (Hdirc)? -3 : 3 ;
-				_velocity.y = -2 ;
-				_damage_shake = 5 ;
-				_damage_action = 11 ;
-			}
-
-			//石ヒット
-			if ( type == 3 ) {
-				_velocity.x = (Hdirc)? -3 : 3 ;
-				_velocity.y = -2 ;
-				_damage_shake = 8 ;
-				_damage_action = 11 ;
-				_hp = 0 ;
-				Global._world_shake = 10 ;
-			}
-
-			//死亡チェック
-			if ( -- _hp <= 0 ) {
-				_death = true ;
-				_death_cnt = 0 ;
-				_damage_action = 11 ;
-				if ( _end == false ) {
-					++ _score ;
-				}
-			}
-		}
-
-		////////////////////////////////////
-		public function moveChk ( e:Hero ):void {
-
-			if ( this == e ) {
-				return ;
-			}
-
-			var V:Vector3D = _pos.subtract ( e._pos ) ;
-			if ( V.length < 10 * SCALE ) {
-				V.normalize();
-				_velocity.x = V.x * 1 ;
-				_velocity.z = V.z * 1 ;
-			}
-
-		}
-
-		////////////////////////////////////
-		public function render_shadow ( ):void {
-			_shadowpos.x = _pos.x - scaledSize/4/2 * SCALE ;
-			_shadowpos.y = _pos.z - scaledSize/8/2 * SCALE ;
-			Global._canvas.copyPixels ( _shadow , _shadow.rect , _shadowpos ) ;
-		}
-
-		////////////////////////////////////
-		public function render ( ):void {
-
-			if ( _death ) {
-				if ( _death_cnt % 10 < 5 ) {
-					return ;
-				}
-			}
-
-			_anim %= 40 ;
-			_render_rect.x = Math.floor ( _anim % 8 ) * scaledSize ;
-			_render_rect.y = Math.floor ( _anim / 8 ) * scaledSize ;
-
-			_renderpos.x = _pos.x          - scaledSize /2 ;
-			_renderpos.y = _pos.z + _pos.y - scaledSize ;
-
-			if ( _damage_shake ) {
-				_renderpos.x += Math.random() * 10 - 5 ;
-				_renderpos.y += Math.random() * 10 - 5 ;
-			}
-
-			if ( _dirc ) {
-				Global._canvas.copyPixels ( imgCharacterFlipped , _render_rect , _renderpos ) ;
-			} else {
-				Global._canvas.copyPixels ( imgCharacter   , _render_rect , _renderpos ) ;
-			}
-
-			_r.x = _renderpos.x ;
-			_r.y = _renderpos.y + scaledSize ;
-			_r.width = scaledSize ;
-			_r.height = 5 ;
-			Global._canvas.fillRect ( _r , 0x000000 ) ;
-
-			_r.x = _renderpos.x + 1 ;
-			_r.y = _renderpos.y + scaledSize + 1 ;
-			_r.width = scaledSize - 2 ;
-			_r.height = 5 - 2 ;
-			Global._canvas.fillRect ( _r , 0xFF0000 ) ;
-
-			_r.x = _renderpos.x + 1 ;
-			_r.y = _renderpos.y + scaledSize + 1 ;
-			_r.width = ( scaledSize * _hp / 10 ) - 2 ;
-			_r.height = 5 - 2 ;
-			Global._canvas.fillRect ( _r , 0x00FF00 ) ;
-
-		}
-
 	}
 }

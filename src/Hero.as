@@ -110,24 +110,24 @@ package
 
 		//アニメーションの条件 0=ウェイト 1=_velocity.yが+方向 2=地面に接地 3=体力が0だとアニメーション終了。
 		//动画的条件  0=重量  1=_velocity.yが+方向 2=地面上的地 3=耐力动画到底是0
-		static	private const $HERO_D:Array = [];
-		$HERO_D[Motions.STAND] =              		[ 0 , 0 , 0 , 0 ] ; //歩く
-		$HERO_D[Motions.RUN] =                		[ 0 , 0 , 0 , 0 , 0 , 0 ] ; //走る
-		$HERO_D[Motions.TAKE_OFF] = 	         		[ 0 , 1 , 0 , 2 , 0 ] ; //飛ぶ
-		$HERO_D[Motions.PUNCH1] = 	           		[ 0 , 0 , 0 ] ; //パンチ
-		$HERO_D[Motions.PUNCH4_COLLIDE] = 	     		[ 0 , 0 , 0 , 0 ] ; //強いパンチ
-		$HERO_D[Motions.ATTACK_IN_AIR2] = 		[ 0 , 2 , 0 ] ; //ジャンプパンチ
-		$HERO_D[Motions.ATTACK_IN_AIR1] = 	         		[ 0 , 2 , 0 ] ; //ジャンプキック
-		$HERO_D[Motions.PUNCH3_KICK] =               		[ 0 , 0 , 0 ] ; //キック
-		$HERO_D[Motions.KNOCKED_S] = 		     		[ 0 ] ; //弱ダメージ
-		$HERO_D[Motions.KNOCKED_M] =          		[ 0 ] ; //中ダメージ
-		$HERO_D[Motions.KNOCKED_L] =          		[ 0 ] ; //強ダメージ
-		$HERO_D[Motions.XIANG_XIA$] = 	       		[ 0 , 0 , 0 , 0 , 3 ] ; //ダウン
-		$HERO_D[Motions.FALL] =               		[ 2 , 0 ] ; //落下
-		$HERO_D[Motions.THROW] =              		[ 0 , 0 , 0 , 0 ] ; //投擲
-		$HERO_D[Motions.BU_ZHOU$] =           		[ 0 , 0 , 0 , 2 , 0 ] ; //ステップ
-		$HERO_D[Motions.PUNCH2] = 	           		[ 0 , 0 , 0 ] ; //パンチ２段目
-		$HERO_D[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
+		static	private const $HERO_PLAYHEAD_CONDITION:Array = [];
+		$HERO_PLAYHEAD_CONDITION[Motions.STAND] =              		[ 0 , 0 , 0 , 0 ] ; //歩く
+		$HERO_PLAYHEAD_CONDITION[Motions.RUN] =                		[ 0 , 0 , 0 , 0 , 0 , 0 ] ; //走る
+		$HERO_PLAYHEAD_CONDITION[Motions.TAKE_OFF] = 	         		[ 0 , 1 , 0 , 2 , 0 ] ; //飛ぶ
+		$HERO_PLAYHEAD_CONDITION[Motions.PUNCH1] = 	           		[ 0 , 0 , 0 ] ; //パンチ
+		$HERO_PLAYHEAD_CONDITION[Motions.PUNCH4_COLLIDE] = 	     		[ 0 , 0 , 0 , 0 ] ; //強いパンチ
+		$HERO_PLAYHEAD_CONDITION[Motions.ATTACK_IN_AIR2] = 		[ 0 , 2 , 0 ] ; //ジャンプパンチ
+		$HERO_PLAYHEAD_CONDITION[Motions.ATTACK_IN_AIR1] = 	         		[ 0 , 2 , 0 ] ; //ジャンプキック
+		$HERO_PLAYHEAD_CONDITION[Motions.PUNCH3_KICK] =               		[ 0 , 0 , 0 ] ; //キック
+		$HERO_PLAYHEAD_CONDITION[Motions.KNOCKED_S] = 		     		[ 0 ] ; //弱ダメージ
+		$HERO_PLAYHEAD_CONDITION[Motions.KNOCKED_M] =          		[ 0 ] ; //中ダメージ
+		$HERO_PLAYHEAD_CONDITION[Motions.KNOCKED_L] =          		[ 0 ] ; //強ダメージ
+		$HERO_PLAYHEAD_CONDITION[Motions.XIANG_XIA$] = 	       		[ 0 , 0 , 0 , 0 , 3 ] ; //ダウン
+		$HERO_PLAYHEAD_CONDITION[Motions.FALL] =               		[ 2 , 0 ] ; //落下
+		$HERO_PLAYHEAD_CONDITION[Motions.THROW] =              		[ 0 , 0 , 0 , 0 ] ; //投擲
+		$HERO_PLAYHEAD_CONDITION[Motions.BU_ZHOU$] =           		[ 0 , 0 , 0 , 2 , 0 ] ; //ステップ
+		$HERO_PLAYHEAD_CONDITION[Motions.PUNCH2] = 	           		[ 0 , 0 , 0 ] ; //パンチ２段目
+		$HERO_PLAYHEAD_CONDITION[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
 
 
 		//アニメーション切り替わりの際の特殊動作ＩＤ 1=ジャンプ 2=[歩くor落下]状態に戻る 3=飛び道具発生 4=ステップ移動 5=振り向き判定
@@ -172,7 +172,7 @@ package
 		$HERO_HIT_DETECTIONS[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
 
 		public function Hero ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform = null ) :void {
-			super ( srcCharacterAtlasBitmap , colorTransform , $HERO_ASSET_FRAMES , $HERO_MOTION_TO_WEIGTH , $HERO_INPUT_ALLOWANCE , $HERO_D , $HERO_MOTION_CONTINUE_SETTINGS , $HERO_HIT_DETECTIONS ) ;
+			super ( srcCharacterAtlasBitmap , colorTransform , $HERO_ASSET_FRAMES , $HERO_MOTION_TO_WEIGTH , $HERO_INPUT_ALLOWANCE , $HERO_PLAYHEAD_CONDITION , $HERO_MOTION_CONTINUE_SETTINGS , $HERO_HIT_DETECTIONS ) ;
 		}
 
 	}
