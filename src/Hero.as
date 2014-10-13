@@ -8,25 +8,45 @@ package
 	class Hero extends CharctorBase {
 
 		//アニメパターン  动漫图案
-		private const $HERO_ASSET_FRAMES:Array = [
-			[ 0 , 1 , 2 , 3 ] , //歩く  站立
-			[ 32 , 33 , 34 , 35 , 36 , 37 ] , //走る  行走
-			[ 4 , 5 , 6 , 7 , 4 ] , //飛ぶ  飞
-			[ 8 , 9 , 9 ] , //パンチ 冲床
-			[ 10 , 11 , 12 , 12 ] , //強いパンチ  强冲
-			[  6 , 13 , 4 ] , //ジャンプパンチ  跳转冲
-			[  6 , 14 , 4 ] , //ジャンプキック  跳踢
-			[ 29 , 15 , 15 ] , //キック  踢
-			[ 16 ] , //弱ダメージ  微弱损伤
-			[ 17 ] , //中ダメージ  中等破坏
-			[ 18 ] , //強ダメージ  强力损伤
-			[ 19 , 20 , 21 , 22 , 22 ] , //ダウン  向下
-			[ 7 , 4 ] ,//落下
-			[ 25 , 26 , 27 , 0 ] , //投擲
-			[ 4  ,  5 ,  6 ,  7 , 4 ] , //ステップ  步骤
-			[ 8 , 9 , 9 ] , //パンチ２段目 第二阶段冲
-			[ 24 ] , //石ひろい  宽阔的石板
-		];
+		static private const $HERO_ASSET_FRAMES:Array = [];
+		$HERO_ASSET_FRAMES[Motions.STAND] = [ 0 , 1 , 2 , 3 ] ; //歩く  站立
+		$HERO_ASSET_FRAMES[Motions.RUN] = [ 32 , 33 , 34 , 35 , 36 , 37 ] ; //走る  行走
+		$HERO_ASSET_FRAMES[Motions.TAKE_OFF] = 	[ 4 , 5 , 6 , 7 , 4 ] ; //飛ぶ  飞
+		$HERO_ASSET_FRAMES[Motions.PUNCH] = 	[ 8 , 9 , 9 ] ; //パンチ 冲床
+		$HERO_ASSET_FRAMES[Motions.QIANG_CHONG$] = 	[ 10 , 11 , 12 , 12 ] ; //強いパンチ  强冲
+		$HERO_ASSET_FRAMES[Motions.TIAO_ZHUANG_CHONG$] = [  6 , 13 , 4 ] ; //ジャンプパンチ  跳转冲
+		$HERO_ASSET_FRAMES[Motions.TIAO_TI$] = 	[  6 , 14 , 4 ] ; //ジャンプキック  跳踢
+		$HERO_ASSET_FRAMES[Motions.KICK] = [ 29 , 15 , 15 ] ; //キック  踢
+	    $HERO_ASSET_FRAMES[Motions.KNOCKED_S] = 		[ 16 ] ; //弱ダメージ  微弱损伤
+		$HERO_ASSET_FRAMES[Motions.KNOCKED_M] = [ 17 ] ; //中ダメージ  中等破坏
+		$HERO_ASSET_FRAMES[Motions.KNOCKED_L] = [ 18 ] ; //強ダメージ  强力损伤
+		$HERO_ASSET_FRAMES[Motions.XIANG_XIA$] = 	[ 19 , 20 , 21 , 22 , 22 ] ; //ダウン  向下
+		$HERO_ASSET_FRAMES[Motions.FALL] = [ 7 , 4 ] ;//落下
+		$HERO_ASSET_FRAMES[Motions.THROW] = [ 25 , 26 , 27 , 0 ] ; //投擲
+		$HERO_ASSET_FRAMES[Motions.BU_ZHOU$] = [ 4  ,  5 ,  6 ,  7 , 4 ] ; //ステップ  步骤
+		$HERO_ASSET_FRAMES[Motions.PUNCH2] = 	[ 8 , 9 , 9 ] ; //パンチ２段目 第二阶段冲
+		$HERO_ASSET_FRAMES[Motions.SHI_BAN$] = [ 24 ] ; //石ひろい  宽阔的石板
+
+//		//アニメパターン  动漫图案
+//		private const $HERO_ASSET_FRAMES:Array = [
+//			[ 0 , 1 , 2 , 3 ] , //歩く  站立
+//			[ 32 , 33 , 34 , 35 , 36 , 37 ] , //走る  行走
+//			[ 4 , 5 , 6 , 7 , 4 ] , //飛ぶ  飞
+//			[ 8 , 9 , 9 ] , //パンチ 冲床
+//			[ 10 , 11 , 12 , 12 ] , //強いパンチ  强冲
+//			[  6 , 13 , 4 ] , //ジャンプパンチ  跳转冲
+//			[  6 , 14 , 4 ] , //ジャンプキック  跳踢
+//			[ 29 , 15 , 15 ] , //キック  踢
+//			[ 16 ] , //弱ダメージ  微弱损伤
+//			[ 17 ] , //中ダメージ  中等破坏
+//			[ 18 ] , //強ダメージ  强力损伤
+//			[ 19 , 20 , 21 , 22 , 22 ] , //ダウン  向下
+//			[ 7 , 4 ] ,//落下
+//			[ 25 , 26 , 27 , 0 ] , //投擲
+//			[ 4  ,  5 ,  6 ,  7 , 4 ] , //ステップ  步骤
+//			[ 8 , 9 , 9 ] , //パンチ２段目 第二阶段冲
+//			[ 24 ] , //石ひろい  宽阔的石板
+//		];
 
 		//ウェイト  重量
 		private const $HERO_MOTION_TO_WEIGTH:Array = [
