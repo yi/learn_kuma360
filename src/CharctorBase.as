@@ -134,7 +134,9 @@ package
 
 			//左方向ステップ////////////////////////////////////////////////
 			++ _command1CNT;
-			if ( 10 < _command1CNT ) { _command1 = 0 ; }
+			if ( 10 < _command1CNT ) {
+				_command1 = 0 ;
+			}
 			if ( _input_jump == 1 && _command1 == 0 )                      { _command1 = 2 ; _command1CNT = 0; }
 			if ( _inputLeft     == 1 && _command1 == 2 && _command1CNT < 10 ) { _command1 = 3 ; _command1CNT = 0; }
 
@@ -196,7 +198,8 @@ package
 					_pos.z = 365 ;
 					_velocity.y = 0 ;
 
-					_action = 12 ;
+					_action = Motions.FALL ;
+					// _action = 12 ;
 
 				}
 
@@ -226,17 +229,19 @@ package
 
 			{//入力の反映
 
-				if ( 1 & currentInputAllowance ) {
+				// if ( 1 & currentInputAllowance ) {
+				if ( InputAllowance.MOVE & currentInputAllowance ) {
 
 					X = _pos.x - _target_x ;
 					Y = _pos.z - _target_z ;
 					L = X * X + Y * Y ;
-					_action = ( 10 * 10 < L ) ? 1 : 0 ;
+					_action = ( 10 * 10 < L ) ? Motions.RUN : Motions.STAND ;
 					_attack_state = 0 ;
 
 				}
 
-				if ( 2 & currentInputAllowance ) {
+				// if ( 2 & currentInputAllowance ) {
+				if ( InputAllowance.ATTACK & currentInputAllowance ) {
 
 					if ( _input_attack == 1 ) {
 
@@ -250,17 +255,17 @@ package
 						if ( _jump_state ) {
 
 							switch ( _attack_state ) {
-								case 1 : _attack_state = 2 ;  _action = 6 ; _animwait = 0 ; break ;
-								default: _attack_state = 1 ;  _action = 5 ; _animwait = 0 ; break ;
+								case 1 : _attack_state = 2 ;  _action = Motions.ATTACK_IN_AIR1 ; _animwait = 0 ; break ;
+								default: _attack_state = 1 ;  _action = Motions.ATTACK_IN_AIR2 ; _animwait = 0 ; break ;
 							}
 
 						} else {
 
 							switch ( _attack_state ) {
-								case 0 : _attack_state = 0 ; _action = 3 ; _animwait = 0 ; /*連打キャンセル*/_actionstep= 0;  break ;
-								case 1 : _attack_state = 2 ; _action =15 ; _animwait = 0 ; break ;
-								case 2 : _attack_state = 3 ; _action = 7 ; _animwait = 0 ; break ;
-								case 3 : _attack_state = 4 ; _action = 4 ; _animwait = 0 ; break ;
+								case 0 : _attack_state = 0 ; _action = Motions.PUNCH1 ; _animwait = 0 ; /*連打キャンセル*/_actionstep= 0;  break ;
+								case 1 : _attack_state = 2 ; _action = Motions.PUNCH2 ; _animwait = 0 ; break ;
+								case 2 : _attack_state = 3 ; _action = Motions.PUNCH3_KICK ; _animwait = 0 ; break ;
+								case 3 : _attack_state = 4 ; _action = Motions.PUNCH4_COLLIDE ; _animwait = 0 ; break ;
 							}
 						}
 
@@ -268,14 +273,17 @@ package
 
 				}
 
-				if ( 4 & currentInputAllowance ) {
+				// if ( 4 & currentInputAllowance ) {
+				if ( InputAllowance.JUMP & currentInputAllowance ) {
 					if ( _input_jump == 1 ) {
-						_action = 2 ;
+						// _action = 2 ;
+						_action = Motions.TAKE_OFF ;
 						_animwait = 0 ;
 					}
 				}
 
-				if ( 8 & currentInputAllowance ) {
+				// if ( 8 & currentInputAllowance ) {
+				if ( InputAllowance.THROW & currentInputAllowance ) {
 
 					if ( _input_attack == 1 ) {
 
@@ -285,17 +293,18 @@ package
 
 							for ( J = 0 ; J < item.length ; ++ J ) {
 
-								//石を持っていたら投げる
+								//石を持っていたら投げる  Throw if you have a stone
 								if ( item[J].isreservation ( id ) ) {
-									_action = 13 ;
+									// _action = 13 ;
+									_action = Motions.THROW ;
 									_animwait = 0 ;
 									break;
 								}
 
-								//足元に石があると拾う
+								//足元に石があると拾う  I pick up that there is a stone at the feet
 								if ( item[J].chk_distance ( _pos ) ) {
 									item[J].reservation ( id ) ;
-									_action = 16 ;
+									_action = Motions.PICK_UP ;
 									_animwait = 0 ;
 									break;
 								}
@@ -307,11 +316,13 @@ package
 
 				}
 
-				if ( 16 & currentInputAllowance ) {
+				// if ( 16 & currentInputAllowance ) {
+				if ( InputAllowance.STEP & currentInputAllowance ) {
 
 					if ( _command1 == 3 ) {
 						_command1 = 0 ;
-						_action = 14 ;
+						// _action = 14 ;
+						_action = Motions.BU_ZHOU$ ;
 						_animwait = 0 ;
 						_stepPower = -4 ;
 						_attack_shake = 0;
@@ -320,7 +331,8 @@ package
 
 					if ( _command2 == 3 ) {
 						_command2 = 0 ;
-						_action = 14 ;
+						// _action = 14 ;
+						_action = Motions.BU_ZHOU$ ;
 						_animwait = 0 ;
 						_stepPower = 4 ;
 						_attack_shake = 0;
@@ -329,7 +341,8 @@ package
 
 				}
 
-				if ( 32 & currentInputAllowance ) {
+				// if ( 32 & currentInputAllowance ) {
+				if ( InputAllowance.INERTIA & currentInputAllowance ) {
 					//ブレーキ
 					if ( _inputLeft ) { if ( 0 < _velocity.x ) _velocity.x *= .9 ; }
 					if ( _inputRight ) { if ( _velocity.x < 0 ) _velocity.x *= .9 ; }

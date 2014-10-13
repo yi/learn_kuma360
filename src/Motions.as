@@ -5,11 +5,11 @@ package
 		public static const STAND:uint = 0;
 		public static const RUN:uint = 1;
 		public static const TAKE_OFF:uint = 2;
-		public static const PUNCH:uint = 3;
-		public static const QIANG_CHONG$:uint = 4;
-		public static const TIAO_ZHUANG_CHONG$:uint = 5;
-		public static const TIAO_TI$:uint = 6;
-		public static const KICK:uint = 7;
+		public static const PUNCH1:uint = 3;
+		public static const PUNCH4_COLLIDE:uint = 4;
+		public static const ATTACK_IN_AIR2:uint = 5;
+		public static const ATTACK_IN_AIR1:uint = 6;
+		public static const PUNCH3_KICK:uint = 7;
 		public static const KNOCKED_S:uint = 8;
 		public static const KNOCKED_M:uint = 9;
 		public static const KNOCKED_L:uint = 10;
@@ -18,7 +18,7 @@ package
 		public static const THROW:uint = 13;
 		public static const BU_ZHOU$:uint = 14;
 		public static const PUNCH2:uint = 15;
-		public static const SHI_BAN$:uint = 16;
+		public static const PICK_UP:uint = 16;
 
 
 //		private const $HERO_ASSET_FRAMES:Array = [
