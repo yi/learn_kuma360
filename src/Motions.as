@@ -20,6 +20,12 @@ package
 		public static const PUNCH2:uint = 15;
 		public static const PICK_UP:uint = 16;
 
+		public static const DAMAGE_MOTIONS:Array = [KNOCKED_S, KNOCKED_M, KNOCKED_L];
+
+		public static function getRandomDamageMotion():uint{
+			return DAMAGE_MOTIONS[DAMAGE_MOTIONS.length * Math.random() >> 0];
+		}
+
 
 //		private const $HERO_ASSET_FRAMES:Array = [
 //			[ 0 , 1 , 2 , 3 ] , //歩く  站立

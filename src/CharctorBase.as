@@ -6,6 +6,9 @@ package
 	import flash.geom.Vector3D;
 	//
 	public class CharctorBase extends ActorParam implements Iactor {
+
+		public static const WAIT_TO_REVIVE:uint = 60;
+
 		public static var _end:Boolean = false ;
 
 		public static var _score:uint = 0 ;
@@ -193,7 +196,8 @@ package
 				_velocity.x = (Hdirc)? -1 : 1 ;
 				_velocity.y = 0 ;
 				_damage_shake = 20 ;
-				_damage_action = 8 + Math.floor ( Math.random() * 3 ) ;
+				// _damage_action = 8 + Math.floor ( Math.random() * 3 ) ;
+				_damage_action = Motions.getRandomDamageMotion();
 			}
 
 			//ノックバック強
@@ -201,7 +205,7 @@ package
 				_velocity.x = (Hdirc)? -3 : 3 ;
 				_velocity.y = -2 ;
 				_damage_shake = 5 ;
-				_damage_action = 11 ;
+				_damage_action = Motions.KNOCK_DOWN ;
 			}
 
 			//石ヒット
@@ -209,7 +213,7 @@ package
 				_velocity.x = (Hdirc)? -3 : 3 ;
 				_velocity.y = -2 ;
 				_damage_shake = 8 ;
-				_damage_action = 11 ;
+				_damage_action = Motions.KNOCK_DOWN ;
 				_hp = 0 ;
 				Global._world_shake = 10 ;
 			}
@@ -218,7 +222,7 @@ package
 			if ( -- _hp <= 0 ) {
 				isDead = true ;
 				countAfterDeath = 0 ;
-				_damage_action = 11 ;
+				_damage_action = Motions.KNOCK_DOWN ;
 				if ( _end == false ) {
 					++ _score ;
 				}
@@ -382,6 +386,21 @@ package
 			}
 		}
 
+		// 复活重生
+		public function revive():void{
+			// 死亡足够长时间以后，从高处掉落下来重生
+			_hp = 10 ;
+			isDead = false ;
+			countAfterDeath = 0 ;
+
+			_pos.x = Math.random() * 465 ;
+			_pos.y = -500 ;
+			_pos.z = 365 ;
+			_velocity.y = 0 ;
+
+			_action = Motions.FALL ;
+		}
+
 		////////////////////////////////////
 		public function update ( item:Vector.<Item> , mainHero:CharctorBase ):void {
 
@@ -395,23 +414,25 @@ package
 			var L:Number = 0 ;
 			var I:int = 0 ;
 
-			if ( isDead ) {
+			 if(isDead && WAIT_TO_REVIVE < ++ countAfterDeath && this != mainHero ) revive();
 
-				if ( 60 < ++ countAfterDeath && this != mainHero ) {
-					// 死亡足够长时间以后，从高处掉落下来重生
-					_hp = 10 ;
-					isDead = false ;
-					countAfterDeath = 0 ;
-
-					_pos.x = Math.random() * 465 ;
-					_pos.y = -500 ;
-					_pos.z = 365 ;
-					_velocity.y = 0 ;
-
-					_action = Motions.FALL ;
-					// _action = 12 ;
-				}
-			}
+//			if ( isDead ) {
+//
+//				if ( 60 < ++ countAfterDeath && this != mainHero ) {
+//					revive();
+////					// 死亡足够长时间以后，从高处掉落下来重生
+////					_hp = 10 ;
+////					isDead = false ;
+////					countAfterDeath = 0 ;
+////
+////					_pos.x = Math.random() * 465 ;
+////					_pos.y = -500 ;
+////					_pos.z = 365 ;
+////					_velocity.y = 0 ;
+////
+////					_action = Motions.FALL ;
+//				}
+//			}
 
 			if ( 0 < _damage_shake ) {
 
