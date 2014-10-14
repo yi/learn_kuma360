@@ -38,9 +38,10 @@ package
 		private var _action:int = 0 ;
 		private var _actionstep:int = 0 ;
 
-		//アニメーション用
+		//アニメーション用 动画用
 		private var _anim:int = 0 ;
-		private var _animwait:int = 0 ;
+		// 在当前的动作帧上停留了多少次
+		private var frameWaitCount:int = 0 ;
 		private var _attack_shake:int = 0 ;
 
 		//攻撃管理
@@ -77,7 +78,9 @@ package
 
 		private var _r:Rectangle = new Rectangle ( ) ;
 		private var _speed:Number = 0 ;
-		private var _stepPower:Number = 0 ;
+
+
+		private var bonceSpeed:Number = 0 ;
 		private var _target_x:int = 0 ;
 		private var _target_z:int = 0 ;
 		private var motionContinue:Array = null ;
@@ -460,17 +463,17 @@ package
 						if ( _jump_state ) {
 
 							switch ( _attack_state ) {
-								case 1 : _attack_state = 2 ;  _action = Motions.ATTACK_IN_AIR1 ; _animwait = 0 ; break ;
-								default: _attack_state = 1 ;  _action = Motions.ATTACK_IN_AIR2 ; _animwait = 0 ; break ;
+								case 1 : _attack_state = 2 ;  _action = Motions.ATTACK_IN_AIR1 ; frameWaitCount = 0 ; break ;
+								default: _attack_state = 1 ;  _action = Motions.ATTACK_IN_AIR2 ; frameWaitCount = 0 ; break ;
 							}
 
 						} else {
 
 							switch ( _attack_state ) {
-								case 0 : _attack_state = 0 ; _action = Motions.PUNCH1 ; _animwait = 0 ; /*連打キャンセル*/_actionstep= 0;  break ;
-								case 1 : _attack_state = 2 ; _action = Motions.PUNCH2 ; _animwait = 0 ; break ;
-								case 2 : _attack_state = 3 ; _action = Motions.PUNCH3_KICK ; _animwait = 0 ; break ;
-								case 3 : _attack_state = 4 ; _action = Motions.PUNCH4_COLLIDE ; _animwait = 0 ; break ;
+								case 0 : _attack_state = 0 ; _action = Motions.PUNCH1 ; frameWaitCount = 0 ; /*連打キャンセル*/_actionstep= 0;  break ;
+								case 1 : _attack_state = 2 ; _action = Motions.PUNCH2 ; frameWaitCount = 0 ; break ;
+								case 2 : _attack_state = 3 ; _action = Motions.PUNCH3_KICK ; frameWaitCount = 0 ; break ;
+								case 3 : _attack_state = 4 ; _action = Motions.PUNCH4_COLLIDE ; frameWaitCount = 0 ; break ;
 							}
 						}
 
@@ -483,7 +486,7 @@ package
 					if ( _input_jump == 1 ) {
 						// _action = 2 ;
 						_action = Motions.TAKE_OFF ;
-						_animwait = 0 ;
+						frameWaitCount = 0 ;
 					}
 				}
 
@@ -502,7 +505,7 @@ package
 								if ( item[J].isreservation ( id ) ) {
 									// _action = 13 ;
 									_action = Motions.THROW ;
-									_animwait = 0 ;
+									frameWaitCount = 0 ;
 									break;
 								}
 
@@ -510,7 +513,7 @@ package
 								if ( item[J].chk_distance ( _pos ) ) {
 									item[J].reservation ( id ) ;
 									_action = Motions.PICK_UP ;
-									_animwait = 0 ;
+									frameWaitCount = 0 ;
 									break;
 								}
 							}
@@ -522,14 +525,14 @@ package
 				}
 
 				// if ( 16 & currentInputAllowance ) {
-				if ( InputAllowance.STEP & currentInputAllowance ) {
+				if ( InputAllowance.BOUNCE & currentInputAllowance ) {
 
 					if ( _command1 == 3 ) {
 						_command1 = 0 ;
 						// _action = 14 ;
-						_action = Motions.BU_ZHOU$ ;
-						_animwait = 0 ;
-						_stepPower = -4 ;
+						_action = Motions.BOUNCE ;
+						frameWaitCount = 0 ;
+						bonceSpeed = -4 ;
 						_attack_shake = 0;
 						_attack_state = 0;
 					}
@@ -537,9 +540,9 @@ package
 					if ( _command2 == 3 ) {
 						_command2 = 0 ;
 						// _action = 14 ;
-						_action = Motions.BU_ZHOU$ ;
-						_animwait = 0 ;
-						_stepPower = 4 ;
+						_action = Motions.BOUNCE ;
+						frameWaitCount = 0 ;
+						bonceSpeed = 4 ;
 						_attack_shake = 0;
 						_attack_state = 0;
 					}
@@ -561,7 +564,7 @@ package
 
 				if ( currentAction != _action ) {
 					_actionstep = 0 ;
-					_animwait = 0 ;
+					frameWaitCount = 0 ;
 				}
 
 			}
@@ -574,34 +577,34 @@ package
 
 					// case 0 :
 					case PlayheadCondition.WHATEVER :
-						++ _animwait;
+						++ frameWaitCount;
 						break ;
 
 					// case 1 :
 					case PlayheadCondition.ONLY_IN_AIR :
 						if ( 0 < _velocity.y ) {
-							++ _animwait ;
+							++ frameWaitCount ;
 						}
 						break ;
 
 					// case 2:
 					case PlayheadCondition.ONLY_ON_GROUND:
 						if ( false == _jump_state ) {
-							++ _animwait ;
+							++ frameWaitCount ;
 						}
 						break;
 
 					// case 3:
 					case PlayheadCondition.IS_ALIVE:
 						if ( 0 < _hp ) {
-							++ _animwait;
+							++ frameWaitCount;
 						}
 						break;
 				}
 
-				if ( motionToWeight[_action][_actionstep] <= _animwait ) {
+				if ( motionToWeight[_action][_actionstep] <= frameWaitCount ) {
 
-					_animwait = 0 ;
+					frameWaitCount = 0 ;
 
 					var jumpPower:Number = 0 ;
 					if ( _inputLeft != 0 ) { jumpPower = -3; }
@@ -619,7 +622,7 @@ package
 							}
 						}
 							break;
-						case 4: _velocity.y = -2 ; _velocity.x = _stepPower; break;
+						case 4: _velocity.y = -2 ; _velocity.x = bonceSpeed; break;
 						case 5: _dirc = ( _inputLeft ) ? true : ( (_inputRight) ? false : _dirc ) ; break;
 						default: break;
 					}
@@ -648,7 +651,7 @@ package
 				Y = ( _target_z - _pos.z ) ;
 				L = X * X + Y * Y ;
 				if ( 10 * 10 < L ) {
-					_velocity.x += X * .004 ;  
+					_velocity.x += X * .004 ;
 					_velocity.z += Y * .004 ;
 				}
 

@@ -13,10 +13,10 @@ package
 		public static const KNOCKED_S:uint = 8;
 		public static const KNOCKED_M:uint = 9;
 		public static const KNOCKED_L:uint = 10;
-		public static const XIANG_XIA$:uint = 11;
+		public static const KNOCK_DOWN:uint = 11;
 		public static const FALL:uint = 12;
 		public static const THROW:uint = 13;
-		public static const BU_ZHOU$:uint = 14;
+		public static const BOUNCE:uint = 14;
 		public static const PUNCH2:uint = 15;
 		public static const PICK_UP:uint = 16;
 

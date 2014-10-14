@@ -20,10 +20,10 @@ package
 		$HERO_ASSET_FRAMES[Motions.KNOCKED_S] = 		  [ 16 ] ; //弱ダメージ  微弱损伤
 		$HERO_ASSET_FRAMES[Motions.KNOCKED_M] =           [ 17 ] ; //中ダメージ  中等破坏
 		$HERO_ASSET_FRAMES[Motions.KNOCKED_L] =           [ 18 ] ; //強ダメージ  强力损伤
-		$HERO_ASSET_FRAMES[Motions.XIANG_XIA$] = 	      [ 19 , 20 , 21 , 22 , 22 ] ; //ダウン  向下
+		$HERO_ASSET_FRAMES[Motions.KNOCK_DOWN] = 	      [ 19 , 20 , 21 , 22 , 22 ] ; //ダウン  向下
 		$HERO_ASSET_FRAMES[Motions.FALL] =                [ 7 , 4 ] ;//落下
 		$HERO_ASSET_FRAMES[Motions.THROW] =               [ 25 , 26 , 27 , 0 ] ; //投擲
-		$HERO_ASSET_FRAMES[Motions.BU_ZHOU$] =            [ 4  ,  5 ,  6 ,  7 , 4 ] ; //ステップ  步骤
+		$HERO_ASSET_FRAMES[Motions.BOUNCE] =            [ 4  ,  5 ,  6 ,  7 , 4 ] ; //ステップ  突进
 		$HERO_ASSET_FRAMES[Motions.PUNCH2] = 	          [ 8 , 9 , 9 ] ; //パンチ２段目 第二阶段冲
 		$HERO_ASSET_FRAMES[Motions.PICK_UP] =             [ 24 ] ; //石ひろい  宽阔的石板
 
@@ -61,10 +61,10 @@ package
 		$HERO_MOTION_TO_WEIGTH[Motions.KNOCKED_S] = 		      	[ 15 ] ; //弱ダメージ
 		$HERO_MOTION_TO_WEIGTH[Motions.KNOCKED_M] =           	[ 15 ] ; //中ダメージ
 		$HERO_MOTION_TO_WEIGTH[Motions.KNOCKED_L] =           	[ 15 ] ; //強ダメージ
-		$HERO_MOTION_TO_WEIGTH[Motions.XIANG_XIA$] = 	        	[ 9 , 9 , 9 , 9 , 15 ] ; //ダウン
+		$HERO_MOTION_TO_WEIGTH[Motions.KNOCK_DOWN] = 	        	[ 9 , 9 , 9 , 9 , 15 ] ; //ダウン
 		$HERO_MOTION_TO_WEIGTH[Motions.FALL] =                	[ 2 , 5 ] ;//落下
 		$HERO_MOTION_TO_WEIGTH[Motions.THROW] =               	[ 7 , 4 , 12 , 5 ] ; //投擲
-		$HERO_MOTION_TO_WEIGTH[Motions.BU_ZHOU$] =            	[ 2 , 2 , 5 , 2 , 5 ] ; //ステップ
+		$HERO_MOTION_TO_WEIGTH[Motions.BOUNCE] =            	[ 2 , 2 , 5 , 2 , 5 ] ; //ステップ
 		$HERO_MOTION_TO_WEIGTH[Motions.PUNCH2] = 	            	[ 3 , 1 , 16 ] ;//パンチ２段目
 		$HERO_MOTION_TO_WEIGTH[Motions.PICK_UP] =            	[ 50 ] ; //石ひろい
 
@@ -92,19 +92,19 @@ package
 		static private const $HERO_INPUT_ALLOWANCE:Array = [];
 		$HERO_INPUT_ALLOWANCE[Motions.STAND] =              	[ InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW] ; //歩wpくく
 		$HERO_INPUT_ALLOWANCE[Motions.RUN] =                		[ InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW] ; //走る
-		$HERO_INPUT_ALLOWANCE[Motions.TAKE_OFF] = 	         		[ InputAllowance.STEP, InputAllowance.ATTACK  , InputAllowance.ATTACK  , InputAllowance.ATTACK , 0 ] ; //飛ぶ
+		$HERO_INPUT_ALLOWANCE[Motions.TAKE_OFF] = 	         		[ InputAllowance.BOUNCE, InputAllowance.ATTACK  , InputAllowance.ATTACK  , InputAllowance.ATTACK , 0 ] ; //飛ぶ
 		$HERO_INPUT_ALLOWANCE[Motions.PUNCH1] = 	           		[ 0 , 0 , InputAllowance.ATTACK_STEP ] ; //パンチ
-		$HERO_INPUT_ALLOWANCE[Motions.PUNCH4_COLLIDE] = 	     		[ 0 , 0 , InputAllowance.STEP , InputAllowance.STEP ] ; //強いパンチ
-		$HERO_INPUT_ALLOWANCE[Motions.ATTACK_IN_AIR2] = 		[ 0 , InputAllowance.ATTACK , InputAllowance.STEP ] ; //ジャンプパンチ
-		$HERO_INPUT_ALLOWANCE[Motions.ATTACK_IN_AIR1] = 	         		[ 0 , 0 , InputAllowance.STEP ] ; //ジャンプキック
+		$HERO_INPUT_ALLOWANCE[Motions.PUNCH4_COLLIDE] = 	     		[ 0 , 0 , InputAllowance.BOUNCE , InputAllowance.BOUNCE ] ; //強いパンチ
+		$HERO_INPUT_ALLOWANCE[Motions.ATTACK_IN_AIR2] = 		[ 0 , InputAllowance.ATTACK , InputAllowance.BOUNCE ] ; //ジャンプパンチ
+		$HERO_INPUT_ALLOWANCE[Motions.ATTACK_IN_AIR1] = 	         		[ 0 , 0 , InputAllowance.BOUNCE ] ; //ジャンプキック
 		$HERO_INPUT_ALLOWANCE[Motions.PUNCH3_KICK] =               		[ 0 , 0 , InputAllowance.ATTACK_STEP ] ; //キック
 		$HERO_INPUT_ALLOWANCE[Motions.KNOCKED_S] = 		     		[ 0 ] ; //弱ダメージ
 		$HERO_INPUT_ALLOWANCE[Motions.KNOCKED_M] =          		[ 0 ] ; //中ダメージ
 		$HERO_INPUT_ALLOWANCE[Motions.KNOCKED_L] =          		[ 0 ] ; //強ダメージ
-		$HERO_INPUT_ALLOWANCE[Motions.XIANG_XIA$] = 	       		[ 0 , 0 , 0 , 0 , 0 ] ; //ダウン
+		$HERO_INPUT_ALLOWANCE[Motions.KNOCK_DOWN] = 	       		[ 0 , 0 , 0 , 0 , 0 ] ; //ダウン
 		$HERO_INPUT_ALLOWANCE[Motions.FALL] =               		[ 0 , 0 ] ; //落下
 		$HERO_INPUT_ALLOWANCE[Motions.THROW] =              		[ 0 , 0 , 0 , 0 ] ; //投擲
-		$HERO_INPUT_ALLOWANCE[Motions.BU_ZHOU$] =           		[ 0 , InputAllowance.ATTACK_INERTIA , InputAllowance.ATTACK_INERTIA , InputAllowance.ATTACK_INERTIA , InputAllowance.STEP ] ; //ステップ
+		$HERO_INPUT_ALLOWANCE[Motions.BOUNCE] =           		[ 0 , InputAllowance.ATTACK_INERTIA , InputAllowance.ATTACK_INERTIA , InputAllowance.ATTACK_INERTIA , InputAllowance.BOUNCE ] ; //ステップ
 		$HERO_INPUT_ALLOWANCE[Motions.PUNCH2] = 	           		[ 0 , 0 , InputAllowance.ATTACK ] ; //パンチ２段目
 		$HERO_INPUT_ALLOWANCE[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
 
@@ -122,10 +122,10 @@ package
 		$HERO_PLAYHEAD_CONDITION[Motions.KNOCKED_S] = 		     	[ 0 ] ; //弱ダメージ
 		$HERO_PLAYHEAD_CONDITION[Motions.KNOCKED_M] =          		[ 0 ] ; //中ダメージ
 		$HERO_PLAYHEAD_CONDITION[Motions.KNOCKED_L] =          		[ 0 ] ; //強ダメージ
-		$HERO_PLAYHEAD_CONDITION[Motions.XIANG_XIA$] = 	       		[ 0 , 0 , 0 , 0 , PlayheadCondition.IS_ALIVE ] ; //ダウン
+		$HERO_PLAYHEAD_CONDITION[Motions.KNOCK_DOWN] = 	       		[ 0 , 0 , 0 , 0 , PlayheadCondition.IS_ALIVE ] ; //ダウン
 		$HERO_PLAYHEAD_CONDITION[Motions.FALL] =               		[ PlayheadCondition.ONLY_ON_GROUND , 0 ] ; //落下
 		$HERO_PLAYHEAD_CONDITION[Motions.THROW] =              		[ 0 , 0 , 0 , 0 ] ; //投擲
-		$HERO_PLAYHEAD_CONDITION[Motions.BU_ZHOU$] =           		[ 0 , 0 , 0 , PlayheadCondition.ONLY_ON_GROUND , 0 ] ; //ステップ
+		$HERO_PLAYHEAD_CONDITION[Motions.BOUNCE] =           		[ 0 , 0 , 0 , PlayheadCondition.ONLY_ON_GROUND , 0 ] ; //ステップ
 		$HERO_PLAYHEAD_CONDITION[Motions.PUNCH2] = 	           		[ 0 , 0 , 0 ] ; //パンチ２段目
 		$HERO_PLAYHEAD_CONDITION[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
 
@@ -144,10 +144,10 @@ package
 		$HERO_MOTION_CONTINUE_SETTINGS[Motions.KNOCKED_S] = 		     	[ 2 ] ; //弱ダメージ
 		$HERO_MOTION_CONTINUE_SETTINGS[Motions.KNOCKED_M] =          		[ 2 ] ; //中ダメージ
 		$HERO_MOTION_CONTINUE_SETTINGS[Motions.KNOCKED_L] =          		[ 2 ] ; //強ダメージ
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.XIANG_XIA$] = 	       		[ 0 , 0 , 0 , 0 , 2 ] ; //ダウン
+		$HERO_MOTION_CONTINUE_SETTINGS[Motions.KNOCK_DOWN] = 	       		[ 0 , 0 , 0 , 0 , 2 ] ; //ダウン
 		$HERO_MOTION_CONTINUE_SETTINGS[Motions.FALL] =               		[ 0 , 2 ] ; //落下
 		$HERO_MOTION_CONTINUE_SETTINGS[Motions.THROW] =              		[ 0 , 3 , 0 , 2 ] ; //投擲
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.BU_ZHOU$] =           		[ 4 , 0 , 0 , 0 , 2 ] ; //ステップ
+		$HERO_MOTION_CONTINUE_SETTINGS[Motions.BOUNCE] =           		[ 4 , 0 , 0 , 0 , 2 ] ; //ステップ
 		$HERO_MOTION_CONTINUE_SETTINGS[Motions.PUNCH2] = 	           		[ 5 , 0 , 2 ] ; //パンチ２段目
 		$HERO_MOTION_CONTINUE_SETTINGS[Motions.PICK_UP] =           		[ 2 ] ; //石ひろい
 
@@ -164,10 +164,10 @@ package
 		$HERO_HIT_DETECTIONS[Motions.KNOCKED_S] = 		     		[ 0 ] ; //弱ダメージ
 		$HERO_HIT_DETECTIONS[Motions.KNOCKED_M] =          		[ 0 ] ; //中ダメージ
 		$HERO_HIT_DETECTIONS[Motions.KNOCKED_L] =          		[ 0 ] ; //強ダメージ
-		$HERO_HIT_DETECTIONS[Motions.XIANG_XIA$] = 	       		[ 0 , 0 , 0 , 0 , 0 ] ; //ダウン
+		$HERO_HIT_DETECTIONS[Motions.KNOCK_DOWN] = 	       		[ 0 , 0 , 0 , 0 , 0 ] ; //ダウン
 		$HERO_HIT_DETECTIONS[Motions.FALL] =               		[ 0 , 0 ] ; //落下
 		$HERO_HIT_DETECTIONS[Motions.THROW] =              		[ 0 , 0 , 2 , 0 ] ; //投擲
-		$HERO_HIT_DETECTIONS[Motions.BU_ZHOU$] =           		[ 0 , 0 , 0 , 0 , 0 ] ; //ステップ
+		$HERO_HIT_DETECTIONS[Motions.BOUNCE] =           		[ 0 , 0 , 0 , 0 , 0 ] ; //ステップ
 		$HERO_HIT_DETECTIONS[Motions.PUNCH2] = 	           		[ 0 , 1 , 0 ] ; //パンチ２段目
 		$HERO_HIT_DETECTIONS[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
 
