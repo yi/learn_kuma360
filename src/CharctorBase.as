@@ -609,7 +609,7 @@ package
 
 					switch ( motionContinue[_action][_actionstep] ) {
 						case 1: _velocity.y = -5 ; _velocity.x = jumpPower; break;
-						case 2: _action = ( _jump_state) ? 12 : 0 ; break ;
+						case 2: _action = ( _jump_state) ? Motions.FALL : Motions.STAND ; break ;
 						case 3:
 						{
 							for ( var P:int = 0 ; P < item.length ; ++ P ) {
@@ -636,7 +636,7 @@ package
 
 			}
 
-			if ( isChecked && ( 1 & currentInputAllowance ) )
+			if ( isChecked && ( InputAllowance.MOVE & currentInputAllowance ) )
 			{//加速
 
 				_dirc = ( _target_x < _pos.x ) ;
@@ -648,7 +648,7 @@ package
 				Y = ( _target_z - _pos.z ) ;
 				L = X * X + Y * Y ;
 				if ( 10 * 10 < L ) {
-					_velocity.x += X * .004 ;
+					_velocity.x += X * .004 ;  
 					_velocity.z += Y * .004 ;
 				}
 
