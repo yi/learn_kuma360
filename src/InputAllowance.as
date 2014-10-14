@@ -11,5 +11,20 @@ package
 		public static const THROW:uint = 8;
 		public static const STEP:uint = 16;
 		public static const INERTIA:uint = 32;
+		
+		
+		public static const MOVE_ATTACK_JUMP_THROW:uint = MOVE + ATTACK + JUMP + THROW;      // 15
+		trace("MOVE_ATTACK_JUMP_THROW:"+MOVE_ATTACK_JUMP_THROW);
+	
+		public static const ATTACK_STEP:uint = ATTACK + STEP;    // 18
+		trace("ATTACK_STEP:"+ATTACK_STEP);
+		
+	
+		public static const ATTACK_INERTIA:uint = ATTACK + INERTIA;   // 34
+		trace("ATTACK_INERTIA:"+ATTACK_INERTIA);
+		
+
+		
+		
 	}
 }

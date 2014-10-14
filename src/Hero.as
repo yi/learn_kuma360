@@ -90,22 +90,22 @@ package
 
 		//入力の許可  允许输入, bit_flag  1=移動 + 2=攻撃 + 4=ジャンプ + 8=投擲 + 16=ステップ + 32 = 慣性操作
 		static private const $HERO_INPUT_ALLOWANCE:Array = [];
-		$HERO_INPUT_ALLOWANCE[Motions.STAND] =              	[ 15, 15, 15, 15] ; //歩wpくく
-		$HERO_INPUT_ALLOWANCE[Motions.RUN] =                		[ 15, 15, 15, 15, 15, 15] ; //走る
-		$HERO_INPUT_ALLOWANCE[Motions.TAKE_OFF] = 	         		[ 16, 2 , 2 , 2 , 0 ] ; //飛ぶ
-		$HERO_INPUT_ALLOWANCE[Motions.PUNCH1] = 	           		[ 0 , 0 , 18 ] ; //パンチ
-		$HERO_INPUT_ALLOWANCE[Motions.PUNCH4_COLLIDE] = 	     		[ 0 , 0 , 16 , 16 ] ; //強いパンチ
-		$HERO_INPUT_ALLOWANCE[Motions.ATTACK_IN_AIR2] = 		[ 0 , 2 , 16 ] ; //ジャンプパンチ
-		$HERO_INPUT_ALLOWANCE[Motions.ATTACK_IN_AIR1] = 	         		[ 0 , 0 , 16 ] ; //ジャンプキック
-		$HERO_INPUT_ALLOWANCE[Motions.PUNCH3_KICK] =               		[ 0 , 0 , 18 ] ; //キック
+		$HERO_INPUT_ALLOWANCE[Motions.STAND] =              	[ InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW] ; //歩wpくく
+		$HERO_INPUT_ALLOWANCE[Motions.RUN] =                		[ InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW] ; //走る
+		$HERO_INPUT_ALLOWANCE[Motions.TAKE_OFF] = 	         		[ InputAllowance.STEP, InputAllowance.ATTACK  , InputAllowance.ATTACK  , InputAllowance.ATTACK , 0 ] ; //飛ぶ
+		$HERO_INPUT_ALLOWANCE[Motions.PUNCH1] = 	           		[ 0 , 0 , InputAllowance.ATTACK_STEP ] ; //パンチ
+		$HERO_INPUT_ALLOWANCE[Motions.PUNCH4_COLLIDE] = 	     		[ 0 , 0 , InputAllowance.STEP , InputAllowance.STEP ] ; //強いパンチ
+		$HERO_INPUT_ALLOWANCE[Motions.ATTACK_IN_AIR2] = 		[ 0 , InputAllowance.ATTACK , InputAllowance.STEP ] ; //ジャンプパンチ
+		$HERO_INPUT_ALLOWANCE[Motions.ATTACK_IN_AIR1] = 	         		[ 0 , 0 , InputAllowance.STEP ] ; //ジャンプキック
+		$HERO_INPUT_ALLOWANCE[Motions.PUNCH3_KICK] =               		[ 0 , 0 , InputAllowance.ATTACK_STEP ] ; //キック
 		$HERO_INPUT_ALLOWANCE[Motions.KNOCKED_S] = 		     		[ 0 ] ; //弱ダメージ
 		$HERO_INPUT_ALLOWANCE[Motions.KNOCKED_M] =          		[ 0 ] ; //中ダメージ
 		$HERO_INPUT_ALLOWANCE[Motions.KNOCKED_L] =          		[ 0 ] ; //強ダメージ
 		$HERO_INPUT_ALLOWANCE[Motions.XIANG_XIA$] = 	       		[ 0 , 0 , 0 , 0 , 0 ] ; //ダウン
 		$HERO_INPUT_ALLOWANCE[Motions.FALL] =               		[ 0 , 0 ] ; //落下
 		$HERO_INPUT_ALLOWANCE[Motions.THROW] =              		[ 0 , 0 , 0 , 0 ] ; //投擲
-		$HERO_INPUT_ALLOWANCE[Motions.BU_ZHOU$] =           		[ 0 , 34 , 34 , 34 , 16 ] ; //ステップ
-		$HERO_INPUT_ALLOWANCE[Motions.PUNCH2] = 	           		[ 0 , 0 , 2 ] ; //パンチ２段目
+		$HERO_INPUT_ALLOWANCE[Motions.BU_ZHOU$] =           		[ 0 , InputAllowance.ATTACK_INERTIA , InputAllowance.ATTACK_INERTIA , InputAllowance.ATTACK_INERTIA , InputAllowance.STEP ] ; //ステップ
+		$HERO_INPUT_ALLOWANCE[Motions.PUNCH2] = 	           		[ 0 , 0 , InputAllowance.ATTACK ] ; //パンチ２段目
 		$HERO_INPUT_ALLOWANCE[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
 
 		//アニメーションの条件 0=ウェイト 1=_velocity.yが+方向 2=地面に接地 3=体力が0だとアニメーション終了。
