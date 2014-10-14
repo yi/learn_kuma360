@@ -186,37 +186,84 @@ package
 		}
 
 		////////////////////////////////////
-		public function damage ( Hdirc:Boolean , z:int , type:int ) :void {
+		/**
+		 * 被打击
+		 * @param isFlipX   打击者是否是 x 镜像
+		 * @param z			打击者的 z 坐标
+		 * @param punchType 打击类型
+		 */
+		public function damage ( isFlipX:Boolean , z:int , punchType:int ) :void {
 
 			_pos.z = z ;
 			_velocity.z = 0 ;
 
-			//ノックバック弱
-			if ( type == 1 ) {
-				_velocity.x = (Hdirc)? -1 : 1 ;
-				_velocity.y = 0 ;
-				_damage_shake = 20 ;
-				// _damage_action = 8 + Math.floor ( Math.random() * 3 ) ;
-				_damage_action = Motions.getRandomDamageMotion();
+			switch(punchType)
+			{
+				case PunchType.S:
+				{
+					_velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
+					_velocity.y = 0 ;
+					// _damage_shake = 20 ;
+					_damage_shake = PunchType.getShakeByType(punchType);
+					_damage_action = Motions.getRandomDamageMotion();
+					break;
+				}
+				case PunchType.M:
+				{
+					_velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
+					// _velocity.x = (isFlipX)? -3 : 3 ;
+					_velocity.y = -2 ;
+					// _damage_shake = 5 ;
+					_damage_shake = PunchType.getShakeByType(punchType);
+					_damage_action = Motions.KNOCK_DOWN ;
+					break;
+				}
+				case PunchType.L:
+				{
+					_velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
+					// _velocity.x = (isFlipX)? -3 : 3 ;
+					_velocity.y = -2 ;
+					// _damage_shake = 8 ;
+					_damage_shake = PunchType.getShakeByType(punchType);
+					_damage_action = Motions.KNOCK_DOWN ;
+					_hp = 0 ;
+					Global._world_shake = 10 ;
+					break;
+				}
+				default:
+				{
+					throw(new Error("uknown punchType:"+punchType));
+				}
 			}
 
-			//ノックバック強
-			if ( type == 2 ) {
-				_velocity.x = (Hdirc)? -3 : 3 ;
-				_velocity.y = -2 ;
-				_damage_shake = 5 ;
-				_damage_action = Motions.KNOCK_DOWN ;
-			}
+			trace("[CharctorBase.damage] punchType:"+punchType+"; _damage_shake:"+_damage_shake + "; _velocity.x:"+_velocity.x);
 
-			//石ヒット
-			if ( type == 3 ) {
-				_velocity.x = (Hdirc)? -3 : 3 ;
-				_velocity.y = -2 ;
-				_damage_shake = 8 ;
-				_damage_action = Motions.KNOCK_DOWN ;
-				_hp = 0 ;
-				Global._world_shake = 10 ;
-			}
+//			//ノックバック弱
+//			if ( punchType == PunchType.S ) {
+//				_velocity.x = (isFlipX)? -1 : 1 ;
+//				_velocity.y = 0 ;
+//				_damage_shake = 20 ;
+//				// _damage_action = 8 + Math.floor ( Math.random() * 3 ) ;
+//				_damage_action = Motions.getRandomDamageMotion();
+//			}
+//
+//			//ノックバック強
+//			if ( punchType == PunchType.M ) {
+//				_velocity.x = (isFlipX)? -3 : 3 ;
+//				_velocity.y = -2 ;
+//				_damage_shake = 5 ;
+//				_damage_action = Motions.KNOCK_DOWN ;
+//			}
+//
+//			//石ヒット
+//			if ( punchType == PunchType.L ) {
+//				_velocity.x = (isFlipX)? -3 : 3 ;
+//				_velocity.y = -2 ;
+//				_damage_shake = 8 ;
+//				_damage_action = Motions.KNOCK_DOWN ;
+//				_hp = 0 ;
+//				Global._world_shake = 10 ;
+//			}
 
 			//死亡チェック
 			if ( -- _hp <= 0 ) {
