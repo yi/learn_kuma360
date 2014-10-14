@@ -35,7 +35,8 @@ package
 		/**
 		 * 最大允许的宽度纵深
 		 */
-		public const ZMAX:int = 300 ;
+		public static const ZMAX:int = 300 ;
+
 		public var isDead:Boolean = false ;
 		private var playheadCondition:Array = null ;
 		private var _action:int = 0 ;
@@ -43,40 +44,47 @@ package
 
 		//アニメーション用 动画用
 		private var _anim:int = 0 ;
+
 		// 在当前的动作帧上停留了多少次
 		private var frameWaitCount:int = 0 ;
+
 		private var _attack_shake:int = 0 ;
 
 		//攻撃管理
 		private var _attack_state:int = 0 ; //連続技判定
-		private var _command1:int = 0 ;
-		private var _command1CNT:int = 0 ;
-		private var _command2:int = 0 ;
-		private var _command2CNT:int = 0 ;
+		private var _commandLeft:int = 0 ;
+		private var _commandLeftCNT:int = 0 ;
+		private var _commandRight:int = 0 ;
+		private var _commandRightCNT:int = 0 ;
 
 		//被ダメージ管理  伤害管理
 		private var _damage_action:int = 0 ;
 		private var _damage_shake:int = 0 ;
 		private var countAfterDeath:int = 0;
-		private var _dirc:Boolean = false;
+		private var _isFlipX:Boolean = false;
 		private var _hitRegist:Vector.<int> = new Vector.<int> ;
 
 		//体力
 		private var _hp:int = 0 ;
+
 		private var _inputDown:int = 0 ;
 		private var _inputLeft:int = 0 ;
 		private var _inputRight:int = 0 ;
 		private var _inputUp:int = 0 ;
 
-		//入力チェック用  输入检查
+		// 攻击按钮持续按下次数 入力チェック用  输入检查
 		private var _input_attack:int = 0 ;
 
 		//入力用
 		private var _input_damage:Boolean = false ;
+
+		// 跳跃按钮持续按下次数 入力チェック用  输入检查
 		private var _input_jump  :int = 0 ;
 
 		// 跳跃管理
 		private var _jump_state:Boolean = false;
+
+		// 上一次攻击检查时候检查出来的攻击类型
 		private var _lastAtkChk:int = 0 ;
 
 		private var _r:Rectangle = new Rectangle ( ) ;
@@ -95,27 +103,29 @@ package
 		private var motionToInputAllowance:Array = null ;
 		private var motionToWeight:Array = null ;
 
-		////////////////////////////////////
+		/**
+		 * 攻击判定
+		 * @param attacker
+		 * @param effect
+		 */
 		public function attackChk ( attacker:Hero , effect:Effect ):void {
 
-			if ( this == attacker ) {
-				return ;
-			}
+			if ( this == attacker ) return ;
 
-			if ( attacker.isDead ) {
-				return ;
-			}
+			if ( attacker.isDead ) return ;
+
 
 			for each ( var N:int in _hitRegist ) {
+				// 在一个计算周期里面一个人只能被同一个人攻击一次
 				if ( N == attacker.id ) {
 					return ;
 				}
 			}
 
-			var temp:int = motionToHitDetection[_action][_actionstep] ;
+			var punchType:int = motionToHitDetection[_action][_actionstep] ;
 
 			//弱い攻撃
-			if ( temp == 1 ) {
+			if ( punchType == PunchType.S ) {
 
 				if ( _lastAtkChk == 0 ) {
 					_lastAtkChk = 1 ;
@@ -123,7 +133,7 @@ package
 
 				var V1:Vector3D = _pos.subtract ( attacker._pos ) ;
 
-				if ( _dirc ) {
+				if ( _isFlipX ) {
 					V1.x -= 8 * SCALE ;
 				} else {
 					V1.x += 8 * SCALE ;
@@ -143,7 +153,7 @@ package
 						_attack_shake = 5 ;
 					}
 
-					attacker.damage ( _dirc , _pos.z , 1 ) ;
+					attacker.damage ( _isFlipX , _pos.z , punchType ) ;
 					_hitRegist.push ( attacker.id ) ;
 					effect.push ( attacker.pos.x , attacker.pos.z + attacker.pos.y ) ;
 
@@ -152,7 +162,7 @@ package
 			}
 
 			//強い攻撃
-			if ( temp == 2 ) {
+			if ( punchType == PunchType.M ) {
 
 				if ( _lastAtkChk == 0 ) {
 					_lastAtkChk = 2 ;
@@ -160,7 +170,7 @@ package
 
 				var V2:Vector3D = _pos.subtract ( attacker._pos ) ;
 
-				if ( _dirc ) {
+				if ( _isFlipX ) {
 					V2.x -= 16 * SCALE ;
 				} else {
 					V2.x += 16 * SCALE ;
@@ -175,7 +185,7 @@ package
 					}
 
 					_attack_shake = 15 ;
-					attacker.damage ( _dirc , _pos.z , 2 ) ;
+					attacker.damage ( _isFlipX , _pos.z , punchType ) ;
 					_hitRegist.push ( attacker.id ) ;
 					effect.push ( attacker.pos.x , attacker.pos.z + attacker.pos.y ) ;
 
@@ -187,7 +197,7 @@ package
 
 		////////////////////////////////////
 		/**
-		 * 被打击
+		 * 被伤害
 		 * @param isFlipX   打击者是否是 x 镜像
 		 * @param z			打击者的 z 坐标
 		 * @param punchType 打击类型
@@ -204,7 +214,7 @@ package
 					_velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
 					_velocity.y = 0 ;
 					// _damage_shake = 20 ;
-					_damage_shake = PunchType.getShakeByType(punchType);
+					_damage_shake = PunchType.getDamageShakeByType(punchType);
 					_damage_action = Motions.getRandomDamageMotion();
 					break;
 				}
@@ -214,7 +224,7 @@ package
 					// _velocity.x = (isFlipX)? -3 : 3 ;
 					_velocity.y = -2 ;
 					// _damage_shake = 5 ;
-					_damage_shake = PunchType.getShakeByType(punchType);
+					_damage_shake = PunchType.getDamageShakeByType(punchType);
 					_damage_action = Motions.KNOCK_DOWN ;
 					break;
 				}
@@ -224,7 +234,7 @@ package
 					// _velocity.x = (isFlipX)? -3 : 3 ;
 					_velocity.y = -2 ;
 					// _damage_shake = 8 ;
-					_damage_shake = PunchType.getShakeByType(punchType);
+					_damage_shake = PunchType.getDamageShakeByType(punchType);
 					_damage_action = Motions.KNOCK_DOWN ;
 					_hp = 0 ;
 					Global._world_shake = 10 ;
@@ -237,33 +247,6 @@ package
 			}
 
 			trace("[CharctorBase.damage] punchType:"+punchType+"; _damage_shake:"+_damage_shake + "; _velocity.x:"+_velocity.x);
-
-//			//ノックバック弱
-//			if ( punchType == PunchType.S ) {
-//				_velocity.x = (isFlipX)? -1 : 1 ;
-//				_velocity.y = 0 ;
-//				_damage_shake = 20 ;
-//				// _damage_action = 8 + Math.floor ( Math.random() * 3 ) ;
-//				_damage_action = Motions.getRandomDamageMotion();
-//			}
-//
-//			//ノックバック強
-//			if ( punchType == PunchType.M ) {
-//				_velocity.x = (isFlipX)? -3 : 3 ;
-//				_velocity.y = -2 ;
-//				_damage_shake = 5 ;
-//				_damage_action = Motions.KNOCK_DOWN ;
-//			}
-//
-//			//石ヒット
-//			if ( punchType == PunchType.L ) {
-//				_velocity.x = (isFlipX)? -3 : 3 ;
-//				_velocity.y = -2 ;
-//				_damage_shake = 8 ;
-//				_damage_action = Motions.KNOCK_DOWN ;
-//				_hp = 0 ;
-//				Global._world_shake = 10 ;
-//			}
 
 			//死亡チェック
 			if ( -- _hp <= 0 ) {
@@ -307,29 +290,40 @@ package
 			if ( keyR ) { ++ _inputRight ; } else { _inputRight = 0 ; }
 			if ( keyU ) { ++ _inputUp ; } else { _inputUp = 0 ; }
 			if ( keyD ) { ++ _inputDown ; } else { _inputDown = 0 ; }
-			_target_x = _pos.x + ( (_inputLeft) ? -50 : 0 ) + ( (_inputRight) ? 50 : 0 ) + ( (_dirc)? -1 : 1 ) ;
-			_target_z = _pos.z + ( (_inputUp) ? -50 : 0 ) + ( (_inputDown) ? 50 : 0 ) + ( (_dirc)? -1 : 1 ) ;
+			_target_x = _pos.x + ( (_inputLeft) ? -50 : 0 ) + ( (_inputRight) ? 50 : 0 ) + ( (_isFlipX)? -1 : 1 ) ;
+			_target_z = _pos.z + ( (_inputUp) ? -50 : 0 ) + ( (_inputDown) ? 50 : 0 ) + ( (_isFlipX)? -1 : 1 ) ;
 
-			//左方向ステップ////////////////////////////////////////////////
-			++ _command1CNT;
-			if ( 10 < _command1CNT ) {
-				_command1 = 0 ;
+			// 向左突进 搓键
+			++ _commandLeftCNT;
+			if ( 10 < _commandLeftCNT ) {
+				_commandLeft = 0 ;
 			}
-			if ( _input_jump == 1 && _command1 == 0 ){
-				_command1 = 2 ;
-				_command1CNT = 0;
+			if ( _input_jump == 1 && _commandLeft == 0 ){
+				_commandLeft = 2 ;
+				_commandLeftCNT = 0;
 			}
-			if ( _inputLeft     == 1 && _command1 == 2 && _command1CNT < 10 ) {
-				_command1 = 3 ;
-				_command1CNT = 0;
+			if ( _inputLeft     == 1 && _commandLeft == 2 && _commandLeftCNT < 10 ) {
+				_commandLeft = 3 ;
+				_commandLeftCNT = 0;
 			}
 
-			//右方向ステップ////////////////////////////////////////////////
-			++ _command2CNT;
-			if ( 10 < _command2CNT ) { _command2 = 0 ; }
-			if ( _input_jump == 1 && _command2 == 0 )                      { _command2 = 2 ; _command2CNT = 0; }
-			if ( _inputRight     == 1 && _command2 == 2 && _command2CNT < 10 ) { _command2 = 3 ; _command2CNT = 0; }
+//			trace("[CharctorBase.input] _command1CNT:"+_command1CNT+"; _command1:"+_command1);
 
+			// 向右突进 搓键
+			++ _commandRightCNT;
+			if ( 10 < _commandRightCNT ){
+				_commandRight = 0 ;
+			}
+
+			if ( _input_jump == 1 && _commandRight == 0 ){
+				_commandRight = 2 ; _commandRightCNT = 0;
+			}
+			if ( _inputRight     == 1 && _commandRight == 2 && _commandRightCNT < 10 ) {
+				_commandRight = 3 ; _commandRightCNT = 0;
+			}
+
+//			trace("[CharctorBase.input] _command2CNT:"+_command2CNT+"; _command2:"+_command2);
+//			trace("[CharctorBase.input] ------------------------------------------");
 		}
 
 		////////////////////////////////////
@@ -389,7 +383,7 @@ package
 				_renderpos.y += Math.random() * 10 - 5 ;
 			}
 
-			if ( _dirc ) {
+			if ( _isFlipX ) {
 				Global._canvas.copyPixels ( imgCharacterFlipped , _render_rect , _renderpos ) ;
 			} else {
 				Global._canvas.copyPixels ( imgCharacter   , _render_rect , _renderpos ) ;
@@ -522,6 +516,7 @@ package
 					if ( _input_attack == 1 ) {
 
 						//最後の攻撃判定が誰にもヒットしていない場合、連続技判定をリセットする
+						// If the judgment of the attack last not hit anyone, I want to reset the continuous maneuver checks
 						if ( _lastAtkChk != -1 ) {
 							_attack_state = 0 ;
 						}
@@ -595,8 +590,8 @@ package
 				// if ( 16 & currentInputAllowance ) {
 				if ( InputAllowance.BOUNCE & currentInputAllowance ) {
 
-					if ( _command1 == 3 ) {
-						_command1 = 0 ;
+					if ( _commandLeft == 3 ) {
+						_commandLeft = 0 ;
 						// _action = 14 ;
 						_action = Motions.BOUNCE ;
 						frameWaitCount = 0 ;
@@ -605,8 +600,8 @@ package
 						_attack_state = 0;
 					}
 
-					if ( _command2 == 3 ) {
-						_command2 = 0 ;
+					if ( _commandRight == 3 ) {
+						_commandRight = 0 ;
 						// _action = 14 ;
 						_action = Motions.BOUNCE ;
 						frameWaitCount = 0 ;
@@ -685,13 +680,13 @@ package
 						{
 							for ( var P:int = 0 ; P < item.length ; ++ P ) {
 								if ( item[P].isreservation (id) ) {
-									item[P].have ( _pos , new Vector3D ( ( _dirc) ? -8 : 8 , -3 , 0 ) , _dirc ) ;
+									item[P].have ( _pos , new Vector3D ( ( _isFlipX) ? -8 : 8 , -3 , 0 ) , _isFlipX ) ;
 								}
 							}
 						}
 							break;
 						case 4: _velocity.y = -2 ; _velocity.x = bonceSpeed; break;
-						case 5: _dirc = ( _inputLeft ) ? true : ( (_inputRight) ? false : _dirc ) ; break;
+						case 5: _isFlipX = ( _inputLeft ) ? true : ( (_inputRight) ? false : _isFlipX ) ; break;
 						default: break;
 					}
 
@@ -710,7 +705,7 @@ package
 			if ( isChecked && ( InputAllowance.MOVE & currentInputAllowance ) )
 			{//加速
 
-				_dirc = ( _target_x < _pos.x ) ;
+				_isFlipX = ( _target_x < _pos.x ) ;
 
 				var ty:Number = _velocity.y;
 				_velocity.y = 0 ;

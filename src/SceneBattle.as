@@ -51,10 +51,10 @@ package
 			_mainHero = new Hero ( BMActor ) ;
 			heroes.push ( _mainHero ) ;
 
-			heroes.push ( new Hero ( BMActor , new ColorTransform ( .4 , 1 , .4 , 1 ) ) ) ;
-			heroes.push ( new Hero ( BMActor , new ColorTransform (  1 , 1 , .2 , 1 ) ) ) ;
-			heroes.push ( new Hero ( BMActor , new ColorTransform ( .2 , .2,  1 , 1 ) ) ) ;
-			heroes.push ( new Hero ( BMActor , new ColorTransform (  1 , .2,  1 , 1 ) ) ) ;
+//			heroes.push ( new Hero ( BMActor , new ColorTransform ( .4 , 1 , .4 , 1 ) ) ) ;
+//			heroes.push ( new Hero ( BMActor , new ColorTransform (  1 , 1 , .2 , 1 ) ) ) ;
+//			heroes.push ( new Hero ( BMActor , new ColorTransform ( .2 , .2,  1 , 1 ) ) ) ;
+//			heroes.push ( new Hero ( BMActor , new ColorTransform (  1 , .2,  1 , 1 ) ) ) ;
 
 			//アイテム用
 			items = new Vector.<Item>;

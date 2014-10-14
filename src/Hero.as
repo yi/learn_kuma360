@@ -156,19 +156,19 @@ package
 		$HERO_HIT_DETECTIONS[Motions.STAND] =              		[ 0 , 0 , 0 , 0 ] ; //歩く
 		$HERO_HIT_DETECTIONS[Motions.RUN] =                		[ 0 , 0 , 0 , 0 , 0 , 0 ] ; //走る
 		$HERO_HIT_DETECTIONS[Motions.TAKE_OFF] = 	         		[ 0 , 0 , 0 , 0 , 0 ] ; //飛ぶ
-		$HERO_HIT_DETECTIONS[Motions.PUNCH1] = 	           		[ 0 , 1 , 0 ] ; //パンチ
-		$HERO_HIT_DETECTIONS[Motions.PUNCH4_COLLIDE] = 	     		[ 0 , 0 , 2 , 0 ] ; //強いパンチ
-		$HERO_HIT_DETECTIONS[Motions.ATTACK_IN_AIR2] = 		[ 0 , 1 , 0 ] ; //ジャンプパンチ
-		$HERO_HIT_DETECTIONS[Motions.ATTACK_IN_AIR1] = 	         		[ 0 , 2 , 0 ] ; //ジャンプキック
-		$HERO_HIT_DETECTIONS[Motions.PUNCH3_KICK] =               		[ 0 , 1 , 0 ] ; //キック
+		$HERO_HIT_DETECTIONS[Motions.PUNCH1] = 	           		[ 0 , PunchType.S , 0 ] ; //パンチ
+		$HERO_HIT_DETECTIONS[Motions.PUNCH4_COLLIDE] = 	     		[ 0 , 0 , PunchType.M , 0 ] ; //強いパンチ
+		$HERO_HIT_DETECTIONS[Motions.ATTACK_IN_AIR2] = 		[ 0 , PunchType.S , 0 ] ; //ジャンプパンチ
+		$HERO_HIT_DETECTIONS[Motions.ATTACK_IN_AIR1] = 	         		[ 0 , PunchType.M , 0 ] ; //ジャンプキック
+		$HERO_HIT_DETECTIONS[Motions.PUNCH3_KICK] =               		[ 0 , PunchType.S , 0 ] ; //キック
 		$HERO_HIT_DETECTIONS[Motions.KNOCKED_S] = 		     		[ 0 ] ; //弱ダメージ
 		$HERO_HIT_DETECTIONS[Motions.KNOCKED_M] =          		[ 0 ] ; //中ダメージ
 		$HERO_HIT_DETECTIONS[Motions.KNOCKED_L] =          		[ 0 ] ; //強ダメージ
 		$HERO_HIT_DETECTIONS[Motions.KNOCK_DOWN] = 	       		[ 0 , 0 , 0 , 0 , 0 ] ; //ダウン
 		$HERO_HIT_DETECTIONS[Motions.FALL] =               		[ 0 , 0 ] ; //落下
-		$HERO_HIT_DETECTIONS[Motions.THROW] =              		[ 0 , 0 , 2 , 0 ] ; //投擲
+		$HERO_HIT_DETECTIONS[Motions.THROW] =              		[ 0 , 0 , PunchType.M , 0 ] ; //投擲
 		$HERO_HIT_DETECTIONS[Motions.BOUNCE] =           		[ 0 , 0 , 0 , 0 , 0 ] ; //ステップ
-		$HERO_HIT_DETECTIONS[Motions.PUNCH2] = 	           		[ 0 , 1 , 0 ] ; //パンチ２段目
+		$HERO_HIT_DETECTIONS[Motions.PUNCH2] = 	           		[ 0 , PunchType.S , 0 ] ; //パンチ２段目
 		$HERO_HIT_DETECTIONS[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
 
 		public function Hero ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform = null ) :void {
