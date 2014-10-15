@@ -81,7 +81,7 @@ package
 		private var isInAir:Boolean = false;
 
 		// 上一次攻击检查时候检查出来的攻击类型
-		private var _lastAtkChk:int = 0 ;
+		private var isLastAttackHit:int = 0 ;
 
 		private var _r:Rectangle = new Rectangle ( ) ;
 
@@ -129,9 +129,10 @@ package
 			//弱い攻撃
 			if ( punchType == PunchType.S ) {
 
-				if ( _lastAtkChk == 0 ) {
-					_lastAtkChk = 1 ;
-				}
+//				if ( _lastAtkChk == 0 ) {
+//					_lastAtkChk = 1 ;
+//				}
+				isLastAttackHit = 0;
 
 				var V1:Vector3D = _pos.subtract ( attacker._pos ) ;
 
@@ -143,7 +144,7 @@ package
 
 				if ( V1.length < 30 ) {
 					/* 攻击命中 */
-					_lastAtkChk = -1 ;
+					isLastAttackHit = -1 ;
 
 					if ( _attack_state == AttackState.NA ) {
 						_attack_state = AttackState.FIRST ;
@@ -166,9 +167,10 @@ package
 			//強い攻撃
 			if ( punchType == PunchType.M ) {
 
-				if ( _lastAtkChk == 0 ) {
-					_lastAtkChk = 2 ;
-				}
+//				if ( _lastAtkChk == 0 ) {
+//					_lastAtkChk = 2 ;
+//				}
+				isLastAttackHit = 0;
 
 				var V2:Vector3D = _pos.subtract ( attacker._pos ) ;
 
@@ -180,7 +182,7 @@ package
 
 				if ( V2.length < 30 ) {
 
-					_lastAtkChk = -1 ;
+					isLastAttackHit = -1 ;
 
 					if ( _attack_state == AttackState.NA ) {
 						_attack_state = AttackState.FIRST ;
@@ -504,11 +506,11 @@ package
 
 						//最後の攻撃判定が誰にもヒットしていない場合、連続技判定をリセットする
 						// If the judgment of the attack last not hit anyone, I want to reset the continuous maneuver checks
-						if ( _lastAtkChk != -1 ) {
+						if ( isLastAttackHit != -1 ) {
 							_attack_state = AttackState.NA ;
 						}
 
-						_lastAtkChk = 0 ;
+						isLastAttackHit = 0 ;
 
 						if ( isInAir ) {
 
