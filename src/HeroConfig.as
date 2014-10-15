@@ -188,6 +188,13 @@ package
 			else return 0
 		}
 
+		static public function countAssetFrame(motionId:int):uint
+		{
+			var conf:Object = getConfig(motionId, $ASSET_FRAME);
+			if(conf)return conf.length
+			else return 0;
+		}
+
 		static public function getAssetFrame(motionId:int, frameId:int):int
 		{
 			return getConfigValue(motionId, $ASSET_FRAME, frameId);
