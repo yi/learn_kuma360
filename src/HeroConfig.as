@@ -175,52 +175,52 @@ package
 		static public const $MOTION_REACTION:String = "mr";
 		static public const $ATTACK_TYPE:String = "at";
 
-		static private function getConfig(motionId:int, key:String):Object
+		static private function getConfig(motionId:String, key:String):Object
 		{
 			if(CONFIG[motionId] == null) return null;
 			return CONFIG[motionId][key];
 		}
 
-		static public function getConfigValue(motionId:int, key:String, frameId:int):int
+		static public function getConfigValue(motionId:String, key:String, frameId:int):int
 		{
 			var conf:Object = getConfig(motionId, key);
 			if(conf) return conf[frameId] || 0
 			else return 0
 		}
 
-		static public function countAssetFrame(motionId:int):uint
+		static public function countAssetFrame(motionId:String):uint
 		{
 			var conf:Object = getConfig(motionId, $ASSET_FRAME);
 			if(conf)return conf.length
 			else return 0;
 		}
 
-		static public function getAssetFrame(motionId:int, frameId:int):int
+		static public function getAssetFrame(motionId:String, frameId:int):int
 		{
 			return getConfigValue(motionId, $ASSET_FRAME, frameId);
 		}
 
-		static public function getInputAllowance(motionId:int, frameId:int):int
+		static public function getInputAllowance(motionId:String, frameId:int):int
 		{
 			return getConfigValue(motionId, $INPUT_ALLOWANCE, frameId);
 		}
 
-		static public function getLastFor(motionId:int, frameId:int):int
+		static public function getLastFor(motionId:String, frameId:int):int
 		{
 			return getConfigValue(motionId, $LAST_FOR, frameId);
 		}
 
-		static public function getPlayheadCondition(motionId:int, frameId:int):int
+		static public function getPlayheadCondition(motionId:String, frameId:int):int
 		{
 			return getConfigValue(motionId, $PLAYHEAD_CONDITION, frameId);
 		}
 
-		static public function getMotionReaction(motionId:int, frameId:int):int
+		static public function getMotionReaction(motionId:String, frameId:int):int
 		{
 			return getConfigValue(motionId, $MOTION_REACTION, frameId);
 		}
 
-		static public function getAttackType(motionId:int, frameId:int):int
+		static public function getAttackType(motionId:String, frameId:int):int
 		{
 			return getConfigValue(motionId, $ATTACK_TYPE, frameId);
 		}

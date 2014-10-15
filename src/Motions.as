@@ -2,27 +2,27 @@ package
 {
 	public class Motions
 	{
-		public static const STAND:uint = 0;
-		public static const RUN:uint = 1;
-		public static const TAKE_OFF:uint = 2;
-		public static const PUNCH1:uint = 3;
-		public static const PUNCH4_COLLIDE:uint = 4;
-		public static const ATTACK_IN_AIR2:uint = 5;
-		public static const ATTACK_IN_AIR1:uint = 6;
-		public static const PUNCH3_KICK:uint = 7;
-		public static const KNOCKED_S:uint = 8;
-		public static const KNOCKED_M:uint = 9;
-		public static const KNOCKED_L:uint = 10;
-		public static const KNOCK_DOWN:uint = 11;
-		public static const FALL:uint = 12;
-		public static const THROW:uint = 13;
-		public static const BOUNCE:uint = 14;
-		public static const PUNCH2:uint = 15;
-		public static const PICK_UP:uint = 16;
+		public static const STAND:String = "idl";
+		public static const RUN:String = "run";
+		public static const TAKE_OFF:String = "jmp";
+		public static const PUNCH1:String = "ph1";
+		public static const PUNCH4_COLLIDE:String = "ph4";
+		public static const ATTACK_IN_AIR2:String = "pa2";
+		public static const ATTACK_IN_AIR1:String = "pa1";
+		public static const PUNCH3_KICK:String = "ph3";
+		public static const KNOCKED_S:String = "kks";
+		public static const KNOCKED_M:String = "kkm";
+		public static const KNOCKED_L:String = "kkl";
+		public static const KNOCK_DOWN:String = "knd";
+		public static const FALL:String = "fal";
+		public static const THROW:String = "thr";
+		public static const BOUNCE:String = "bnc";
+		public static const PUNCH2:String = "ph2";
+		public static const PICK_UP:String = "pck";
 
 		public static const DAMAGE_MOTIONS:Array = [KNOCKED_S, KNOCKED_M, KNOCKED_L];
 
-		public static function getRandomDamageMotion():uint{
+		public static function getRandomDamageMotion():String{
 			return DAMAGE_MOTIONS[DAMAGE_MOTIONS.length * Math.random() >> 0];
 		}
 

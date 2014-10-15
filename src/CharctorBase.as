@@ -49,7 +49,7 @@ package
 		}
 
 		public var isDead:Boolean = false ;
-		private var _action:int = 0 ;
+		private var _action:String = Motions.STAND ;
 		private var _actionstep:int = 0 ;
 
 		//アニメーション用 动画用
@@ -65,7 +65,7 @@ package
 		private var _commandRightCNT:int = 0 ;
 
 		//被ダメージ管理  伤害管理
-		private var _damage_action:int = 0 ;
+		private var _damage_action:String;
 		private var _damage_shake:int = 0 ;
 		private var _hitRegist:Vector.<int> = new Vector.<int> ;
 
@@ -464,7 +464,7 @@ package
 			if ( isDead == false ) {
 				isDead = true ;
 				countAfterDeath = 0 ;
-				_damage_action = 11 ;
+				_damage_action = Motions.KNOCK_DOWN ;
 				_hp = 0 ;
 			}
 		}
@@ -476,7 +476,7 @@ package
 //			var currentInputAllowance:int = motionToInputAllowance[_action][_actionstep] ;
 			var currentInputAllowance:int = HeroConfig.getInputAllowance(_action, _actionstep);
 //				motionToInputAllowance[_action][_actionstep] ;
-			var currentAction:int = _action;
+			var currentAction:String = _action;
 			var currentActionStep:int = _actionstep;
 
 			var X:Number = 0 ;
@@ -652,7 +652,7 @@ package
 				//強制動作
 				if ( _damage_action ) {
 					_action = _damage_action ;
-					_damage_action = 0 ;
+					_damage_action = null ;
 				}
 
 				if ( currentAction != _action ) {
