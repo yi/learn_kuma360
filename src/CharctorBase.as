@@ -19,6 +19,13 @@ package
 
 		public static var _score:uint = 0 ;
 
+		/* 命中检查时候的x坐标补偿值 */
+		public static const HIT_CHECK_X_ADJUST:int = 8;
+
+		/* 命中检查的最大允许距离 */
+		public static const HIT_DETECT_MAX_DISTANCE:int = 30;
+
+
 		////////////////////////////////////
 		public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform , _motionToAssetFrameIds:Array , _motionToWeight:Array , _motionToInputAllowance:Array , _playheadCondition:Array , _motionContinue:Array , _motionToHitDetection:Array ) {
 
@@ -124,25 +131,24 @@ package
 				}
 			}
 
+			var diff:Vector3D;
 			var punchType:int = motionToHitDetection[_action][_actionstep] ;
 
 			//弱い攻撃
 			if ( punchType == PunchType.S ) {
 
-//				if ( _lastAtkChk == 0 ) {
-//					_lastAtkChk = 1 ;
-//				}
-				isLastAttackHit = false;
+//				if ( _lastAtkChk == 0 ) {_lastAtkChk = 1 ;}
+				// isLastAttackHit = false;
 
-				var V1:Vector3D = _pos.subtract ( attacker._pos ) ;
+				diff = _pos.subtract ( attacker._pos ) ;
 
 				if ( _isFlipX ) {
-					V1.x -= 8 * SCALE ;
+					diff.x -= HIT_CHECK_X_ADJUST * SCALE ;
 				} else {
-					V1.x += 8 * SCALE ;
+					diff.x += HIT_CHECK_X_ADJUST * SCALE ;
 				}
 
-				if ( V1.length < 30 ) {
+				if ( diff.length < HIT_DETECT_MAX_DISTANCE ) {
 					/* 攻击命中 */
 					isLastAttackHit = true ;
 
@@ -167,20 +173,18 @@ package
 			//強い攻撃
 			if ( punchType == PunchType.M ) {
 
-//				if ( _lastAtkChk == 0 ) {
-//					_lastAtkChk = 2 ;
-//				}
-				isLastAttackHit = false;
+//				if ( _lastAtkChk == 0 ) {_lastAtkChk = 2 ;}
+				// isLastAttackHit = false;
 
-				var V2:Vector3D = _pos.subtract ( attacker._pos ) ;
+				diff = _pos.subtract ( attacker._pos ) ;
 
 				if ( _isFlipX ) {
-					V2.x -= 16 * SCALE ;
+					diff.x -= HIT_CHECK_X_ADJUST * 2 * SCALE ;
 				} else {
-					V2.x += 16 * SCALE ;
+					diff.x += HIT_CHECK_X_ADJUST * 2 * SCALE ;
 				}
 
-				if ( V2.length < 30 ) {
+				if ( diff.length < HIT_DETECT_MAX_DISTANCE ) {
 
 					isLastAttackHit = true ;
 
