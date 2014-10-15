@@ -36,6 +36,8 @@ package
 		 * 最大允许的宽度纵深
 		 */
 		public static const ZMAX:int = 300 ;
+		public static const XMAX:int = 465 ;
+		public static const YMAX:int = 465 ;
 
 		public var isDead:Boolean = false ;
 		private var playheadCondition:Array = null ;
@@ -339,8 +341,8 @@ package
 				_target_x = _target_x + ( Math.random() * 6 - 3 ) * 8 ;
 				_target_z = _target_z + ( Math.random() * 6 - 3 ) * 8 ;
 				if ( _target_x < 0 )   _target_x = 0;
-				if ( _target_z < 300 ) _target_z = 300;
-				if ( _target_x > 465 ) _target_x = 465;
+				if ( _target_z < ZMAX ) _target_z = ZMAX;
+				if ( _target_x > XMAX ) _target_x = XMAX;
 				if ( _target_z > 465 ) _target_z = 465;
 			}
 
@@ -442,10 +444,24 @@ package
 			_action = Motions.FALL ;
 		}
 
-		////////////////////////////////////
-		public function update ( item:Vector.<Item> , mainHero:CharctorBase ):void {
 
-			var isChecked:Boolean = true ;
+		public function dropItem(items:Vector.<Item>):void{
+
+			// 被打击时候掉落已经拾取的道具
+			for ( var i:int = 0 ; i < items.length ; ++ i ) {
+
+				//石を持っていたら落としてしまう  持续僵直
+				if ( items[i].isreservation ( id ) ) {
+					items[i].drop ( _pos ) ;
+					break;
+				}
+			}
+		}
+
+		////////////////////////////////////
+		public function update ( items:Vector.<Item> , mainHero:CharctorBase ):void {
+
+			var isResponsible:Boolean = true ;  /* true: 可操控， false: 僵直 */
 			var currentInputAllowance:int = motionToInputAllowance[_action][_actionstep] ;
 			var currentAction:int = _action;
 			var currentActionStep:int = _actionstep;
@@ -455,49 +471,20 @@ package
 			var L:Number = 0 ;
 			var I:int = 0 ;
 
-			 if(isDead && WAIT_TO_REVIVE < ++ countAfterDeath && this != mainHero ) revive();
+			if(isDead && WAIT_TO_REVIVE < ++ countAfterDeath && this != mainHero ) revive();
 
-//			if ( isDead ) {
-//
-//				if ( 60 < ++ countAfterDeath && this != mainHero ) {
-//					revive();
-////					// 死亡足够长时间以后，从高处掉落下来重生
-////					_hp = 10 ;
-////					isDead = false ;
-////					countAfterDeath = 0 ;
-////
-////					_pos.x = Math.random() * 465 ;
-////					_pos.y = -500 ;
-////					_pos.z = 365 ;
-////					_velocity.y = 0 ;
-////
-////					_action = Motions.FALL ;
-//				}
-//			}
-
-			if ( 0 < _damage_shake ) {
-
-				isChecked = false ;
+			if ( 0 < _damage_shake ) { /* 处理被打僵直 */
+				isResponsible = false ;
 				-- _damage_shake ;
-
-				for ( I = 0 ; I < item.length ; ++ I ) {
-
-					//石を持っていたら落としてしまう  持续僵直
-					if ( item[J].isreservation ( id ) ) {
-						item[J].drop ( _pos ) ;
-						break;
-					}
-
-				}
-
+				dropItem(items);
 			}
 
-			if ( 0 < _attack_shake ) {
-				isChecked = false ;
+			if ( 0 < _attack_shake ) { /* 处理出拳僵直 */
+				isResponsible = false ;
 				-- _attack_shake ;
 			}
 
-			{//入力の反映
+			{// 处理玩家
 
 				// if ( 1 & currentInputAllowance ) {
 				if ( InputAllowance.MOVE & currentInputAllowance ) {
@@ -562,10 +549,10 @@ package
 
 						if ( _attack_state == 0 && _jump_state == 0 ) {
 
-							for ( J = 0 ; J < item.length ; ++ J ) {
+							for ( J = 0 ; J < items.length ; ++ J ) {
 
 								//石を持っていたら投げる  Throw if you have a stone
-								if ( item[J].isreservation ( id ) ) {
+								if ( items[J].isreservation ( id ) ) {
 									// _action = 13 ;
 									_action = Motions.THROW ;
 									frameWaitCount = 0 ;
@@ -573,8 +560,8 @@ package
 								}
 
 								//足元に石があると拾う  I pick up that there is a stone at the feet
-								if ( item[J].chk_distance ( _pos ) ) {
-									item[J].reservation ( id ) ;
+								if ( items[J].chk_distance ( _pos ) ) {
+									items[J].reservation ( id ) ;
 									_action = Motions.PICK_UP ;
 									frameWaitCount = 0 ;
 									break;
@@ -632,7 +619,7 @@ package
 
 			}
 
-			if ( isChecked )
+			if ( isResponsible )
 			{//アニメーション   Animation
 
 				var TD:int = playheadCondition[_action][_actionstep];
@@ -678,9 +665,9 @@ package
 						case 2: _action = ( _jump_state) ? Motions.FALL : Motions.STAND ; break ;
 						case 3:
 						{
-							for ( var P:int = 0 ; P < item.length ; ++ P ) {
-								if ( item[P].isreservation (id) ) {
-									item[P].have ( _pos , new Vector3D ( ( _isFlipX) ? -8 : 8 , -3 , 0 ) , _isFlipX ) ;
+							for ( var P:int = 0 ; P < items.length ; ++ P ) {
+								if ( items[P].isreservation (id) ) {
+									items[P].have ( _pos , new Vector3D ( ( _isFlipX) ? -8 : 8 , -3 , 0 ) , _isFlipX ) ;
 								}
 							}
 						}
@@ -702,7 +689,7 @@ package
 
 			}
 
-			if ( isChecked && ( InputAllowance.MOVE & currentInputAllowance ) )
+			if ( isResponsible && ( InputAllowance.MOVE & currentInputAllowance ) )
 			{//加速
 
 				_isFlipX = ( _target_x < _pos.x ) ;
@@ -728,7 +715,7 @@ package
 
 			}
 
-			if ( isChecked )
+			if ( isResponsible )
 			{//移動
 
 				_pos.x += _velocity.x * SCALE ;
