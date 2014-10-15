@@ -38,7 +38,7 @@ package
 			motionToWeight = _motionToWeight ;
 			motionToInputAllowance = _motionToInputAllowance ;
 			playheadCondition = _playheadCondition ;
-			motionContinue = _motionContinue ;
+			motionReaction = _motionContinue ;
 			motionToHitDetection = _motionToHitDetection ;
 
 			_hp = 10 ;
@@ -106,7 +106,7 @@ package
 
 		// 在当前的动作帧上停留了多少次
 		private var frameWaitCount:int = 0 ;
-		private var motionContinue:Array = null ;
+		private var motionReaction:Array = null ;
 
 		//アニメーションテーブル
 		private var motionToAssetFrameIds:Array = null ;
@@ -690,28 +690,40 @@ package
 						break;
 				}
 
-				if ( motionToWeight[_action][_actionstep] <= frameWaitCount ) {
-
+				if ( motionToWeight[_action][_actionstep] <= frameWaitCount )
+				{
+					/* 要换帧了 */
 					frameWaitCount = 0 ;
 
 					var jumpPower:Number = 0 ;
 					if ( _inputLeft != 0 ) { jumpPower = -3; }
 					if ( _inputRight != 0 ) { jumpPower =  3; }
 
-					switch ( motionContinue[_action][_actionstep] ) {
-						case 1: _velocity.y = -5 ; _velocity.x = jumpPower; break;
-						case 2: _action = ( isInAir) ? Motions.FALL : Motions.STAND ; break ;
-						case 3:
+					switch ( motionReaction[_action][_actionstep] ) {
+						case MotionReaction.JUMP:
+							_velocity.y = -5 ;
+							_velocity.x = jumpPower;
+							break;
+						case MotionReaction.FALL:
+							_action = ( isInAir) ? Motions.FALL : Motions.STAND ;
+							break ;
+						case MotionReaction.THROW:
 						{
 							for ( var P:int = 0 ; P < items.length ; ++ P ) {
 								if ( items[P].isreservation (id) ) {
-									items[P].have ( _pos , new Vector3D ( ( _isFlipX) ? -8 : 8 , -3 , 0 ) , _isFlipX ) ;
+									items[P].have ( _pos , new Vector3D ( ( _isFlipX) ? -HIT_CHECK_X_ADJUST : HIT_CHECK_X_ADJUST , -3 , 0 ) , _isFlipX ) ;
 								}
 							}
 						}
 							break;
-						case 4: _velocity.y = -2 ; _velocity.x = bonceSpeed; break;
-						case 5: _isFlipX = ( _inputLeft ) ? true : ( (_inputRight) ? false : _isFlipX ) ; break;
+						case MotionReaction.BOUNCE:
+							_velocity.y = -2 ;
+							_velocity.x = bonceSpeed;
+							break;
+
+						case MotionReaction.TURN:
+							_isFlipX = ( _inputLeft ) ? true : ( (_inputRight) ? false : _isFlipX ) ;
+							break;
 						default: break;
 					}
 

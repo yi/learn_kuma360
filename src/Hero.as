@@ -132,24 +132,24 @@ package
 
 		//アニメーション切り替わりの際の特殊動作ＩＤ 1=ジャンプ 2=[歩くor落下]状態に戻る 3=飛び道具発生 4=ステップ移動 5=振り向き判定
 		// 在动画切换专项行动的ID  1= 跳转  2= 回到状态[歩くor落下] 3=新一代导弹 4=步进运动 5=判决转身
-		static private const $HERO_MOTION_CONTINUE_SETTINGS:Array = [];
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.STAND] =              		[ 0 , 0 , 0 , 0 ] ; //歩く
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.RUN] =                		[ 0 , 0 , 0 , 0 , 0 , 0 ] ; //走る
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.TAKE_OFF] = 	         		[ 1 , 0 , 0 , 0 , 2 ] ; //飛ぶ
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.PUNCH1] = 	           		[ 5 , 0 , 2 ] ; //パンチ
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.PUNCH4_COLLIDE] = 	     	[ 0 , 0 , 0 , 2 ] ; //強いパンチ
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.ATTACK_IN_AIR2] = 			[ 0 , 0 , 2 ] ; //ジャンプパンチ
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.ATTACK_IN_AIR1] = 	        [ 0 , 0 , 2 ] ; //ジャンプキック
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.PUNCH3_KICK] =               [ 5 , 0 , 2 ] ; //キック
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.KNOCKED_S] = 		     	[ 2 ] ; //弱ダメージ
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.KNOCKED_M] =          		[ 2 ] ; //中ダメージ
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.KNOCKED_L] =          		[ 2 ] ; //強ダメージ
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.KNOCK_DOWN] = 	       		[ 0 , 0 , 0 , 0 , 2 ] ; //ダウン
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.FALL] =               		[ 0 , 2 ] ; //落下
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.THROW] =              		[ 0 , 3 , 0 , 2 ] ; //投擲
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.BOUNCE] =           		[ 4 , 0 , 0 , 0 , 2 ] ; //ステップ
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.PUNCH2] = 	           		[ 5 , 0 , 2 ] ; //パンチ２段目
-		$HERO_MOTION_CONTINUE_SETTINGS[Motions.PICK_UP] =           		[ 2 ] ; //石ひろい
+		static private const $HERO_MOTION_REACTIONS:Array = [];
+		$HERO_MOTION_REACTIONS[Motions.STAND] =              		[ 0 , 0 , 0 , 0 ] ; //歩く
+		$HERO_MOTION_REACTIONS[Motions.RUN] =                		[ 0 , 0 , 0 , 0 , 0 , 0 ] ; //走る
+		$HERO_MOTION_REACTIONS[Motions.TAKE_OFF] = 	         		[ 1 , 0 , 0 , 0 , 2 ] ; //飛ぶ
+		$HERO_MOTION_REACTIONS[Motions.PUNCH1] = 	           		[ 5 , 0 , 2 ] ; //パンチ
+		$HERO_MOTION_REACTIONS[Motions.PUNCH4_COLLIDE] = 	     	[ 0 , 0 , 0 , 2 ] ; //強いパンチ
+		$HERO_MOTION_REACTIONS[Motions.ATTACK_IN_AIR2] = 			[ 0 , 0 , 2 ] ; //ジャンプパンチ
+		$HERO_MOTION_REACTIONS[Motions.ATTACK_IN_AIR1] = 	        [ 0 , 0 , 2 ] ; //ジャンプキック
+		$HERO_MOTION_REACTIONS[Motions.PUNCH3_KICK] =               [ 5 , 0 , 2 ] ; //キック
+		$HERO_MOTION_REACTIONS[Motions.KNOCKED_S] = 		     	[ 2 ] ; //弱ダメージ
+		$HERO_MOTION_REACTIONS[Motions.KNOCKED_M] =          		[ 2 ] ; //中ダメージ
+		$HERO_MOTION_REACTIONS[Motions.KNOCKED_L] =          		[ 2 ] ; //強ダメージ
+		$HERO_MOTION_REACTIONS[Motions.KNOCK_DOWN] = 	       		[ 0 , 0 , 0 , 0 , 2 ] ; //ダウン
+		$HERO_MOTION_REACTIONS[Motions.FALL] =               		[ 0 , 2 ] ; //落下
+		$HERO_MOTION_REACTIONS[Motions.THROW] =              		[ 0 , 3 , 0 , 2 ] ; //投擲
+		$HERO_MOTION_REACTIONS[Motions.BOUNCE] =           		[ 4 , 0 , 0 , 0 , 2 ] ; //ステップ
+		$HERO_MOTION_REACTIONS[Motions.PUNCH2] = 	           		[ 5 , 0 , 2 ] ; //パンチ２段目
+		$HERO_MOTION_REACTIONS[Motions.PICK_UP] =           		[ 2 ] ; //石ひろい
 
 		//攻撃判定
 		static private const $HERO_HIT_DETECTIONS:Array = [];
@@ -172,7 +172,7 @@ package
 		$HERO_HIT_DETECTIONS[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
 
 		public function Hero ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform = null ) :void {
-			super ( srcCharacterAtlasBitmap , colorTransform , $HERO_ASSET_FRAMES , $HERO_MOTION_TO_WEIGTH , $HERO_INPUT_ALLOWANCE , $HERO_PLAYHEAD_CONDITION , $HERO_MOTION_CONTINUE_SETTINGS , $HERO_HIT_DETECTIONS ) ;
+			super ( srcCharacterAtlasBitmap , colorTransform , $HERO_ASSET_FRAMES , $HERO_MOTION_TO_WEIGTH , $HERO_INPUT_ALLOWANCE , $HERO_PLAYHEAD_CONDITION , $HERO_MOTION_REACTIONS , $HERO_HIT_DETECTIONS ) ;
 		}
 
 	}
