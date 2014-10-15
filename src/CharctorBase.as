@@ -25,6 +25,9 @@ package
 		/* 命中检查的最大允许距离 */
 		public static const HIT_DETECT_MAX_DISTANCE:int = 30;
 
+		/* 距离移动目标点的判定的 最小距离 */
+		public static const MIN_DISTANCE_TO_TARGET:int = 10
+
 
 		////////////////////////////////////
 		public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform , _motionToAssetFrameIds:Array , _motionToWeight:Array , _motionToInputAllowance:Array , _playheadCondition:Array , _motionContinue:Array , _motionToHitDetection:Array ) {
@@ -735,7 +738,7 @@ package
 				X = ( _target_x - _pos.x ) ;
 				Y = ( _target_z - _pos.z ) ;
 				L = X * X + Y * Y ;
-				if ( 10 * 10 < L ) {
+				if ( MIN_DISTANCE_TO_TARGET * MIN_DISTANCE_TO_TARGET < L ) {
 					_velocity.x += X * .004 ;
 					_velocity.z += Y * .004 ;
 				}
@@ -782,8 +785,8 @@ package
 					_pos.x = 0 ;
 				}
 
-				if ( 465 < _pos.x ) {
-					_pos.x = 465 ;
+				if ( XMAX < _pos.x ) {
+					_pos.x = XMAX ;
 				}
 
 			}
