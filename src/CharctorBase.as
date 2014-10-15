@@ -248,7 +248,7 @@ package
 				}
 			}
 
-			trace("[CharctorBase.damage] punchType:"+punchType+"; _damage_shake:"+_damage_shake + "; _velocity.x:"+_velocity.x);
+			// trace("[CharctorBase.damage] punchType:"+punchType+"; _damage_shake:"+_damage_shake + "; _velocity.x:"+_velocity.x);
 
 			//死亡チェック
 			if ( -- _hp <= 0 ) {
