@@ -9,6 +9,12 @@ package
 
 		public static const WAIT_TO_REVIVE:uint = 60;
 
+		public static const XMAX:int = 465 ;
+
+		public static const YMAX:int = 465 ;
+
+		public static const ZMAX:int = 300 ;
+
 		public static var _end:Boolean = false ;
 
 		public static var _score:uint = 0 ;
@@ -32,23 +38,12 @@ package
 
 		}
 
-		/**
-		 * 最大允许的宽度纵深
-		 */
-		public static const ZMAX:int = 300 ;
-		public static const XMAX:int = 465 ;
-		public static const YMAX:int = 465 ;
-
 		public var isDead:Boolean = false ;
-		private var playheadCondition:Array = null ;
 		private var _action:int = 0 ;
 		private var _actionstep:int = 0 ;
 
 		//アニメーション用 动画用
 		private var _anim:int = 0 ;
-
-		// 在当前的动作帧上停留了多少次
-		private var frameWaitCount:int = 0 ;
 
 		private var _attack_shake:int = 0 ;
 
@@ -62,8 +57,6 @@ package
 		//被ダメージ管理  伤害管理
 		private var _damage_action:int = 0 ;
 		private var _damage_shake:int = 0 ;
-		private var countAfterDeath:int = 0;
-		private var _isFlipX:Boolean = false;
 		private var _hitRegist:Vector.<int> = new Vector.<int> ;
 
 		//体力
@@ -82,6 +75,7 @@ package
 
 		// 跳跃按钮持续按下次数 入力チェック用  输入检查
 		private var _input_jump  :int = 0 ;
+		private var _isFlipX:Boolean = false;
 
 		// 跳跃管理
 		private var _jump_state:Boolean = false;
@@ -91,11 +85,15 @@ package
 
 		private var _r:Rectangle = new Rectangle ( ) ;
 		private var _speed:Number = 0 ;
+		private var _target_x:int = 0 ;
+		private var _target_z:int = 0 ;
 
 
 		private var bonceSpeed:Number = 0 ;
-		private var _target_x:int = 0 ;
-		private var _target_z:int = 0 ;
+		private var countAfterDeath:int = 0;
+
+		// 在当前的动作帧上停留了多少次
+		private var frameWaitCount:int = 0 ;
 		private var motionContinue:Array = null ;
 
 
@@ -104,6 +102,7 @@ package
 		private var motionToHitDetection:Array = null ;
 		private var motionToInputAllowance:Array = null ;
 		private var motionToWeight:Array = null ;
+		private var playheadCondition:Array = null ;
 
 		/**
 		 * 攻击判定
@@ -145,8 +144,8 @@ package
 
 					_lastAtkChk = -1 ;
 
-					if ( _attack_state== 0 ) {
-						_attack_state = 1 ;
+					if ( _attack_state == AttackState.NA ) {
+						_attack_state = AttackState.FIRST ;
 					}
 
 					if ( _pos.y != 0 ) {
@@ -182,8 +181,8 @@ package
 
 					_lastAtkChk = -1 ;
 
-					if ( _attack_state== 0 ) {
-						_attack_state = 1 ;
+					if ( _attack_state == AttackState.NA ) {
+						_attack_state = AttackState.FIRST ;
 					}
 
 					_attack_shake = 15 ;
@@ -257,6 +256,20 @@ package
 				_damage_action = Motions.KNOCK_DOWN ;
 				if ( _end == false ) {
 					++ _score ;
+				}
+			}
+		}
+
+
+		public function dropItem(items:Vector.<Item>):void{
+
+			// 被打击时候掉落已经拾取的道具
+			for ( var i:int = 0 ; i < items.length ; ++ i ) {
+
+				//石を持っていたら落としてしまう  持续僵直
+				if ( items[i].isreservation ( id ) ) {
+					items[i].drop ( _pos ) ;
+					break;
 				}
 			}
 		}
@@ -418,17 +431,6 @@ package
 			Global._canvas.copyPixels ( _shadow , _shadow.rect , _shadowpos ) ;
 		}
 
-
-		////////////////////////////////////
-		public function setDie ( ) :void {
-			if ( isDead == false ) {
-				isDead = true ;
-				countAfterDeath = 0 ;
-				_damage_action = 11 ;
-				_hp = 0 ;
-			}
-		}
-
 		// 复活重生
 		public function revive():void{
 			// 死亡足够长时间以后，从高处掉落下来重生
@@ -445,16 +447,13 @@ package
 		}
 
 
-		public function dropItem(items:Vector.<Item>):void{
-
-			// 被打击时候掉落已经拾取的道具
-			for ( var i:int = 0 ; i < items.length ; ++ i ) {
-
-				//石を持っていたら落としてしまう  持续僵直
-				if ( items[i].isreservation ( id ) ) {
-					items[i].drop ( _pos ) ;
-					break;
-				}
+		////////////////////////////////////
+		public function setDie ( ) :void {
+			if ( isDead == false ) {
+				isDead = true ;
+				countAfterDeath = 0 ;
+				_damage_action = 11 ;
+				_hp = 0 ;
 			}
 		}
 
@@ -493,7 +492,7 @@ package
 					Y = _pos.z - _target_z ;
 					L = X * X + Y * Y ;
 					_action = ( 10 * 10 < L ) ? Motions.RUN : Motions.STAND ;
-					_attack_state = 0 ;
+					_attack_state = AttackState.NA ;
 
 				}
 
@@ -505,7 +504,7 @@ package
 						//最後の攻撃判定が誰にもヒットしていない場合、連続技判定をリセットする
 						// If the judgment of the attack last not hit anyone, I want to reset the continuous maneuver checks
 						if ( _lastAtkChk != -1 ) {
-							_attack_state = 0 ;
+							_attack_state = AttackState.NA ;
 						}
 
 						_lastAtkChk = 0 ;
@@ -513,17 +512,46 @@ package
 						if ( _jump_state ) {
 
 							switch ( _attack_state ) {
-								case 1 : _attack_state = 2 ;  _action = Motions.ATTACK_IN_AIR1 ; frameWaitCount = 0 ; break ;
-								default: _attack_state = 1 ;  _action = Motions.ATTACK_IN_AIR2 ; frameWaitCount = 0 ; break ;
+								case AttackState.FIRST :
+									_attack_state = AttackState.SECOND ;
+									_action = Motions.ATTACK_IN_AIR1 ;
+									frameWaitCount = 0 ;
+									break ;
+
+								default:
+									_attack_state = AttackState.FIRST ;
+									_action = Motions.ATTACK_IN_AIR2 ;
+									frameWaitCount = 0 ;
+									break ;
 							}
 
 						} else {
 
 							switch ( _attack_state ) {
-								case 0 : _attack_state = 0 ; _action = Motions.PUNCH1 ; frameWaitCount = 0 ; /*連打キャンセル*/_actionstep= 0;  break ;
-								case 1 : _attack_state = 2 ; _action = Motions.PUNCH2 ; frameWaitCount = 0 ; break ;
-								case 2 : _attack_state = 3 ; _action = Motions.PUNCH3_KICK ; frameWaitCount = 0 ; break ;
-								case 3 : _attack_state = 4 ; _action = Motions.PUNCH4_COLLIDE ; frameWaitCount = 0 ; break ;
+								case AttackState.NA :
+									_attack_state = AttackState.NA;
+									_action = Motions.PUNCH1 ;
+									frameWaitCount = 0 ; /*連打キャンセル*/
+									_actionstep= 0;
+									break ;
+
+								case AttackState.FIRST :
+									_attack_state = AttackState.SECOND ;
+									_action = Motions.PUNCH2 ;
+									frameWaitCount = 0 ;
+									break ;
+
+								case AttackState.SECOND :
+									_attack_state = AttackState.THIRD;
+									_action = Motions.PUNCH3_KICK ;
+									frameWaitCount = 0 ;
+									break ;
+
+								case AttackState.THIRD :
+									_attack_state = AttackState.FORTH ;
+									_action = Motions.PUNCH4_COLLIDE ;
+									frameWaitCount = 0 ;
+									break ;
 							}
 						}
 
@@ -547,7 +575,7 @@ package
 
 						var J:int = 0 ;
 
-						if ( _attack_state == 0 && _jump_state == 0 ) {
+						if ( _attack_state == AttackState.NA && _jump_state == 0 ) {
 
 							for ( J = 0 ; J < items.length ; ++ J ) {
 
