@@ -226,7 +226,35 @@ package
 		}
 
 
+		static private function dump():void
+		{
+			var result:Object = {};
+			for(var motionId:String in CONFIG)
+			{
+				var conf:Object = CONFIG[motionId];
 
+				result[motionId] = [];
+				var assetFrames:Array = conf[$ASSET_FRAME];
+				var allowance:Array = conf[$INPUT_ALLOWANCE];
+				var lastFor:Array = conf[$LAST_FOR];
+				var motionReaction:Array = conf[$MOTION_REACTION];
+				var attackType:Array = conf[$ATTACK_TYPE];
+
+				for(var i:int = 0; i <  assetFrames.length; i++)
+				{
+					var piece:Object = {};
+					piece[$ASSET_FRAME] = assetFrames[i];
+					if(allowance[i] > 0) piece[$INPUT_ALLOWANCE] = allowance[i];
+					if(lastFor[i]) piece[$LAST_FOR] = lastFor[i];
+					if(motionReaction[i] > 0) piece[$MOTION_REACTION] = motionReaction[i];
+					if(attackType[i]) piece[$ATTACK_TYPE] = attackType[i];
+					result[motionId].push(piece);
+				}
+			}
+			trace(JSON.stringify(result, null, 4));
+		}
+
+		dump();
 
 	}
 }
