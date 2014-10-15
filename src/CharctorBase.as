@@ -136,7 +136,7 @@ package
 
 			var diff:Vector3D;
 			// var punchType:int = motionToHitDetection[_action][_actionstep] ;
-			var punchType:int = HeroConfig.getAttackType(_action, _actionstep);
+			var punchType:int = HeroConfigObj.getAttackType(_action, _actionstep);
 //				motionToHitDetection[_action][_actionstep] ;
 
 			//弱い攻撃
@@ -474,7 +474,7 @@ package
 
 			var isResponsible:Boolean = true ;  /* true: 可操控， false: 僵直 */
 //			var currentInputAllowance:int = motionToInputAllowance[_action][_actionstep] ;
-			var currentInputAllowance:int = HeroConfig.getInputAllowance(_action, _actionstep);
+			var currentInputAllowance:int = HeroConfigObj.getInputAllowance(_action, _actionstep);
 //				motionToInputAllowance[_action][_actionstep] ;
 			var currentAction:String = _action;
 			var currentActionStep:int = _actionstep;
@@ -666,7 +666,7 @@ package
 			{//アニメーション   Animation
 
 //				var TD:int = playheadCondition[_action][_actionstep];
-				var TD:int = HeroConfig.getPlayheadCondition(_action, _actionstep);
+				var TD:int = HeroConfigObj.getPlayheadCondition(_action, _actionstep);
 				switch ( TD ) {
 
 					// case 0 :
@@ -697,7 +697,7 @@ package
 				}
 
 				// if ( motionToWeight[_action][_actionstep] <= frameWaitCount )
-				if ( HeroConfig.getLastFor(_action, _actionstep) <= frameWaitCount )
+				if ( HeroConfigObj.getLastFor(_action, _actionstep) <= frameWaitCount )
 				{
 					/* 要换帧了 */
 					frameWaitCount = 0 ;
@@ -707,7 +707,7 @@ package
 					if ( _inputRight != 0 ) { jumpPower =  3; }
 
 					// switch ( motionReaction[_action][_actionstep] ) {
-					switch ( HeroConfig.getMotionReaction(_action , _actionstep) ) {
+					switch ( HeroConfigObj.getMotionReaction(_action , _actionstep) ) {
 						case MotionReaction.JUMP:
 							_velocity.y = -5 ;
 							_velocity.x = jumpPower;
@@ -736,7 +736,7 @@ package
 					}
 
 //					if ( motionToAssetFrameIds[_action].length <= ++ _actionstep ) {
-					if ( HeroConfig.countAssetFrame(_action) <= ++ _actionstep ) {
+					if ( HeroConfigObj.countAssetFrame(_action) <= ++ _actionstep ) {
 						_actionstep = 0 ;
 					}
 
@@ -813,7 +813,7 @@ package
 			}
 
 			// _anim = motionToAssetFrameIds[_action][_actionstep] ;
-			_anim = HeroConfig.getAssetFrame(_action, _actionstep) ;
+			_anim = HeroConfigObj.getAssetFrame(_action, _actionstep) ;
 
 		}
 	}
