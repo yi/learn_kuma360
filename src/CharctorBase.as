@@ -81,7 +81,7 @@ package
 		private var isInAir:Boolean = false;
 
 		// 上一次攻击检查时候检查出来的攻击类型
-		private var isLastAttackHit:int = 0 ;
+		private var isLastAttackHit:Boolean = false;
 
 		private var _r:Rectangle = new Rectangle ( ) ;
 
@@ -132,7 +132,7 @@ package
 //				if ( _lastAtkChk == 0 ) {
 //					_lastAtkChk = 1 ;
 //				}
-				isLastAttackHit = 0;
+				isLastAttackHit = false;
 
 				var V1:Vector3D = _pos.subtract ( attacker._pos ) ;
 
@@ -144,7 +144,7 @@ package
 
 				if ( V1.length < 30 ) {
 					/* 攻击命中 */
-					isLastAttackHit = -1 ;
+					isLastAttackHit = true ;
 
 					if ( _attack_state == AttackState.NA ) {
 						_attack_state = AttackState.FIRST ;
@@ -170,7 +170,7 @@ package
 //				if ( _lastAtkChk == 0 ) {
 //					_lastAtkChk = 2 ;
 //				}
-				isLastAttackHit = 0;
+				isLastAttackHit = false;
 
 				var V2:Vector3D = _pos.subtract ( attacker._pos ) ;
 
@@ -182,7 +182,7 @@ package
 
 				if ( V2.length < 30 ) {
 
-					isLastAttackHit = -1 ;
+					isLastAttackHit = true ;
 
 					if ( _attack_state == AttackState.NA ) {
 						_attack_state = AttackState.FIRST ;
@@ -506,11 +506,11 @@ package
 
 						//最後の攻撃判定が誰にもヒットしていない場合、連続技判定をリセットする
 						// If the judgment of the attack last not hit anyone, I want to reset the continuous maneuver checks
-						if ( isLastAttackHit != -1 ) {
+						if ( isLastAttackHit != true ) {
 							_attack_state = AttackState.NA ;
 						}
 
-						isLastAttackHit = 0 ;
+						isLastAttackHit = false;
 
 						if ( isInAir ) {
 
