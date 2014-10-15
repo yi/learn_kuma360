@@ -78,24 +78,25 @@ package
 		private var _isFlipX:Boolean = false;
 
 		// 跳跃管理
-		private var _jump_state:Boolean = false;
+		private var isInAir:Boolean = false;
 
 		// 上一次攻击检查时候检查出来的攻击类型
 		private var _lastAtkChk:int = 0 ;
 
 		private var _r:Rectangle = new Rectangle ( ) ;
+
 		private var _speed:Number = 0 ;
 		private var _target_x:int = 0 ;
 		private var _target_z:int = 0 ;
 
-
+		/* 平跳突进的速度 */
 		private var bonceSpeed:Number = 0 ;
+
 		private var countAfterDeath:int = 0;
 
 		// 在当前的动作帧上停留了多少次
 		private var frameWaitCount:int = 0 ;
 		private var motionContinue:Array = null ;
-
 
 		//アニメーションテーブル
 		private var motionToAssetFrameIds:Array = null ;
@@ -141,7 +142,7 @@ package
 				}
 
 				if ( V1.length < 30 ) {
-
+					/* 攻击命中 */
 					_lastAtkChk = -1 ;
 
 					if ( _attack_state == AttackState.NA ) {
@@ -509,7 +510,7 @@ package
 
 						_lastAtkChk = 0 ;
 
-						if ( _jump_state ) {
+						if ( isInAir ) {
 
 							switch ( _attack_state ) {
 								case AttackState.FIRST :
@@ -575,7 +576,7 @@ package
 
 						var J:int = 0 ;
 
-						if ( _attack_state == AttackState.NA && _jump_state == 0 ) {
+						if ( _attack_state == AttackState.NA && isInAir == 0 ) {
 
 							for ( J = 0 ; J < items.length ; ++ J ) {
 
@@ -667,7 +668,7 @@ package
 
 					// case 2:
 					case PlayheadCondition.ONLY_ON_GROUND:
-						if ( false == _jump_state ) {
+						if ( false == isInAir ) {
 							++ frameWaitCount ;
 						}
 						break;
@@ -690,7 +691,7 @@ package
 
 					switch ( motionContinue[_action][_actionstep] ) {
 						case 1: _velocity.y = -5 ; _velocity.x = jumpPower; break;
-						case 2: _action = ( _jump_state) ? Motions.FALL : Motions.STAND ; break ;
+						case 2: _action = ( isInAir) ? Motions.FALL : Motions.STAND ; break ;
 						case 3:
 						{
 							for ( var P:int = 0 ; P < items.length ; ++ P ) {
@@ -751,16 +752,16 @@ package
 				_pos.z += _velocity.z * SCALE *.5 ;
 				_velocity.y += .2 ;
 
-				if ( false == _jump_state ) {
+				if ( false == isInAir ) {
 					_velocity.x *= .9 ;
 					_velocity.z *= .9 ;
 				}
 
 				if ( 0 <= _pos.y ) {
 					_pos.y = 0 ;
-					_jump_state = false ;
+					isInAir = false ;
 				} else {
-					_jump_state = true ;
+					isInAir = true ;
 				}
 
 				if ( _pos.z < ZMAX ) {
