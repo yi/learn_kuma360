@@ -172,6 +172,7 @@ package
 		$HERO_HIT_DETECTIONS[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
 
 		public function Hero ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform = null ) :void {
+			// HeroConfig.sth();
 			super ( srcCharacterAtlasBitmap , colorTransform , $HERO_ASSET_FRAMES , $HERO_MOTION_TO_WEIGTH , $HERO_INPUT_ALLOWANCE , $HERO_PLAYHEAD_CONDITION , $HERO_MOTION_REACTIONS , $HERO_HIT_DETECTIONS ) ;
 		}
 

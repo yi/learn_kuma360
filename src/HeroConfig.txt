@@ -226,6 +226,10 @@ package
 		}
 
 
+		static public function sth():void
+		{}
+
+
 		static private function dump():void
 		{
 			var result:Object = {};
@@ -239,22 +243,26 @@ package
 				var lastFor:Array = conf[$LAST_FOR];
 				var motionReaction:Array = conf[$MOTION_REACTION];
 				var attackType:Array = conf[$ATTACK_TYPE];
+				var playheadCondition:Array = conf[$PLAYHEAD_CONDITION];
+
+				const MARK:int = -100;
 
 				for(var i:int = 0; i <  assetFrames.length; i++)
 				{
 					var piece:Object = {};
 					piece[$ASSET_FRAME] = assetFrames[i];
-					if(allowance[i] > 0) piece[$INPUT_ALLOWANCE] = allowance[i];
-					if(lastFor[i]) piece[$LAST_FOR] = lastFor[i];
-					if(motionReaction[i] > 0) piece[$MOTION_REACTION] = motionReaction[i];
-					if(attackType[i]) piece[$ATTACK_TYPE] = attackType[i];
+					if(allowance[i] > MARK) piece[$INPUT_ALLOWANCE] = allowance[i];
+					if(lastFor[i] > MARK) piece[$LAST_FOR] = lastFor[i];
+					if(motionReaction[i] > MARK) piece[$MOTION_REACTION] = motionReaction[i];
+					if(attackType[i] > MARK) piece[$ATTACK_TYPE] = attackType[i];
+					if(playheadCondition[i] > MARK) piece[$PLAYHEAD_CONDITION] = playheadCondition[i];
 					result[motionId].push(piece);
 				}
 			}
 			trace(JSON.stringify(result, null, 4));
 		}
 
-		dump();
+		 dump();
 
 	}
 }

@@ -666,8 +666,8 @@ package
 			{//アニメーション   Animation
 
 //				var TD:int = playheadCondition[_action][_actionstep];
-				var TD:int = HeroConfigObj.getPlayheadCondition(_action, _actionstep);
-				switch ( TD ) {
+				var playheadCondition:int = HeroConfigObj.getPlayheadCondition(_action, _actionstep);
+				switch ( playheadCondition ) {
 
 					// case 0 :
 					case PlayheadCondition.WHATEVER :
@@ -697,7 +697,9 @@ package
 				}
 
 				// if ( motionToWeight[_action][_actionstep] <= frameWaitCount )
-				if ( HeroConfigObj.getLastFor(_action, _actionstep) <= frameWaitCount )
+				var lf:uint = HeroConfigObj.getLastFor(_action, _actionstep);
+				trace("[CharctorBase.update] _action:"+_action +"; actionstep:"+_actionstep+"; last for:"+lf+"; playheadCondition:"+playheadCondition+"; frameWaitCount:"+frameWaitCount);
+				if ( lf <= frameWaitCount )
 				{
 					/* 要换帧了 */
 					frameWaitCount = 0 ;
