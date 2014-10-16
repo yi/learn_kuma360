@@ -1,6 +1,6 @@
 package
 {
-	public class Motions
+	public class Motion
 	{
 //		/* 在空中的攻击一阶段 */
 //		public static const ATTACK_IN_AIR1:String = "pa1"; // jph

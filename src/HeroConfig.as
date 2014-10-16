@@ -15,7 +15,7 @@ package
 
 
 		// 站立
-		CONFIG[Motions.STAND] = {
+		CONFIG[Motion.STAND] = {
 			af : [ 0 , 1 , 2 , 3 ] ,
 			ia:	[ InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW] , //歩wpくく
 			pc:    		[ 0 , 0 , 0 , 0 ] , //歩く
@@ -24,7 +24,7 @@ package
 			lf: [ 8 , 8 , 8 , 8 ]  //歩く
 		}
 		//走る  行走
-		CONFIG[Motions.RUN] =     {
+		CONFIG[Motion.RUN] =     {
 			af :         [ 32 , 33 , 34 , 35 , 36 , 37 ] ,
 			ia:	[ InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW, InputAllowance.MOVE_ATTACK_JUMP_THROW] , //走る
 			pc:    		[ 0 , 0 , 0 , 0 , 0 , 0 ] , //走る
@@ -33,7 +33,7 @@ package
 			lf:[ 5 , 5 , 5 , 5 , 5 , 5 ]  //走る
 		}
 		//飛ぶ  飞
-		CONFIG[Motions.TAKE_OFF] = 	   {
+		CONFIG[Motion.TAKE_OFF] = 	   {
 			af :   [ 4 , 5 , 6 , 7 , 4 ] ,
 			ia:	[ InputAllowance.BOUNCE, InputAllowance.ATTACK  , InputAllowance.ATTACK  , InputAllowance.ATTACK , 0 ] , //飛ぶ
 			pc:    	[ 0 , PlayheadCondition.ONLY_IN_AIR , 0 , PlayheadCondition.ONLY_ON_GROUND , 0 ] , //飛ぶ
@@ -42,7 +42,7 @@ package
 			lf: [ 8 , 2 , 5 , 2 , 5 ]  //飛ぶ
 		}
 		//パンチ 冲床
-		CONFIG[Motions.PUNCH1] = 	  {
+		CONFIG[Motion.PUNCH1] = 	  {
 			af :   [ 8 , 9 , 9 ] ,
 			ia:	[ 0 , 0 , InputAllowance.ATTACK_STEP ] , //パンチ
 			pc:    		[ 0 , 0 , 0 ] , //パンチ
@@ -51,7 +51,7 @@ package
 			lf: [ 3 , 1 , 16 ]  //パンチ
 		}
 		//強いパンチ  强冲
-		CONFIG[Motions.PUNCH4_COLLIDE] = {
+		CONFIG[Motion.PUNCH4_COLLIDE] = {
 			af :   [ 10 , 11 , 12 , 12 ] ,
 			ia: 	[ 0 , 0 , InputAllowance.BOUNCE , InputAllowance.BOUNCE ] , //強いパンチ
 			pc:	     	[ 0 , 0 , 0 , 0 ] , //強いパンチ
@@ -60,7 +60,7 @@ package
 			lf: [ 3 , 3 , 7 , 20 ]  //強いパンチ
 		}
 		//ジャンプパンチ  跳转冲
-		CONFIG[Motions.ATTACK_IN_AIR2] =  {
+		CONFIG[Motion.ATTACK_IN_AIR2] =  {
 			af : [  6 , 13 , 4 ] ,
 			ia:[ 0 , InputAllowance.ATTACK , InputAllowance.BOUNCE ] , //ジャンプパンチ
 			pc:			[ 0 , PlayheadCondition.ONLY_ON_GROUND , 0 ] , //ジャンプパンチ
@@ -69,7 +69,7 @@ package
 			lf: [ 2 , 2 , 5 ]  //ジャンプパンチ
 		}
 		//ジャンプキック  跳踢
-		CONFIG[Motions.ATTACK_IN_AIR1] = {
+		CONFIG[Motion.ATTACK_IN_AIR1] = {
 			af :  [  6 , 14 , 4 ] ,
 			ia:    [ 0 , 0 , InputAllowance.BOUNCE ] , //ジャンプキック
 			pc:	        [ 0 , PlayheadCondition.ONLY_ON_GROUND , 0 ] , //ジャンプキック
@@ -78,7 +78,7 @@ package
 			lf: [ 2 , 2 , 5 ]  //ジャンプキック
 		}
 		//キック  踢
-		CONFIG[Motions.PUNCH3_KICK] =    {
+		CONFIG[Motion.PUNCH3_KICK] =    {
 			af :    [ 29 , 15 , 15 ] ,
 			ia:     	[ 0 , 0 , InputAllowance.ATTACK_STEP ] , //キック
 			pc:             [ 0 , 0 , 0 ] , //キック
@@ -87,7 +87,7 @@ package
 			lf:[ 2 , 2 , 22 ]  //キック
 		}
 		//弱ダメージ  微弱损伤
-		CONFIG[Motions.KNOCKED_S] = 	{
+		CONFIG[Motion.KNOCKED_S] = 	{
 			af :   [ 16 ] ,
 			ia:[ 0 ] , //弱ダメージ
 			pc:		     	[ 0 ] , //弱ダメージ
@@ -96,7 +96,7 @@ package
 			lf: [ 15 ]  //弱ダメージ
 		}
 		//中ダメージ  中等破坏
-		CONFIG[Motions.KNOCKED_M] =   {
+		CONFIG[Motion.KNOCKED_M] =   {
 			af :     [ 17 ] ,
 			ia:[ 0 ] , //中ダメージ
 			pc:        		[ 0 ] , //中ダメージ
@@ -105,7 +105,7 @@ package
 			lf: [ 15 ]  //中ダメージ
 		}
 		//強ダメージ  强力损伤
-		CONFIG[Motions.KNOCKED_L] =   {
+		CONFIG[Motion.KNOCKED_L] =   {
 			af :     [ 18 ] ,
 			ia:[ 0 ] , //強ダメージ
 			pc:        		[ 0 ] , //強ダメージ
@@ -114,7 +114,7 @@ package
 			lf: [ 15 ]  //強ダメージ
 		}
 		//ダウン  向下
-		CONFIG[Motions.KNOCK_DOWN] = {
+		CONFIG[Motion.KNOCK_DOWN] = {
 			af :      [ 19 , 20 , 21 , 22 , 22 ] ,
 			ia:[ 0 , 0 , 0 , 0 , 0 ] , //ダウン
 			pc:	       		[ 0 , 0 , 0 , 0 , PlayheadCondition.IS_ALIVE ] , //ダウン
@@ -123,7 +123,7 @@ package
 			lf: [ 9 , 9 , 9 , 9 , 15 ]  //ダウン
 		}
 		//落下
-		CONFIG[Motions.FALL] =     {
+		CONFIG[Motion.FALL] =     {
 			af :      [ 7 , 4 ] ,
 			ia:[ 0 , 0 ] , //落下
 			pc:            		[ PlayheadCondition.ONLY_ON_GROUND , 0 ] , //落下
@@ -132,7 +132,7 @@ package
 			lf: [ 2 , 5 ] //落下
 		}
 		//投擲
-		CONFIG[Motions.THROW] =   {
+		CONFIG[Motion.THROW] =   {
 			af :      [ 25 , 26 , 27 , 0 ] ,
 			ia:[ 0 , 0 , 0 , 0 ] , //投擲
 			pc:            		[ 0 , 0 , 0 , 0 ] , //投擲
@@ -141,7 +141,7 @@ package
 			lf: [ 7 , 4 , 12 , 5 ]  //投擲
 		}
 		//ステップ  突进
-		CONFIG[Motions.BOUNCE] =  {
+		CONFIG[Motion.BOUNCE] =  {
 			af :    [ 4  ,  5 ,  6 ,  7 , 4 ] ,
 			ia:[ 0 , InputAllowance.ATTACK_INERTIA , InputAllowance.ATTACK_INERTIA , InputAllowance.ATTACK_INERTIA , InputAllowance.BOUNCE ] , //ステップ
 			pc:          		[ 0 , 0 , 0 , PlayheadCondition.ONLY_ON_GROUND , 0 ] , //ステップ
@@ -150,7 +150,7 @@ package
 			lf: [ 2 , 2 , 5 , 2 , 5 ]  //ステップ
 		}
 		//パンチ２段目 第二阶段冲
-		CONFIG[Motions.PUNCH2] = 	{
+		CONFIG[Motion.PUNCH2] = 	{
 			af :      [ 8 , 9 , 9 ] ,
 			ia:[ 0 , 0 , InputAllowance.ATTACK ] , //パンチ２段目
 			pc:	           		[ 0 , 0 , 0 ] , //パンチ２段目
@@ -159,7 +159,7 @@ package
 			lf: [ 3 , 1 , 16 ] //パンチ２段目
 		}
 		//石ひろい  宽阔的石板
-		CONFIG[Motions.PICK_UP] =     {
+		CONFIG[Motion.PICK_UP] =     {
 			af :      [ 24 ] ,
 			ia: [ 0 ] , //石ひろい
 			pc:           		[ 0 ] , //石ひろい

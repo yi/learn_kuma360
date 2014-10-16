@@ -50,7 +50,7 @@ package
 		}
 
 		public var isDead:Boolean = false ;
-		private var _action:String = Motions.STAND ;
+		private var _action:String = Motion.STAND ;
 		private var _actionstep:int = 0 ;
 
 		//アニメーション用 动画用
@@ -229,7 +229,7 @@ package
 					_velocity.y = 0 ;
 					// _damage_shake = 20 ;
 					_damage_shake = PunchType.getDamageShakeByType(punchType);
-					_damage_action = Motions.getRandomDamageMotion();
+					_damage_action = Motion.getRandomDamageMotion();
 					break;
 				}
 				case PunchType.M:
@@ -239,7 +239,7 @@ package
 					_velocity.y = -2 ;
 					// _damage_shake = 5 ;
 					_damage_shake = PunchType.getDamageShakeByType(punchType);
-					_damage_action = Motions.KNOCK_DOWN ;
+					_damage_action = Motion.KNOCK_DOWN ;
 					break;
 				}
 				case PunchType.L:
@@ -249,7 +249,7 @@ package
 					_velocity.y = -2 ;
 					// _damage_shake = 8 ;
 					_damage_shake = PunchType.getDamageShakeByType(punchType);
-					_damage_action = Motions.KNOCK_DOWN ;
+					_damage_action = Motion.KNOCK_DOWN ;
 					_hp = 0 ;
 					Global._world_shake = 10 ;
 					break;
@@ -266,7 +266,7 @@ package
 			if ( -- _hp <= 0 ) {
 				isDead = true ;
 				countAfterDeath = 0 ;
-				_damage_action = Motions.KNOCK_DOWN ;
+				_damage_action = Motion.KNOCK_DOWN ;
 				if ( _end == false ) {
 					++ _score ;
 				}
@@ -456,7 +456,7 @@ package
 			_pos.z = 365 ;
 			_velocity.y = 0 ;
 
-			_action = Motions.FALL ;
+			_action = Motion.FALL ;
 		}
 
 
@@ -465,7 +465,7 @@ package
 			if ( isDead == false ) {
 				isDead = true ;
 				countAfterDeath = 0 ;
-				_damage_action = Motions.KNOCK_DOWN ;
+				_damage_action = Motion.KNOCK_DOWN ;
 				_hp = 0 ;
 			}
 		}
@@ -507,7 +507,7 @@ package
 					X = _pos.x - _target_x ;
 					Y = _pos.z - _target_z ;
 					L = X * X + Y * Y ;
-					_action = ( 10 * 10 < L ) ? Motions.RUN : Motions.STAND ;
+					_action = ( 10 * 10 < L ) ? Motion.RUN : Motion.STAND ;
 					_attack_state = AttackState.NA ;
 
 				}
@@ -530,13 +530,13 @@ package
 							switch ( _attack_state ) {
 								case AttackState.FIRST :
 									_attack_state = AttackState.SECOND ;
-									_action = Motions.ATTACK_IN_AIR1 ;
+									_action = Motion.ATTACK_IN_AIR1 ;
 									frameWaitCount = 0 ;
 									break ;
 
 								default:
 									_attack_state = AttackState.FIRST ;
-									_action = Motions.ATTACK_IN_AIR2 ;
+									_action = Motion.ATTACK_IN_AIR2 ;
 									frameWaitCount = 0 ;
 									break ;
 							}
@@ -546,26 +546,26 @@ package
 							switch ( _attack_state ) {
 								case AttackState.NA :
 									_attack_state = AttackState.NA;
-									_action = Motions.PUNCH1 ;
+									_action = Motion.PUNCH1 ;
 									frameWaitCount = 0 ; /*連打キャンセル*/
 									_actionstep= 0;
 									break ;
 
 								case AttackState.FIRST :
 									_attack_state = AttackState.SECOND ;
-									_action = Motions.PUNCH2 ;
+									_action = Motion.PUNCH2 ;
 									frameWaitCount = 0 ;
 									break ;
 
 								case AttackState.SECOND :
 									_attack_state = AttackState.THIRD;
-									_action = Motions.PUNCH3_KICK ;
+									_action = Motion.PUNCH3_KICK ;
 									frameWaitCount = 0 ;
 									break ;
 
 								case AttackState.THIRD :
 									_attack_state = AttackState.FORTH ;
-									_action = Motions.PUNCH4_COLLIDE ;
+									_action = Motion.PUNCH4_COLLIDE ;
 									frameWaitCount = 0 ;
 									break ;
 							}
@@ -579,7 +579,7 @@ package
 				if ( InputAllowance.JUMP & currentInputAllowance ) {
 					if ( _input_jump == 1 ) {
 						// _action = 2 ;
-						_action = Motions.TAKE_OFF ;
+						_action = Motion.TAKE_OFF ;
 						frameWaitCount = 0 ;
 					}
 				}
@@ -598,7 +598,7 @@ package
 								//石を持っていたら投げる  Throw if you have a stone
 								if ( items[J].isreservation ( id ) ) {
 									// _action = 13 ;
-									_action = Motions.THROW ;
+									_action = Motion.THROW ;
 									frameWaitCount = 0 ;
 									break;
 								}
@@ -606,7 +606,7 @@ package
 								//足元に石があると拾う  I pick up that there is a stone at the feet
 								if ( items[J].chk_distance ( _pos ) ) {
 									items[J].reservation ( id ) ;
-									_action = Motions.PICK_UP ;
+									_action = Motion.PICK_UP ;
 									frameWaitCount = 0 ;
 									break;
 								}
@@ -624,7 +624,7 @@ package
 					if ( _commandLeft == 3 ) {
 						_commandLeft = 0 ;
 						// _action = 14 ;
-						_action = Motions.BOUNCE ;
+						_action = Motion.BOUNCE ;
 						frameWaitCount = 0 ;
 						bonceSpeed = -4 ;
 						_attack_shake = 0;
@@ -634,7 +634,7 @@ package
 					if ( _commandRight == 3 ) {
 						_commandRight = 0 ;
 						// _action = 14 ;
-						_action = Motions.BOUNCE ;
+						_action = Motion.BOUNCE ;
 						frameWaitCount = 0 ;
 						bonceSpeed = 4 ;
 						_attack_shake = 0;
@@ -716,7 +716,7 @@ package
 							_velocity.x = jumpPower;
 							break;
 						case MotionReaction.FALL:
-							_action = ( isInAir) ? Motions.FALL : Motions.STAND ;
+							_action = ( isInAir) ? Motion.FALL : Motion.STAND ;
 							break ;
 						case MotionReaction.THROW:
 						{
