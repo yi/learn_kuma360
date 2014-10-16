@@ -287,16 +287,16 @@ package
 		public function input (
 			attack:Boolean , //攻撃ボタン   攻击按钮
 			jump:Boolean , //ジャンプボタン  跳转按钮
-			right:Boolean , //左
-			keyR:Boolean , //右
+			left:Boolean , //左
+			right:Boolean , //右
 			up:Boolean , //上
 			down:Boolean   //下
 		):void {
 
 			if ( attack ) { ++ inputAttack ; } else { inputAttack = 0 ; }
 			if ( jump ) { ++ inputJump ; }   else { inputJump = 0 ; }
-			if ( right ) { ++ inputLeft ; } else { inputLeft = 0 ; }
-			if ( keyR ) { ++ inputRight ; } else { inputRight = 0 ; }
+			if ( left ) { ++ inputLeft ; } else { inputLeft = 0 ; }
+			if ( right ) { ++ inputRight ; } else { inputRight = 0 ; }
 			if ( up ) { ++ inputUp ; } else { inputUp = 0 ; }
 			if ( down ) { ++ inputDown ; } else { inputDown = 0 ; }
 
