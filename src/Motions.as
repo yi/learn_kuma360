@@ -2,44 +2,97 @@ package
 {
 	public class Motions
 	{
+//		/* 在空中的攻击一阶段 */
+//		public static const ATTACK_IN_AIR1:String = "pa1"; // jph
+//
+//		/* 在空中的攻击2阶段 */
+//		public static const ATTACK_IN_AIR2:String = "pa2";   // jkk
+//
+//		/* 突进 */
+//		public static const BOUNCE:String = "bnc";      // bnc
+//
+//		/* 落下 */
+//		public static const FALL:String = "fal";		//dft
+//
+//		/* 被打击1 */
+//		public static const KNOCKED_L:String = "kkl";  // nks
+//
+//		/* 被打击2 */
+//		public static const KNOCKED_M:String = "kkm";  // nkm
+//
+//		/* 被打击3 */
+//		public static const KNOCKED_S:String = "kks";  // nkl
+//
+//		/* 被打倒 */
+//		public static const KNOCK_DOWN:String = "knd"; //div
+//
+//		/* 拾取 */
+//		public static const PICK_UP:String = "pck";  // pik
+//
+//		/* 攻击1 */
+//		public static const PUNCH1:String = "ph1"; 	// atk
+//
+//		/* 攻击2 */
+//		public static const PUNCH2:String = "ph2"; 	// ak2
+//
+//		/* 攻击3 */
+//		public static const PUNCH3_KICK:String = "ph3"; //kck
+//
+//		/* 攻击4 */
+//		public static const PUNCH4_COLLIDE:String = "ph4";  // hph
+//
+//		/* 跑步 */
+//		public static const RUN:String = "run";   // run
+//
+//		/* 站立 */
+//		public static const STAND:String = "idl";  // idl
+//
+//		/* 起跳 */
+//		public static const TAKE_OFF:String = "jmp";	//jmp
+//
+//		/* 投掷 */
+//		public static const THROW:String = "thr";  // thr
+
+
+
 		/* 在空中的攻击一阶段 */
-		public static const ATTACK_IN_AIR1:String = "pa1"; // jph
+		public static const ATTACK_IN_AIR1:String = "jph"; // jph
 
 		/* 在空中的攻击2阶段 */
-		public static const ATTACK_IN_AIR2:String = "pa2";   // jkk
+		public static const ATTACK_IN_AIR2:String = "jkk";   // jkk
 
 		/* 突进 */
 		public static const BOUNCE:String = "bnc";      // bnc
 
 		/* 落下 */
-		public static const FALL:String = "fal";		//dft
+		public static const FALL:String = "dft";		//dft
 
 		/* 被打击1 */
-		public static const KNOCKED_L:String = "kkl";  // nks
+		public static const KNOCKED_L:String = "nkl";  // nkl
 
 		/* 被打击2 */
-		public static const KNOCKED_M:String = "kkm";  // nkm
+		public static const KNOCKED_M:String = "nkm";  // nkm
 
 		/* 被打击3 */
-		public static const KNOCKED_S:String = "kks";  // nkl
+		public static const KNOCKED_S:String = "nks";  // nks
 
 		/* 被打倒 */
-		public static const KNOCK_DOWN:String = "knd"; //div
+		public static const KNOCK_DOWN:String = "div"; //div
 
 		/* 拾取 */
-		public static const PICK_UP:String = "pck";  // pik
+		public static const PICK_UP:String = "pik";  // pik
 
 		/* 攻击1 */
-		public static const PUNCH1:String = "ph1"; 	// atk
+		public static const PUNCH1:String = "atk"; 	// atk
 
 		/* 攻击2 */
-		public static const PUNCH2:String = "ph2"; 	// ak2
+		public static const PUNCH2:String = "ak2"; 	// ak2
 
 		/* 攻击3 */
-		public static const PUNCH3_KICK:String = "ph3"; //kck
+		public static const PUNCH3_KICK:String = "kck"; //kck
 
 		/* 攻击4 */
-		public static const PUNCH4_COLLIDE:String = "ph4";  // hph
+		public static const PUNCH4_COLLIDE:String = "hph";  // hph
 
 		/* 跑步 */
 		public static const RUN:String = "run";   // run
@@ -52,6 +105,7 @@ package
 
 		/* 投掷 */
 		public static const THROW:String = "thr";  // thr
+
 
 		public static const DAMAGE_MOTIONS:Array = [KNOCKED_S, KNOCKED_M, KNOCKED_L];
 
