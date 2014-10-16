@@ -1425,12 +1425,12 @@ package
 		**/
 
 
-		static public const $ASSET_FRAME:String = "af";
-		static public const $INPUT_ALLOWANCE:String = "ia";
-		static public const $LAST_FOR:String = "lf";
-		static public const $PLAYHEAD_CONDITION:String = "pc";
-		static public const $MOTION_REACTION:String = "mr";
-		static public const $ATTACK_TYPE:String = "at";
+		static public const ASSET_FRAME:String = "af";
+		static public const INPUT_ALLOWANCE:String = "ia";
+		static public const LAST_FOR:String = "lf";
+		static public const PLAYHEAD_CONDITION:String = "pc";
+		static public const MOTION_REACTION:String = "mr";
+		static public const ATTACK_TYPE:String = "at";
 
 //		static private function getConfig(motionId:String, key:String):Object
 //		{
@@ -1461,32 +1461,32 @@ package
 
 		static public function getAssetFrame(motionId:String, frameId:int):int
 		{
-			return getConfigValue(motionId, $ASSET_FRAME, frameId);
+			return getConfigValue(motionId, ASSET_FRAME, frameId);
 		}
 
 		static public function getInputAllowance(motionId:String, frameId:int):int
 		{
-			return getConfigValue(motionId, $INPUT_ALLOWANCE, frameId);
+			return getConfigValue(motionId, INPUT_ALLOWANCE, frameId);
 		}
 
 		static public function getLastFor(motionId:String, frameId:int):int
 		{
-			return getConfigValue(motionId, $LAST_FOR, frameId);
+			return getConfigValue(motionId, LAST_FOR, frameId);
 		}
 
 		static public function getPlayheadCondition(motionId:String, frameId:int):int
 		{
-			return getConfigValue(motionId, $PLAYHEAD_CONDITION, frameId);
+			return getConfigValue(motionId, PLAYHEAD_CONDITION, frameId);
 		}
 
 		static public function getMotionReaction(motionId:String, frameId:int):int
 		{
-			return getConfigValue(motionId, $MOTION_REACTION, frameId);
+			return getConfigValue(motionId, MOTION_REACTION, frameId);
 		}
 
 		static public function getAttackType(motionId:String, frameId:int):int
 		{
-			return getConfigValue(motionId, $ATTACK_TYPE, frameId);
+			return getConfigValue(motionId, ATTACK_TYPE, frameId);
 		}
 
 
