@@ -245,7 +245,7 @@ package
 				var attackType:Array = conf[$ATTACK_TYPE];
 				var playheadCondition:Array = conf[$PLAYHEAD_CONDITION];
 
-				const MARK:int = -100;
+				const MARK:int = 0;
 
 				for(var i:int = 0; i <  assetFrames.length; i++)
 				{
@@ -262,7 +262,7 @@ package
 			trace(JSON.stringify(result, null, 4));
 		}
 
-		 dump();
+		dump();
 
 	}
 }

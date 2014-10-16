@@ -172,7 +172,7 @@ package
 //		$HERO_HIT_DETECTIONS[Motions.PICK_UP] =           		[ 0 ] ; //石ひろい
 
 		public function Hero ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform = null ) :void {
-			// HeroConfig.sth();
+			HeroConfig.sth();
 			super ( srcCharacterAtlasBitmap , colorTransform) ;
 		}
 
