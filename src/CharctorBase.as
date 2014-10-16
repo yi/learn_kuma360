@@ -30,6 +30,8 @@ package
 		/* 距离移动目标点的判定的 最小距离 */
 		public static const MIN_DISTANCE_TO_TARGET:int = 10
 
+		public static const MIN_DISTANCE_TO_TARGET_SQUARE:int = 10 * 10
+
 
 		////////////////////////////////////
 		public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform ){
@@ -464,19 +466,18 @@ package
 		{// 处理玩家
 			var currentInputAllowance:int = getInputAllowance();
 			var currentAction:String = motion;
-			var X:Number = 0 ;
-			var Y:Number = 0 ;
-			var L:Number = 0 ;
+			var x:Number = 0 ;
+			var y:Number = 0 ;
+			var l:Number = 0 ;
 
 			// if ( 1 & currentInputAllowance ) {
 			if ( InputAllowance.MOVE & currentInputAllowance ) {
 
-				X = _pos.x - targetX ;
-				Y = _pos.z - targetZ ;
-				L = X * X + Y * Y ;
-				motion = ( 10 * 10 < L ) ? Motion.RUN : Motion.STAND ;
+				x = _pos.x - targetX ;
+				y = _pos.z - targetZ ;
+				l = x * x + y * y ;
+				motion = ( MIN_DISTANCE_TO_TARGET_SQUARE < l ) ? Motion.RUN : Motion.STAND ;
 				attackState = AttackState.NA ;
-
 			}
 
 			if ( InputAllowance.ATTACK & currentInputAllowance ) {
@@ -603,8 +604,10 @@ package
 			}
 
 			if ( InputAllowance.INERTIA & currentInputAllowance ) {
-				if ( inputLeft ) { if ( 0 < velocity.x ) velocity.x *= .9 ; }
-				if ( inputRight ) { if ( velocity.x < 0 ) velocity.x *= .9 ; }
+//				if ( inputLeft ) { if ( 0 < velocity.x ) velocity.x *= .9 ; }
+//				if ( inputRight ) { if ( velocity.x < 0 ) velocity.x *= .9 ; }
+				if ( inputLeft && 0 < velocity.x ) velocity.x *= .9 ;
+				if ( inputRight && velocity.x < 0 ) velocity.x *= .9 ;
 			}
 
 			//強制動作
@@ -624,10 +627,10 @@ package
 		public function update ( items:Vector.<Item> , mainHero:CharctorBase ):void {
 
 			var isResponsible:Boolean = true ;  /* true: 可操控， false: 僵直 */
-			var X:Number = 0 ;
-			var Y:Number = 0 ;
-			var L:Number = 0 ;
-			var I:int = 0 ;
+			var x:Number = 0 ;
+			var y:Number = 0 ;
+			var l:Number = 0 ;
+			var i:int = 0 ;
 
 			if(isDead && WAIT_TO_REVIVE < ++ countAfterDeath ) revive();
 
@@ -731,12 +734,12 @@ package
 				var ty:Number = velocity.y;
 				velocity.y = 0 ;
 
-				X = ( targetX - _pos.x ) ;
-				Y = ( targetZ - _pos.z ) ;
-				L = X * X + Y * Y ;
-				if ( MIN_DISTANCE_TO_TARGET * MIN_DISTANCE_TO_TARGET < L ) {
-					velocity.x += X * .004 ;
-					velocity.z += Y * .004 ;
+				x = ( targetX - _pos.x ) ;
+				y = ( targetZ - _pos.z ) ;
+				l = x * x + y * y ;
+				if ( MIN_DISTANCE_TO_TARGET * MIN_DISTANCE_TO_TARGET < l ) {
+					velocity.x += x * .004 ;
+					velocity.z += y * .004 ;
 				}
 
 				speed = velocity.length ;
