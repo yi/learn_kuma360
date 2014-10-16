@@ -30,63 +30,50 @@ package
 
 
 		////////////////////////////////////
-		// public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform , _motionToAssetFrameIds:Array , _motionToWeight:Array , _motionToInputAllowance:Array , _playheadCondition:Array , _motionContinue:Array , _motionToHitDetection:Array ) {
 		public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform ){
 
 			super ( srcCharacterAtlasBitmap , colorTransform , 64 ) ;
-
-//			motionToAssetFrameIds = _motionToAssetFrameIds ;
-//			motionToWeight = _motionToWeight ;
-//			motionToInputAllowance = _motionToInputAllowance ;
-//			playheadCondition = _playheadCondition ;
-//			motionReaction = _motionContinue ;
-//			motionToHitDetection = _motionToHitDetection ;
-
-			_hp = 10 ;
+			hp = 10 ;
 			isDead = false ;
 			countAfterDeath = 0 ;
 			input ( false , false , false , false , false , false ) ;
-
 		}
 
 		public var isDead:Boolean = false ;
-		private var _action:String = Motion.STAND ;
-		private var _actionstep:int = 0 ;
+		private var motion:String = Motion.STAND ;
+		private var motionStep:int = 0 ;
 
 		//アニメーション用 动画用
-		private var _anim:int = 0 ;
+		private var assetFrame:int = 0 ;
 
-		private var _attack_shake:int = 0 ;
+		private var shakeWhenAttack:int = 0 ;
 
 		//攻撃管理
-		private var _attack_state:int = 0 ; //連続技判定
-		private var _commandLeft:int = 0 ;
-		private var _commandLeftCNT:int = 0 ;
-		private var _commandRight:int = 0 ;
-		private var _commandRightCNT:int = 0 ;
+		private var attackState:int = 0 ; //連続技判定
+		private var commandLeft:int = 0 ;
+		private var commandLeftCNT:int = 0 ;
+		private var commandRight:int = 0 ;
+		private var commandRightCNT:int = 0 ;
 
 		//被ダメージ管理  伤害管理
-		private var _damage_action:String;
-		private var _damage_shake:int = 0 ;
-		private var _hitRegist:Vector.<int> = new Vector.<int> ;
+		private var motionWhenDamag:String;
+		private var shakeWhenDamage:int = 0 ;
+		private var hitRegister:Vector.<int> = new Vector.<int> ;
 
 		//体力
-		private var _hp:int = 0 ;
+		private var hp:int = 0 ;
 
-		private var _inputDown:int = 0 ;
-		private var _inputLeft:int = 0 ;
-		private var _inputRight:int = 0 ;
-		private var _inputUp:int = 0 ;
+		private var inputDown:int = 0 ;
+		private var inputLeft:int = 0 ;
+		private var inputRight:int = 0 ;
+		private var inputUp:int = 0 ;
 
 		// 攻击按钮持续按下次数 入力チェック用  输入检查
-		private var _input_attack:int = 0 ;
-
-		//入力用
-		private var _input_damage:Boolean = false ;
+		private var inputAttack:int = 0 ;
 
 		// 跳跃按钮持续按下次数 入力チェック用  输入检查
-		private var _input_jump  :int = 0 ;
-		private var _isFlipX:Boolean = false;
+		private var inputJump  :int = 0 ;
+		private var isFlipX:Boolean = false;
 
 		// 跳跃管理
 		private var isInAir:Boolean = false;
@@ -96,9 +83,9 @@ package
 
 		private var _r:Rectangle = new Rectangle ( ) ;
 
-		private var _speed:Number = 0 ;
-		private var _target_x:int = 0 ;
-		private var _target_z:int = 0 ;
+		private var speed:Number = 0 ;
+		private var targetX:int = 0 ;
+		private var targetZ:int = 0 ;
 
 		/* 平跳突进的速度 */
 		private var bonceSpeed:Number = 0 ;
@@ -107,14 +94,6 @@ package
 
 		// 在当前的动作帧上停留了多少次
 		private var frameWaitCount:int = 0 ;
-
-		//アニメーションテーブル
-//		private var motionReaction:Array = null ;
-//		private var motionToAssetFrameIds:Array = null ;
-//		private var motionToHitDetection:Array = null ;
-//		private var motionToInputAllowance:Array = null ;
-//		private var motionToWeight:Array = null ;
-//		private var playheadCondition:Array = null ;
 
 		/**
 		 * 攻击判定
@@ -128,7 +107,7 @@ package
 			if ( attacker.isDead ) return ;
 
 
-			for each ( var N:int in _hitRegist ) {
+			for each ( var N:int in hitRegister ) {
 				// 在一个计算周期里面一个人只能被同一个人攻击一次
 				if ( N == attacker.id ) {
 					return ;
@@ -137,7 +116,7 @@ package
 
 			var diff:Vector3D;
 			// var punchType:int = motionToHitDetection[_action][_actionstep] ;
-			var punchType:int = HeroConfigObj.getAttackType(_action, _actionstep);
+			var punchType:int = HeroConfigObj.getAttackType(motion, motionStep);
 //				motionToHitDetection[_action][_actionstep] ;
 
 			//弱い攻撃
@@ -148,7 +127,7 @@ package
 
 				diff = _pos.subtract ( attacker._pos ) ;
 
-				if ( _isFlipX ) {
+				if ( isFlipX ) {
 					diff.x -= HIT_CHECK_X_ADJUST * SCALE ;
 				} else {
 					diff.x += HIT_CHECK_X_ADJUST * SCALE ;
@@ -158,18 +137,18 @@ package
 					/* 攻击命中 */
 					isLastAttackHit = true ;
 
-					if ( _attack_state == AttackState.NA ) {
-						_attack_state = AttackState.FIRST ;
+					if ( attackState == AttackState.NA ) {
+						attackState = AttackState.FIRST ;
 					}
 
 					if ( _pos.y != 0 ) {
-						_attack_shake = 11 ;
+						shakeWhenAttack = 11 ;
 					} else {
-						_attack_shake = 5 ;
+						shakeWhenAttack = 5 ;
 					}
 
-					attacker.damage ( _isFlipX , _pos.z , punchType ) ;
-					_hitRegist.push ( attacker.id ) ;
+					attacker.damage ( isFlipX , _pos.z , punchType ) ;
+					hitRegister.push ( attacker.id ) ;
 					effect.push ( attacker.pos.x , attacker.pos.z + attacker.pos.y ) ;
 
 				}
@@ -184,7 +163,7 @@ package
 
 				diff = _pos.subtract ( attacker._pos ) ;
 
-				if ( _isFlipX ) {
+				if ( isFlipX ) {
 					diff.x -= HIT_CHECK_X_ADJUST * 2 * SCALE ;
 				} else {
 					diff.x += HIT_CHECK_X_ADJUST * 2 * SCALE ;
@@ -194,13 +173,13 @@ package
 
 					isLastAttackHit = true ;
 
-					if ( _attack_state == AttackState.NA ) {
-						_attack_state = AttackState.FIRST ;
+					if ( attackState == AttackState.NA ) {
+						attackState = AttackState.FIRST ;
 					}
 
-					_attack_shake = 15 ;
-					attacker.damage ( _isFlipX , _pos.z , punchType ) ;
-					_hitRegist.push ( attacker.id ) ;
+					shakeWhenAttack = 15 ;
+					attacker.damage ( isFlipX , _pos.z , punchType ) ;
+					hitRegister.push ( attacker.id ) ;
 					effect.push ( attacker.pos.x , attacker.pos.z + attacker.pos.y ) ;
 
 				}
@@ -228,8 +207,8 @@ package
 					velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
 					velocity.y = 0 ;
 					// _damage_shake = 20 ;
-					_damage_shake = PunchType.getDamageShakeByType(punchType);
-					_damage_action = Motion.getRandomDamageMotion();
+					shakeWhenDamage = PunchType.getDamageShakeByType(punchType);
+					motionWhenDamag = Motion.getRandomDamageMotion();
 					break;
 				}
 				case PunchType.M:
@@ -238,8 +217,8 @@ package
 					// _velocity.x = (isFlipX)? -3 : 3 ;
 					velocity.y = -2 ;
 					// _damage_shake = 5 ;
-					_damage_shake = PunchType.getDamageShakeByType(punchType);
-					_damage_action = Motion.KNOCK_DOWN ;
+					shakeWhenDamage = PunchType.getDamageShakeByType(punchType);
+					motionWhenDamag = Motion.KNOCK_DOWN ;
 					break;
 				}
 				case PunchType.L:
@@ -248,9 +227,9 @@ package
 					// _velocity.x = (isFlipX)? -3 : 3 ;
 					velocity.y = -2 ;
 					// _damage_shake = 8 ;
-					_damage_shake = PunchType.getDamageShakeByType(punchType);
-					_damage_action = Motion.KNOCK_DOWN ;
-					_hp = 0 ;
+					shakeWhenDamage = PunchType.getDamageShakeByType(punchType);
+					motionWhenDamag = Motion.KNOCK_DOWN ;
+					hp = 0 ;
 					Global._world_shake = 10 ;
 					break;
 				}
@@ -263,10 +242,10 @@ package
 			// trace("[CharctorBase.damage] punchType:"+punchType+"; _damage_shake:"+_damage_shake + "; _velocity.x:"+_velocity.x);
 
 			//死亡チェック
-			if ( -- _hp <= 0 ) {
+			if ( -- hp <= 0 ) {
 				isDead = true ;
 				countAfterDeath = 0 ;
-				_damage_action = Motion.KNOCK_DOWN ;
+				motionWhenDamag = Motion.KNOCK_DOWN ;
 				if ( _end == false ) {
 					++ _score ;
 				}
@@ -312,42 +291,42 @@ package
 			keyD:Boolean   //下
 		):void {
 
-			if ( keyA ) { ++ _input_attack ; } else { _input_attack = 0 ; }
-			if ( keyJ ) { ++ _input_jump ; }   else { _input_jump = 0 ; }
-			if ( keyL ) { ++ _inputLeft ; } else { _inputLeft = 0 ; }
-			if ( keyR ) { ++ _inputRight ; } else { _inputRight = 0 ; }
-			if ( keyU ) { ++ _inputUp ; } else { _inputUp = 0 ; }
-			if ( keyD ) { ++ _inputDown ; } else { _inputDown = 0 ; }
-			_target_x = _pos.x + ( (_inputLeft) ? -50 : 0 ) + ( (_inputRight) ? 50 : 0 ) + ( (_isFlipX)? -1 : 1 ) ;
-			_target_z = _pos.z + ( (_inputUp) ? -50 : 0 ) + ( (_inputDown) ? 50 : 0 ) + ( (_isFlipX)? -1 : 1 ) ;
+			if ( keyA ) { ++ inputAttack ; } else { inputAttack = 0 ; }
+			if ( keyJ ) { ++ inputJump ; }   else { inputJump = 0 ; }
+			if ( keyL ) { ++ inputLeft ; } else { inputLeft = 0 ; }
+			if ( keyR ) { ++ inputRight ; } else { inputRight = 0 ; }
+			if ( keyU ) { ++ inputUp ; } else { inputUp = 0 ; }
+			if ( keyD ) { ++ inputDown ; } else { inputDown = 0 ; }
+			targetX = _pos.x + ( (inputLeft) ? -50 : 0 ) + ( (inputRight) ? 50 : 0 ) + ( (isFlipX)? -1 : 1 ) ;
+			targetZ = _pos.z + ( (inputUp) ? -50 : 0 ) + ( (inputDown) ? 50 : 0 ) + ( (isFlipX)? -1 : 1 ) ;
 
 			// 向左突进 搓键
-			++ _commandLeftCNT;
-			if ( 10 < _commandLeftCNT ) {
-				_commandLeft = 0 ;
+			++ commandLeftCNT;
+			if ( 10 < commandLeftCNT ) {
+				commandLeft = 0 ;
 			}
-			if ( _input_jump == 1 && _commandLeft == 0 ){
-				_commandLeft = 2 ;
-				_commandLeftCNT = 0;
+			if ( inputJump == 1 && commandLeft == 0 ){
+				commandLeft = 2 ;
+				commandLeftCNT = 0;
 			}
-			if ( _inputLeft     == 1 && _commandLeft == 2 && _commandLeftCNT < 10 ) {
-				_commandLeft = 3 ;
-				_commandLeftCNT = 0;
+			if ( inputLeft     == 1 && commandLeft == 2 && commandLeftCNT < 10 ) {
+				commandLeft = 3 ;
+				commandLeftCNT = 0;
 			}
 
 //			trace("[CharctorBase.input] _command1CNT:"+_command1CNT+"; _command1:"+_command1);
 
 			// 向右突进 搓键
-			++ _commandRightCNT;
-			if ( 10 < _commandRightCNT ){
-				_commandRight = 0 ;
+			++ commandRightCNT;
+			if ( 10 < commandRightCNT ){
+				commandRight = 0 ;
 			}
 
-			if ( _input_jump == 1 && _commandRight == 0 ){
-				_commandRight = 2 ; _commandRightCNT = 0;
+			if ( inputJump == 1 && commandRight == 0 ){
+				commandRight = 2 ; commandRightCNT = 0;
 			}
-			if ( _inputRight     == 1 && _commandRight == 2 && _commandRightCNT < 10 ) {
-				_commandRight = 3 ; _commandRightCNT = 0;
+			if ( inputRight     == 1 && commandRight == 2 && commandRightCNT < 10 ) {
+				commandRight = 3 ; commandRightCNT = 0;
 			}
 
 //			trace("[CharctorBase.input] _command2CNT:"+_command2CNT+"; _command2:"+_command2);
@@ -357,19 +336,19 @@ package
 		////////////////////////////////////
 		public function inputAuto ( ):void {
 
-			_input_attack = ( Math.random() < 0.04)?1:0 ;
-			_input_jump   = ( Math.random() < 0.01)?1:0 ;
+			inputAttack = ( Math.random() < 0.04)?1:0 ;
+			inputJump   = ( Math.random() < 0.01)?1:0 ;
 
 			var V:Vector3D = _pos.clone() ;
-			V.x -= _target_x ;
-			V.z -= _target_z ;
+			V.x -= targetX ;
+			V.z -= targetZ ;
 			if ( V.length < 20 * SCALE ) {
-				_target_x = _target_x + ( Math.random() * 6 - 3 ) * 8 ;
-				_target_z = _target_z + ( Math.random() * 6 - 3 ) * 8 ;
-				if ( _target_x < 0 )   _target_x = 0;
-				if ( _target_z < ZMAX ) _target_z = ZMAX;
-				if ( _target_x > XMAX ) _target_x = XMAX;
-				if ( _target_z > 465 ) _target_z = 465;
+				targetX = targetX + ( Math.random() * 6 - 3 ) * 8 ;
+				targetZ = targetZ + ( Math.random() * 6 - 3 ) * 8 ;
+				if ( targetX < 0 )   targetX = 0;
+				if ( targetZ < ZMAX ) targetZ = ZMAX;
+				if ( targetX > XMAX ) targetX = XMAX;
+				if ( targetZ > 465 ) targetZ = 465;
 			}
 
 		}
@@ -399,19 +378,19 @@ package
 				}
 			}
 
-			_anim %= 40 ;
-			_render_rect.x = Math.floor ( _anim % 8 ) * scaledSize ;
-			_render_rect.y = Math.floor ( _anim / 8 ) * scaledSize ;
+			assetFrame %= 40 ;
+			_render_rect.x = Math.floor ( assetFrame % 8 ) * scaledSize ;
+			_render_rect.y = Math.floor ( assetFrame / 8 ) * scaledSize ;
 
 			_renderpos.x = _pos.x          - scaledSize /2 ;
 			_renderpos.y = _pos.z + _pos.y - scaledSize ;
 
-			if ( _damage_shake ) {
+			if ( shakeWhenDamage ) {
 				_renderpos.x += Math.random() * 10 - 5 ;
 				_renderpos.y += Math.random() * 10 - 5 ;
 			}
 
-			if ( _isFlipX ) {
+			if ( isFlipX ) {
 				Global._canvas.copyPixels ( imgCharacterFlipped , _render_rect , _renderpos ) ;
 			} else {
 				Global._canvas.copyPixels ( imgCharacter   , _render_rect , _renderpos ) ;
@@ -431,7 +410,7 @@ package
 
 			_r.x = _renderpos.x + 1 ;
 			_r.y = _renderpos.y + scaledSize + 1 ;
-			_r.width = ( scaledSize * _hp / 10 ) - 2 ;
+			_r.width = ( scaledSize * hp / 10 ) - 2 ;
 			_r.height = 5 - 2 ;
 			Global._canvas.fillRect ( _r , 0x00FF00 ) ;
 
@@ -447,7 +426,7 @@ package
 		// 复活重生
 		public function revive():void{
 			// 死亡足够长时间以后，从高处掉落下来重生
-			_hp = 10 ;
+			hp = 10 ;
 			isDead = false ;
 			countAfterDeath = 0 ;
 
@@ -456,7 +435,7 @@ package
 			_pos.z = 365 ;
 			velocity.y = 0 ;
 
-			_action = Motion.FALL ;
+			motion = Motion.FALL ;
 		}
 
 
@@ -465,8 +444,8 @@ package
 			if ( isDead == false ) {
 				isDead = true ;
 				countAfterDeath = 0 ;
-				_damage_action = Motion.KNOCK_DOWN ;
-				_hp = 0 ;
+				motionWhenDamag = Motion.KNOCK_DOWN ;
+				hp = 0 ;
 			}
 		}
 
@@ -475,10 +454,10 @@ package
 
 			var isResponsible:Boolean = true ;  /* true: 可操控， false: 僵直 */
 //			var currentInputAllowance:int = motionToInputAllowance[_action][_actionstep] ;
-			var currentInputAllowance:int = HeroConfigObj.getInputAllowance(_action, _actionstep);
+			var currentInputAllowance:int = HeroConfigObj.getInputAllowance(motion, motionStep);
 //				motionToInputAllowance[_action][_actionstep] ;
-			var currentAction:String = _action;
-			var currentActionStep:int = _actionstep;
+			var currentAction:String = motion;
+			var currentActionStep:int = motionStep;
 
 			var X:Number = 0 ;
 			var Y:Number = 0 ;
@@ -488,15 +467,15 @@ package
 			// if(isDead && WAIT_TO_REVIVE < ++ countAfterDeath && this != mainHero ) revive();
 			if(isDead && WAIT_TO_REVIVE < ++ countAfterDeath ) revive();
 
-			if ( 0 < _damage_shake ) { /* 处理被打僵直 */
+			if ( 0 < shakeWhenDamage ) { /* 处理被打僵直 */
 				isResponsible = false ;
-				-- _damage_shake ;
+				-- shakeWhenDamage ;
 				dropItem(items);
 			}
 
-			if ( 0 < _attack_shake ) { /* 处理出拳僵直 */
+			if ( 0 < shakeWhenAttack ) { /* 处理出拳僵直 */
 				isResponsible = false ;
-				-- _attack_shake ;
+				-- shakeWhenAttack ;
 			}
 
 			{// 处理玩家
@@ -504,68 +483,68 @@ package
 				// if ( 1 & currentInputAllowance ) {
 				if ( InputAllowance.MOVE & currentInputAllowance ) {
 
-					X = _pos.x - _target_x ;
-					Y = _pos.z - _target_z ;
+					X = _pos.x - targetX ;
+					Y = _pos.z - targetZ ;
 					L = X * X + Y * Y ;
-					_action = ( 10 * 10 < L ) ? Motion.RUN : Motion.STAND ;
-					_attack_state = AttackState.NA ;
+					motion = ( 10 * 10 < L ) ? Motion.RUN : Motion.STAND ;
+					attackState = AttackState.NA ;
 
 				}
 
 				// if ( 2 & currentInputAllowance ) {
 				if ( InputAllowance.ATTACK & currentInputAllowance ) {
 
-					if ( _input_attack == 1 ) {
+					if ( inputAttack == 1 ) {
 
 						//最後の攻撃判定が誰にもヒットしていない場合、連続技判定をリセットする
 						// If the judgment of the attack last not hit anyone, I want to reset the continuous maneuver checks
 						if ( isLastAttackHit != true ) {
-							_attack_state = AttackState.NA ;
+							attackState = AttackState.NA ;
 						}
 
 						isLastAttackHit = false;
 
 						if ( isInAir ) {
 
-							switch ( _attack_state ) {
+							switch ( attackState ) {
 								case AttackState.FIRST :
-									_attack_state = AttackState.SECOND ;
-									_action = Motion.ATTACK_IN_AIR1 ;
+									attackState = AttackState.SECOND ;
+									motion = Motion.ATTACK_IN_AIR1 ;
 									frameWaitCount = 0 ;
 									break ;
 
 								default:
-									_attack_state = AttackState.FIRST ;
-									_action = Motion.ATTACK_IN_AIR2 ;
+									attackState = AttackState.FIRST ;
+									motion = Motion.ATTACK_IN_AIR2 ;
 									frameWaitCount = 0 ;
 									break ;
 							}
 
 						} else {
 
-							switch ( _attack_state ) {
+							switch ( attackState ) {
 								case AttackState.NA :
-									_attack_state = AttackState.NA;
-									_action = Motion.PUNCH1 ;
+									attackState = AttackState.NA;
+									motion = Motion.PUNCH1 ;
 									frameWaitCount = 0 ; /*連打キャンセル*/
-									_actionstep= 0;
+									motionStep= 0;
 									break ;
 
 								case AttackState.FIRST :
-									_attack_state = AttackState.SECOND ;
-									_action = Motion.PUNCH2 ;
+									attackState = AttackState.SECOND ;
+									motion = Motion.PUNCH2 ;
 									frameWaitCount = 0 ;
 									break ;
 
 								case AttackState.SECOND :
-									_attack_state = AttackState.THIRD;
-									_action = Motion.PUNCH3_KICK ;
+									attackState = AttackState.THIRD;
+									motion = Motion.PUNCH3_KICK ;
 									frameWaitCount = 0 ;
 									break ;
 
 								case AttackState.THIRD :
-									_attack_state = AttackState.FORTH ;
-									_action = Motion.PUNCH4_COLLIDE ;
+									attackState = AttackState.FORTH ;
+									motion = Motion.PUNCH4_COLLIDE ;
 									frameWaitCount = 0 ;
 									break ;
 							}
@@ -577,9 +556,9 @@ package
 
 				// if ( 4 & currentInputAllowance ) {
 				if ( InputAllowance.JUMP & currentInputAllowance ) {
-					if ( _input_jump == 1 ) {
+					if ( inputJump == 1 ) {
 						// _action = 2 ;
-						_action = Motion.TAKE_OFF ;
+						motion = Motion.TAKE_OFF ;
 						frameWaitCount = 0 ;
 					}
 				}
@@ -587,18 +566,18 @@ package
 				// if ( 8 & currentInputAllowance ) {
 				if ( InputAllowance.THROW & currentInputAllowance ) {
 
-					if ( _input_attack == 1 ) {
+					if ( inputAttack == 1 ) {
 
 						var J:int = 0 ;
 
-						if ( _attack_state == AttackState.NA && isInAir == 0 ) {
+						if ( attackState == AttackState.NA && isInAir == 0 ) {
 
 							for ( J = 0 ; J < items.length ; ++ J ) {
 
 								//石を持っていたら投げる  Throw if you have a stone
 								if ( items[J].isreservation ( id ) ) {
 									// _action = 13 ;
-									_action = Motion.THROW ;
+									motion = Motion.THROW ;
 									frameWaitCount = 0 ;
 									break;
 								}
@@ -606,7 +585,7 @@ package
 								//足元に石があると拾う  I pick up that there is a stone at the feet
 								if ( items[J].chk_distance ( _pos ) ) {
 									items[J].reservation ( id ) ;
-									_action = Motion.PICK_UP ;
+									motion = Motion.PICK_UP ;
 									frameWaitCount = 0 ;
 									break;
 								}
@@ -621,24 +600,24 @@ package
 				// if ( 16 & currentInputAllowance ) {
 				if ( InputAllowance.BOUNCE & currentInputAllowance ) {
 
-					if ( _commandLeft == 3 ) {
-						_commandLeft = 0 ;
+					if ( commandLeft == 3 ) {
+						commandLeft = 0 ;
 						// _action = 14 ;
-						_action = Motion.BOUNCE ;
+						motion = Motion.BOUNCE ;
 						frameWaitCount = 0 ;
 						bonceSpeed = -4 ;
-						_attack_shake = 0;
-						_attack_state = 0;
+						shakeWhenAttack = 0;
+						attackState = 0;
 					}
 
-					if ( _commandRight == 3 ) {
-						_commandRight = 0 ;
+					if ( commandRight == 3 ) {
+						commandRight = 0 ;
 						// _action = 14 ;
-						_action = Motion.BOUNCE ;
+						motion = Motion.BOUNCE ;
 						frameWaitCount = 0 ;
 						bonceSpeed = 4 ;
-						_attack_shake = 0;
-						_attack_state = 0;
+						shakeWhenAttack = 0;
+						attackState = 0;
 					}
 
 				}
@@ -646,18 +625,18 @@ package
 				// if ( 32 & currentInputAllowance ) {
 				if ( InputAllowance.INERTIA & currentInputAllowance ) {
 					//ブレーキ
-					if ( _inputLeft ) { if ( 0 < velocity.x ) velocity.x *= .9 ; }
-					if ( _inputRight ) { if ( velocity.x < 0 ) velocity.x *= .9 ; }
+					if ( inputLeft ) { if ( 0 < velocity.x ) velocity.x *= .9 ; }
+					if ( inputRight ) { if ( velocity.x < 0 ) velocity.x *= .9 ; }
 				}
 
 				//強制動作
-				if ( _damage_action ) {
-					_action = _damage_action ;
-					_damage_action = null ;
+				if ( motionWhenDamag ) {
+					motion = motionWhenDamag ;
+					motionWhenDamag = null ;
 				}
 
-				if ( currentAction != _action ) {
-					_actionstep = 0 ;
+				if ( currentAction != motion ) {
+					motionStep = 0 ;
 					frameWaitCount = 0 ;
 				}
 
@@ -667,7 +646,7 @@ package
 			{//アニメーション   Animation
 
 //				var TD:int = playheadCondition[_action][_actionstep];
-				var playheadCondition:int = HeroConfigObj.getPlayheadCondition(_action, _actionstep);
+				var playheadCondition:int = HeroConfigObj.getPlayheadCondition(motion, motionStep);
 				switch ( playheadCondition ) {
 
 					// case 0 :
@@ -691,14 +670,14 @@ package
 
 					// case 3:
 					case PlayheadCondition.IS_ALIVE:
-						if ( 0 < _hp ) {
+						if ( 0 < hp ) {
 							++ frameWaitCount;
 						}
 						break;
 				}
 
 				// if ( motionToWeight[_action][_actionstep] <= frameWaitCount )
-				var lf:uint = HeroConfigObj.getLastFor(_action, _actionstep);
+				var lf:uint = HeroConfigObj.getLastFor(motion, motionStep);
 //				trace("[CharctorBase.update] _action:"+_action +"; actionstep:"+_actionstep+"; last for:"+lf+"; playheadCondition:"+playheadCondition+"; frameWaitCount:"+frameWaitCount);
 				if ( lf <= frameWaitCount )
 				{
@@ -706,23 +685,23 @@ package
 					frameWaitCount = 0 ;
 
 					var jumpPower:Number = 0 ;
-					if ( _inputLeft != 0 ) { jumpPower = -3; }
-					if ( _inputRight != 0 ) { jumpPower =  3; }
+					if ( inputLeft != 0 ) { jumpPower = -3; }
+					if ( inputRight != 0 ) { jumpPower =  3; }
 
 					// switch ( motionReaction[_action][_actionstep] ) {
-					switch ( HeroConfigObj.getMotionReaction(_action , _actionstep) ) {
+					switch ( HeroConfigObj.getMotionReaction(motion , motionStep) ) {
 						case MotionReaction.JUMP:
 							velocity.y = -5 ;
 							velocity.x = jumpPower;
 							break;
 						case MotionReaction.FALL:
-							_action = ( isInAir) ? Motion.FALL : Motion.STAND ;
+							motion = ( isInAir) ? Motion.FALL : Motion.STAND ;
 							break ;
 						case MotionReaction.THROW:
 						{
 							for ( var P:int = 0 ; P < items.length ; ++ P ) {
 								if ( items[P].isreservation (id) ) {
-									items[P].have ( _pos , new Vector3D ( ( _isFlipX) ? -HIT_CHECK_X_ADJUST : HIT_CHECK_X_ADJUST , -3 , 0 ) , _isFlipX ) ;
+									items[P].have ( _pos , new Vector3D ( ( isFlipX) ? -HIT_CHECK_X_ADJUST : HIT_CHECK_X_ADJUST , -3 , 0 ) , isFlipX ) ;
 								}
 							}
 						}
@@ -733,18 +712,18 @@ package
 							break;
 
 						case MotionReaction.TURN:
-							_isFlipX = ( _inputLeft ) ? true : ( (_inputRight) ? false : _isFlipX ) ;
+							isFlipX = ( inputLeft ) ? true : ( (inputRight) ? false : isFlipX ) ;
 							break;
 						default: break;
 					}
 
 //					if ( motionToAssetFrameIds[_action].length <= ++ _actionstep ) {
-					if ( HeroConfigObj.countAssetFrame(_action) <= ++ _actionstep ) {
-						_actionstep = 0 ;
+					if ( HeroConfigObj.countAssetFrame(motion) <= ++ motionStep ) {
+						motionStep = 0 ;
 					}
 
-					while ( _hitRegist.length ) {
-						_hitRegist.pop () ;
+					while ( hitRegister.length ) {
+						hitRegister.pop () ;
 					}
 
 				}
@@ -754,24 +733,24 @@ package
 			if ( isResponsible && ( InputAllowance.MOVE & currentInputAllowance ) )
 			{//加速
 
-				_isFlipX = ( _target_x < _pos.x ) ;
+				isFlipX = ( targetX < _pos.x ) ;
 
 				var ty:Number = velocity.y;
 				velocity.y = 0 ;
 
-				X = ( _target_x - _pos.x ) ;
-				Y = ( _target_z - _pos.z ) ;
+				X = ( targetX - _pos.x ) ;
+				Y = ( targetZ - _pos.z ) ;
 				L = X * X + Y * Y ;
 				if ( MIN_DISTANCE_TO_TARGET * MIN_DISTANCE_TO_TARGET < L ) {
 					velocity.x += X * .004 ;
 					velocity.z += Y * .004 ;
 				}
 
-				_speed = velocity.length ;
-				_speed = ( 2 < _speed )? 2 : _speed ;
+				speed = velocity.length ;
+				speed = ( 2 < speed )? 2 : speed ;
 
 				velocity.normalize ( ) ;
-				velocity.scaleBy ( _speed ) ;
+				velocity.scaleBy ( speed ) ;
 
 				velocity.y = ty ;
 
@@ -816,7 +795,7 @@ package
 			}
 
 			// _anim = motionToAssetFrameIds[_action][_actionstep] ;
-			_anim = HeroConfigObj.getAssetFrame(_action, _actionstep) ;
+			assetFrame = HeroConfigObj.getAssetFrame(motion, motionStep) ;
 
 		}
 	}
