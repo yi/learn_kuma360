@@ -30,7 +30,8 @@ package
 
 
 		////////////////////////////////////
-		public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform , _motionToAssetFrameIds:Array , _motionToWeight:Array , _motionToInputAllowance:Array , _playheadCondition:Array , _motionContinue:Array , _motionToHitDetection:Array ) {
+		// public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform , _motionToAssetFrameIds:Array , _motionToWeight:Array , _motionToInputAllowance:Array , _playheadCondition:Array , _motionContinue:Array , _motionToHitDetection:Array ) {
+		public function CharctorBase ( srcCharacterAtlasBitmap:Bitmap , colorTransform:ColorTransform ){
 
 			super ( srcCharacterAtlasBitmap , colorTransform , 64 ) ;
 
@@ -698,7 +699,7 @@ package
 
 				// if ( motionToWeight[_action][_actionstep] <= frameWaitCount )
 				var lf:uint = HeroConfigObj.getLastFor(_action, _actionstep);
-				trace("[CharctorBase.update] _action:"+_action +"; actionstep:"+_actionstep+"; last for:"+lf+"; playheadCondition:"+playheadCondition+"; frameWaitCount:"+frameWaitCount);
+//				trace("[CharctorBase.update] _action:"+_action +"; actionstep:"+_actionstep+"; last for:"+lf+"; playheadCondition:"+playheadCondition+"; frameWaitCount:"+frameWaitCount);
 				if ( lf <= frameWaitCount )
 				{
 					/* 要换帧了 */
