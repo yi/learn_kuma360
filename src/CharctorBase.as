@@ -15,6 +15,8 @@ package
 
 		public static const ZMAX:int = 300 ;
 
+		public static const TARGET_OFFSET:int = 50 ;
+
 		public static var _end:Boolean = false ;
 
 		public static var _score:uint = 0 ;
@@ -283,22 +285,23 @@ package
 		 *
 		 */
 		public function input (
-			keyA:Boolean , //攻撃ボタン   攻击按钮
-			keyJ:Boolean , //ジャンプボタン  跳转按钮
-			keyL:Boolean , //左
+			attack:Boolean , //攻撃ボタン   攻击按钮
+			jump:Boolean , //ジャンプボタン  跳转按钮
+			right:Boolean , //左
 			keyR:Boolean , //右
-			keyU:Boolean , //上
-			keyD:Boolean   //下
+			up:Boolean , //上
+			down:Boolean   //下
 		):void {
 
-			if ( keyA ) { ++ inputAttack ; } else { inputAttack = 0 ; }
-			if ( keyJ ) { ++ inputJump ; }   else { inputJump = 0 ; }
-			if ( keyL ) { ++ inputLeft ; } else { inputLeft = 0 ; }
+			if ( attack ) { ++ inputAttack ; } else { inputAttack = 0 ; }
+			if ( jump ) { ++ inputJump ; }   else { inputJump = 0 ; }
+			if ( right ) { ++ inputLeft ; } else { inputLeft = 0 ; }
 			if ( keyR ) { ++ inputRight ; } else { inputRight = 0 ; }
-			if ( keyU ) { ++ inputUp ; } else { inputUp = 0 ; }
-			if ( keyD ) { ++ inputDown ; } else { inputDown = 0 ; }
-			targetX = _pos.x + ( (inputLeft) ? -50 : 0 ) + ( (inputRight) ? 50 : 0 ) + ( (isFlipX)? -1 : 1 ) ;
-			targetZ = _pos.z + ( (inputUp) ? -50 : 0 ) + ( (inputDown) ? 50 : 0 ) + ( (isFlipX)? -1 : 1 ) ;
+			if ( up ) { ++ inputUp ; } else { inputUp = 0 ; }
+			if ( down ) { ++ inputDown ; } else { inputDown = 0 ; }
+
+			targetX = _pos.x + ( (inputLeft) ? - TARGET_OFFSET : 0 ) + ( (inputRight) ? TARGET_OFFSET : 0 ) + ( (isFlipX)? -1 : 1 ) ;
+			targetZ = _pos.z + ( (inputUp) ? -TARGET_OFFSET : 0 ) + ( (inputDown) ? TARGET_OFFSET : 0 ) + ( (isFlipX)? -1 : 1 ) ;
 
 			// 向左突进 搓键
 			++ commandLeftCNT;
@@ -313,8 +316,6 @@ package
 				commandLeft = 3 ;
 				commandLeftCNT = 0;
 			}
-
-//			trace("[CharctorBase.input] _command1CNT:"+_command1CNT+"; _command1:"+_command1);
 
 			// 向右突进 搓键
 			++ commandRightCNT;
