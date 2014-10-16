@@ -300,7 +300,13 @@ package
 			if ( up ) { ++ inputUp ; } else { inputUp = 0 ; }
 			if ( down ) { ++ inputDown ; } else { inputDown = 0 ; }
 
-			targetX = _pos.x + ( (inputLeft) ? - TARGET_OFFSET : 0 ) + ( (inputRight) ? TARGET_OFFSET : 0 ) + ( (isFlipX)? -1 : 1 ) ;
+			// targetX = _pos.x + ( (inputLeft) ? - TARGET_OFFSET : 0 ) + ( (inputRight) ? TARGET_OFFSET : 0 ) + ( (isFlipX)? -1 : 1 ) ;
+			targetX = _pos.x;
+			if(inputLeft > 0) targetX -= TARGET_OFFSET;
+			if(inputRight > 0) targetX += TARGET_OFFSET;
+			if(isFlipX) targetX -= 1
+			else targetX += 1
+
 			targetZ = _pos.z + ( (inputUp) ? -TARGET_OFFSET : 0 ) + ( (inputDown) ? TARGET_OFFSET : 0 ) + ( (isFlipX)? -1 : 1 ) ;
 
 			// 向左突进 搓键
