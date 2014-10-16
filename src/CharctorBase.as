@@ -456,226 +456,216 @@ package
 			}
 		}
 
+		public function getInputAllowance():int{
+			return HeroConfigObj.getInputAllowance(motion, motionStep);
+		}
+
+		public function checkInputAllowance(items:Vector.<Item> ):void
+		{// 处理玩家
+			var currentInputAllowance:int = getInputAllowance();
+			var currentAction:String = motion;
+			var X:Number = 0 ;
+			var Y:Number = 0 ;
+			var L:Number = 0 ;
+
+			// if ( 1 & currentInputAllowance ) {
+			if ( InputAllowance.MOVE & currentInputAllowance ) {
+
+				X = _pos.x - targetX ;
+				Y = _pos.z - targetZ ;
+				L = X * X + Y * Y ;
+				motion = ( 10 * 10 < L ) ? Motion.RUN : Motion.STAND ;
+				attackState = AttackState.NA ;
+
+			}
+
+			if ( InputAllowance.ATTACK & currentInputAllowance ) {
+
+				if ( inputAttack == 1 ) {
+
+					// If the judgment of the attack last not hit anyone, I want to reset the continuous maneuver checks
+					if ( isLastAttackHit != true ) {
+						attackState = AttackState.NA ;
+					}
+
+					isLastAttackHit = false;
+
+					if ( isInAir ) {
+
+						switch ( attackState ) {
+							case AttackState.FIRST :
+								attackState = AttackState.SECOND ;
+								motion = Motion.ATTACK_IN_AIR1 ;
+								frameWaitCount = 0 ;
+								break ;
+
+							default:
+								attackState = AttackState.FIRST ;
+								motion = Motion.ATTACK_IN_AIR2 ;
+								frameWaitCount = 0 ;
+								break ;
+						}
+
+					} else {
+
+						switch ( attackState ) {
+							case AttackState.NA :
+								attackState = AttackState.NA;
+								motion = Motion.PUNCH1 ;
+								frameWaitCount = 0 ; /*連打キャンセル*/
+								motionStep= 0;
+								break ;
+
+							case AttackState.FIRST :
+								attackState = AttackState.SECOND ;
+								motion = Motion.PUNCH2 ;
+								frameWaitCount = 0 ;
+								break ;
+
+							case AttackState.SECOND :
+								attackState = AttackState.THIRD;
+								motion = Motion.PUNCH3_KICK ;
+								frameWaitCount = 0 ;
+								break ;
+
+							case AttackState.THIRD :
+								attackState = AttackState.FORTH ;
+								motion = Motion.PUNCH4_COLLIDE ;
+								frameWaitCount = 0 ;
+								break ;
+						}
+					}
+
+				}
+
+			}
+
+			if ( InputAllowance.JUMP & currentInputAllowance ) {
+				if ( inputJump == 1 ) {
+					// _action = 2 ;
+					motion = Motion.TAKE_OFF ;
+					frameWaitCount = 0 ;
+				}
+			}
+
+			if ( InputAllowance.THROW & currentInputAllowance ) {
+
+				if ( inputAttack == 1 ) {
+
+					var J:int = 0 ;
+
+					if ( attackState == AttackState.NA && isInAir == 0 ) {
+
+						for ( J = 0 ; J < items.length ; ++ J ) {
+
+							//石を持っていたら投げる  Throw if you have a stone
+							if ( items[J].isreservation ( id ) ) {
+								motion = Motion.THROW ;
+								frameWaitCount = 0 ;
+								break;
+							}
+
+							//足元に石があると拾う  I pick up that there is a stone at the feet
+							if ( items[J].chk_distance ( _pos ) ) {
+								items[J].reservation ( id ) ;
+								motion = Motion.PICK_UP ;
+								frameWaitCount = 0 ;
+								break;
+							}
+						}
+
+					}
+
+				}
+
+			}
+
+			if ( InputAllowance.BOUNCE & currentInputAllowance ) {
+
+				if ( commandLeft == 3 ) {
+					commandLeft = 0 ;
+					motion = Motion.BOUNCE ;
+					frameWaitCount = 0 ;
+					bonceSpeed = -4 ;
+					shakeWhenAttack = 0;
+					attackState = 0;
+				}
+
+				if ( commandRight == 3 ) {
+					commandRight = 0 ;
+					motion = Motion.BOUNCE ;
+					frameWaitCount = 0 ;
+					bonceSpeed = 4 ;
+					shakeWhenAttack = 0;
+					attackState = 0;
+				}
+
+			}
+
+			if ( InputAllowance.INERTIA & currentInputAllowance ) {
+				if ( inputLeft ) { if ( 0 < velocity.x ) velocity.x *= .9 ; }
+				if ( inputRight ) { if ( velocity.x < 0 ) velocity.x *= .9 ; }
+			}
+
+			//強制動作
+			if ( motionWhenDamag ) {
+				motion = motionWhenDamag ;
+				motionWhenDamag = null ;
+			}
+
+			if ( currentAction != motion ) {
+				motionStep = 0 ;
+				frameWaitCount = 0 ;
+			}
+
+		}
+
 		////////////////////////////////////
 		public function update ( items:Vector.<Item> , mainHero:CharctorBase ):void {
 
 			var isResponsible:Boolean = true ;  /* true: 可操控， false: 僵直 */
-//			var currentInputAllowance:int = motionToInputAllowance[_action][_actionstep] ;
-			var currentInputAllowance:int = HeroConfigObj.getInputAllowance(motion, motionStep);
-//				motionToInputAllowance[_action][_actionstep] ;
-			var currentAction:String = motion;
-			var currentActionStep:int = motionStep;
-
 			var X:Number = 0 ;
 			var Y:Number = 0 ;
 			var L:Number = 0 ;
 			var I:int = 0 ;
 
-			// if(isDead && WAIT_TO_REVIVE < ++ countAfterDeath && this != mainHero ) revive();
 			if(isDead && WAIT_TO_REVIVE < ++ countAfterDeath ) revive();
 
 			if ( 0 < shakeWhenDamage ) { /* 处理被打僵直 */
 				isResponsible = false ;
-				-- shakeWhenDamage ;
+				shakeWhenDamage -= 1;
 				dropItem(items);
 			}
 
 			if ( 0 < shakeWhenAttack ) { /* 处理出拳僵直 */
 				isResponsible = false ;
-				-- shakeWhenAttack ;
+				shakeWhenAttack -= 1;
 			}
 
-			{// 处理玩家
-
-				// if ( 1 & currentInputAllowance ) {
-				if ( InputAllowance.MOVE & currentInputAllowance ) {
-
-					X = _pos.x - targetX ;
-					Y = _pos.z - targetZ ;
-					L = X * X + Y * Y ;
-					motion = ( 10 * 10 < L ) ? Motion.RUN : Motion.STAND ;
-					attackState = AttackState.NA ;
-
-				}
-
-				// if ( 2 & currentInputAllowance ) {
-				if ( InputAllowance.ATTACK & currentInputAllowance ) {
-
-					if ( inputAttack == 1 ) {
-
-						//最後の攻撃判定が誰にもヒットしていない場合、連続技判定をリセットする
-						// If the judgment of the attack last not hit anyone, I want to reset the continuous maneuver checks
-						if ( isLastAttackHit != true ) {
-							attackState = AttackState.NA ;
-						}
-
-						isLastAttackHit = false;
-
-						if ( isInAir ) {
-
-							switch ( attackState ) {
-								case AttackState.FIRST :
-									attackState = AttackState.SECOND ;
-									motion = Motion.ATTACK_IN_AIR1 ;
-									frameWaitCount = 0 ;
-									break ;
-
-								default:
-									attackState = AttackState.FIRST ;
-									motion = Motion.ATTACK_IN_AIR2 ;
-									frameWaitCount = 0 ;
-									break ;
-							}
-
-						} else {
-
-							switch ( attackState ) {
-								case AttackState.NA :
-									attackState = AttackState.NA;
-									motion = Motion.PUNCH1 ;
-									frameWaitCount = 0 ; /*連打キャンセル*/
-									motionStep= 0;
-									break ;
-
-								case AttackState.FIRST :
-									attackState = AttackState.SECOND ;
-									motion = Motion.PUNCH2 ;
-									frameWaitCount = 0 ;
-									break ;
-
-								case AttackState.SECOND :
-									attackState = AttackState.THIRD;
-									motion = Motion.PUNCH3_KICK ;
-									frameWaitCount = 0 ;
-									break ;
-
-								case AttackState.THIRD :
-									attackState = AttackState.FORTH ;
-									motion = Motion.PUNCH4_COLLIDE ;
-									frameWaitCount = 0 ;
-									break ;
-							}
-						}
-
-					}
-
-				}
-
-				// if ( 4 & currentInputAllowance ) {
-				if ( InputAllowance.JUMP & currentInputAllowance ) {
-					if ( inputJump == 1 ) {
-						// _action = 2 ;
-						motion = Motion.TAKE_OFF ;
-						frameWaitCount = 0 ;
-					}
-				}
-
-				// if ( 8 & currentInputAllowance ) {
-				if ( InputAllowance.THROW & currentInputAllowance ) {
-
-					if ( inputAttack == 1 ) {
-
-						var J:int = 0 ;
-
-						if ( attackState == AttackState.NA && isInAir == 0 ) {
-
-							for ( J = 0 ; J < items.length ; ++ J ) {
-
-								//石を持っていたら投げる  Throw if you have a stone
-								if ( items[J].isreservation ( id ) ) {
-									// _action = 13 ;
-									motion = Motion.THROW ;
-									frameWaitCount = 0 ;
-									break;
-								}
-
-								//足元に石があると拾う  I pick up that there is a stone at the feet
-								if ( items[J].chk_distance ( _pos ) ) {
-									items[J].reservation ( id ) ;
-									motion = Motion.PICK_UP ;
-									frameWaitCount = 0 ;
-									break;
-								}
-							}
-
-						}
-
-					}
-
-				}
-
-				// if ( 16 & currentInputAllowance ) {
-				if ( InputAllowance.BOUNCE & currentInputAllowance ) {
-
-					if ( commandLeft == 3 ) {
-						commandLeft = 0 ;
-						// _action = 14 ;
-						motion = Motion.BOUNCE ;
-						frameWaitCount = 0 ;
-						bonceSpeed = -4 ;
-						shakeWhenAttack = 0;
-						attackState = 0;
-					}
-
-					if ( commandRight == 3 ) {
-						commandRight = 0 ;
-						// _action = 14 ;
-						motion = Motion.BOUNCE ;
-						frameWaitCount = 0 ;
-						bonceSpeed = 4 ;
-						shakeWhenAttack = 0;
-						attackState = 0;
-					}
-
-				}
-
-				// if ( 32 & currentInputAllowance ) {
-				if ( InputAllowance.INERTIA & currentInputAllowance ) {
-					//ブレーキ
-					if ( inputLeft ) { if ( 0 < velocity.x ) velocity.x *= .9 ; }
-					if ( inputRight ) { if ( velocity.x < 0 ) velocity.x *= .9 ; }
-				}
-
-				//強制動作
-				if ( motionWhenDamag ) {
-					motion = motionWhenDamag ;
-					motionWhenDamag = null ;
-				}
-
-				if ( currentAction != motion ) {
-					motionStep = 0 ;
-					frameWaitCount = 0 ;
-				}
-
-			}
+			checkInputAllowance(items);
 
 			if ( isResponsible )
 			{//アニメーション   Animation
 
-//				var TD:int = playheadCondition[_action][_actionstep];
 				var playheadCondition:int = HeroConfigObj.getPlayheadCondition(motion, motionStep);
 				switch ( playheadCondition ) {
 
-					// case 0 :
 					case PlayheadCondition.WHATEVER :
 						++ frameWaitCount;
 						break ;
 
-					// case 1 :
 					case PlayheadCondition.ONLY_IN_AIR :
 						if ( 0 < velocity.y ) {
 							++ frameWaitCount ;
 						}
 						break ;
 
-					// case 2:
 					case PlayheadCondition.ONLY_ON_GROUND:
 						if ( false == isInAir ) {
 							++ frameWaitCount ;
 						}
 						break;
 
-					// case 3:
 					case PlayheadCondition.IS_ALIVE:
 						if ( 0 < hp ) {
 							++ frameWaitCount;
@@ -683,9 +673,7 @@ package
 						break;
 				}
 
-				// if ( motionToWeight[_action][_actionstep] <= frameWaitCount )
 				var lf:uint = HeroConfigObj.getLastFor(motion, motionStep);
-//				trace("[CharctorBase.update] _action:"+_action +"; actionstep:"+_actionstep+"; last for:"+lf+"; playheadCondition:"+playheadCondition+"; frameWaitCount:"+frameWaitCount);
 				if ( lf <= frameWaitCount )
 				{
 					/* 要换帧了 */
@@ -695,7 +683,6 @@ package
 					if ( inputLeft != 0 ) { jumpPower = -3; }
 					if ( inputRight != 0 ) { jumpPower =  3; }
 
-					// switch ( motionReaction[_action][_actionstep] ) {
 					switch ( HeroConfigObj.getMotionReaction(motion , motionStep) ) {
 						case MotionReaction.JUMP:
 							velocity.y = -5 ;
@@ -724,7 +711,6 @@ package
 						default: break;
 					}
 
-//					if ( motionToAssetFrameIds[_action].length <= ++ _actionstep ) {
 					if ( HeroConfigObj.countAssetFrame(motion) <= ++ motionStep ) {
 						motionStep = 0 ;
 					}
@@ -737,7 +723,7 @@ package
 
 			}
 
-			if ( isResponsible && ( InputAllowance.MOVE & currentInputAllowance ) )
+			if ( isResponsible && ( InputAllowance.MOVE & getInputAllowance() ) )
 			{//加速
 
 				isFlipX = ( targetX < _pos.x ) ;
@@ -801,7 +787,6 @@ package
 
 			}
 
-			// _anim = motionToAssetFrameIds[_action][_actionstep] ;
 			assetFrame = HeroConfigObj.getAssetFrame(motion, motionStep) ;
 
 		}
