@@ -56,9 +56,9 @@ package
 			_pos.x = Math.random() * 465 ;
 			_pos.y = 0 ;
 			_pos.z = Math.random() * 100 + 300 ;
-			_velocity.x = 0 ;
-			_velocity.y = 0 ;
-			_velocity.z = 0 ;
+			velocity.x = 0 ;
+			velocity.y = 0 ;
+			velocity.z = 0 ;
 
 		}
 
@@ -85,9 +85,9 @@ package
 			_pos.x = pos.x ;
 			_pos.y = pos.y - 40 ;
 			_pos.z = pos.z ;
-			_velocity.x = velocty.x ;
-			_velocity.y = velocty.y ;
-			_velocity.z = velocty.z ;
+			velocity.x = velocty.x ;
+			velocity.y = velocty.y ;
+			velocity.z = velocty.z ;
 
 		}
 
@@ -107,49 +107,49 @@ package
 					_manage_id = -1 ;
 				}
 
-				_velocity.y = 0 ;
+				velocity.y = 0 ;
 
 			} else {
 
 				_resavation = false ;
-				_velocity.y += .3 ;
+				velocity.y += .3 ;
 
 			}
 
-			_pos.x += _velocity.x ;
-			_pos.y += _velocity.y ;
-			_pos.z += _velocity.z * .5 ;
+			_pos.x += velocity.x ;
+			_pos.y += velocity.y ;
+			_pos.z += velocity.z * .5 ;
 
 			if ( 0 < _pos.y ) {
 				_pos.y = 0 ;
-				_velocity.x *= .5 ;
-				_velocity.z *= .5 ;
-				_velocity.y = - _velocity.y * .2 ;
+				velocity.x *= .5 ;
+				velocity.z *= .5 ;
+				velocity.y = - velocity.y * .2 ;
 				_manage_id = -1 ;
 			}
 
 			if ( _pos.x < 10 ) {
 				_pos.x = 10 ;
-				_velocity.x = - _velocity.x * .2 ;
-				_velocity.y = - 6 ;
+				velocity.x = - velocity.x * .2 ;
+				velocity.y = - 6 ;
 				_manage_id = -1 ;
 			}
 			if ( 455 < _pos.x ) {
 				_pos.x = 455 ;
-				_velocity.x = - _velocity.x * .2 ;
-				_velocity.y = - 6 ;
+				velocity.x = - velocity.x * .2 ;
+				velocity.y = - 6 ;
 				_manage_id = -1 ;
 			}
 			if ( _pos.z < 300 ) {
 				_pos.z = 300 ;
-				_velocity.x = - _velocity.x * .2 ;
-				_velocity.y = - 6 ;
+				velocity.x = - velocity.x * .2 ;
+				velocity.y = - 6 ;
 				_manage_id = -1 ;
 			}
 			if ( 450 < _pos.z ) {
 				_pos.z = 450 ;
-				_velocity.x = - _velocity.x * .2 ;
-				_velocity.y = - 6 ;
+				velocity.x = - velocity.x * .2 ;
+				velocity.y = - 6 ;
 				_manage_id = -1 ;
 			}
 
@@ -193,8 +193,8 @@ package
 
 			if ( V.length < 30 ) {
 
-				_velocity.x = - _velocity.x * .2 ;
-				_velocity.y = - 6 ;
+				velocity.x = - velocity.x * .2 ;
+				velocity.y = - 6 ;
 				_manage_id = -1 ;
 
 				e.damage ( _dirc , _pos.z , 3 ) ;
@@ -222,8 +222,8 @@ package
 			_pos.x = pos.x ;
 			_pos.y = pos.y - 40 ;
 			_pos.z = pos.z ;
-			_velocity.x = - _velocity.x * .2 ;
-			_velocity.y = - 6 ;
+			velocity.x = - velocity.x * .2 ;
+			velocity.y = - 6 ;
 			_manage_id = -1 ;
 		}
 

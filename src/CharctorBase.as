@@ -219,14 +219,14 @@ package
 		public function damage ( isFlipX:Boolean , z:int , punchType:int ) :void {
 
 			_pos.z = z ;
-			_velocity.z = 0 ;
+			velocity.z = 0 ;
 
 			switch(punchType)
 			{
 				case PunchType.S:
 				{
-					_velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
-					_velocity.y = 0 ;
+					velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
+					velocity.y = 0 ;
 					// _damage_shake = 20 ;
 					_damage_shake = PunchType.getDamageShakeByType(punchType);
 					_damage_action = Motion.getRandomDamageMotion();
@@ -234,9 +234,9 @@ package
 				}
 				case PunchType.M:
 				{
-					_velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
+					velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
 					// _velocity.x = (isFlipX)? -3 : 3 ;
-					_velocity.y = -2 ;
+					velocity.y = -2 ;
 					// _damage_shake = 5 ;
 					_damage_shake = PunchType.getDamageShakeByType(punchType);
 					_damage_action = Motion.KNOCK_DOWN ;
@@ -244,9 +244,9 @@ package
 				}
 				case PunchType.L:
 				{
-					_velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
+					velocity.x = ((isFlipX)? -1 : 1) * PunchType.getSpeedPowerXByType(punchType) ;
 					// _velocity.x = (isFlipX)? -3 : 3 ;
-					_velocity.y = -2 ;
+					velocity.y = -2 ;
 					// _damage_shake = 8 ;
 					_damage_shake = PunchType.getDamageShakeByType(punchType);
 					_damage_action = Motion.KNOCK_DOWN ;
@@ -384,8 +384,8 @@ package
 			var V:Vector3D = _pos.subtract ( e._pos ) ;
 			if ( V.length < 10 * SCALE ) {
 				V.normalize();
-				_velocity.x = V.x * 1 ;
-				_velocity.z = V.z * 1 ;
+				velocity.x = V.x * 1 ;
+				velocity.z = V.z * 1 ;
 			}
 
 		}
@@ -454,7 +454,7 @@ package
 			_pos.x = Math.random() * 465 ;
 			_pos.y = -500 ;
 			_pos.z = 365 ;
-			_velocity.y = 0 ;
+			velocity.y = 0 ;
 
 			_action = Motion.FALL ;
 		}
@@ -646,8 +646,8 @@ package
 				// if ( 32 & currentInputAllowance ) {
 				if ( InputAllowance.INERTIA & currentInputAllowance ) {
 					//ブレーキ
-					if ( _inputLeft ) { if ( 0 < _velocity.x ) _velocity.x *= .9 ; }
-					if ( _inputRight ) { if ( _velocity.x < 0 ) _velocity.x *= .9 ; }
+					if ( _inputLeft ) { if ( 0 < velocity.x ) velocity.x *= .9 ; }
+					if ( _inputRight ) { if ( velocity.x < 0 ) velocity.x *= .9 ; }
 				}
 
 				//強制動作
@@ -677,7 +677,7 @@ package
 
 					// case 1 :
 					case PlayheadCondition.ONLY_IN_AIR :
-						if ( 0 < _velocity.y ) {
+						if ( 0 < velocity.y ) {
 							++ frameWaitCount ;
 						}
 						break ;
@@ -712,8 +712,8 @@ package
 					// switch ( motionReaction[_action][_actionstep] ) {
 					switch ( HeroConfigObj.getMotionReaction(_action , _actionstep) ) {
 						case MotionReaction.JUMP:
-							_velocity.y = -5 ;
-							_velocity.x = jumpPower;
+							velocity.y = -5 ;
+							velocity.x = jumpPower;
 							break;
 						case MotionReaction.FALL:
 							_action = ( isInAir) ? Motion.FALL : Motion.STAND ;
@@ -728,8 +728,8 @@ package
 						}
 							break;
 						case MotionReaction.BOUNCE:
-							_velocity.y = -2 ;
-							_velocity.x = bonceSpeed;
+							velocity.y = -2 ;
+							velocity.x = bonceSpeed;
 							break;
 
 						case MotionReaction.TURN:
@@ -756,38 +756,38 @@ package
 
 				_isFlipX = ( _target_x < _pos.x ) ;
 
-				var ty:Number = _velocity.y;
-				_velocity.y = 0 ;
+				var ty:Number = velocity.y;
+				velocity.y = 0 ;
 
 				X = ( _target_x - _pos.x ) ;
 				Y = ( _target_z - _pos.z ) ;
 				L = X * X + Y * Y ;
 				if ( MIN_DISTANCE_TO_TARGET * MIN_DISTANCE_TO_TARGET < L ) {
-					_velocity.x += X * .004 ;
-					_velocity.z += Y * .004 ;
+					velocity.x += X * .004 ;
+					velocity.z += Y * .004 ;
 				}
 
-				_speed = _velocity.length ;
+				_speed = velocity.length ;
 				_speed = ( 2 < _speed )? 2 : _speed ;
 
-				_velocity.normalize ( ) ;
-				_velocity.scaleBy ( _speed ) ;
+				velocity.normalize ( ) ;
+				velocity.scaleBy ( _speed ) ;
 
-				_velocity.y = ty ;
+				velocity.y = ty ;
 
 			}
 
 			if ( isResponsible )
 			{//移動
 
-				_pos.x += _velocity.x * SCALE ;
-				_pos.y += _velocity.y * SCALE ;
-				_pos.z += _velocity.z * SCALE *.5 ;
-				_velocity.y += .2 ;
+				_pos.x += velocity.x * SCALE ;
+				_pos.y += velocity.y * SCALE ;
+				_pos.z += velocity.z * SCALE *.5 ;
+				velocity.y += .2 ;
 
 				if ( false == isInAir ) {
-					_velocity.x *= .9 ;
-					_velocity.z *= .9 ;
+					velocity.x *= .9 ;
+					velocity.z *= .9 ;
 				}
 
 				if ( 0 <= _pos.y ) {

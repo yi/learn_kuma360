@@ -12,7 +12,7 @@ package
 
 		//座標
 		public var _pos:Vector3D = new Vector3D ;
-		protected var _velocity:Vector3D = new Vector3D ;
+		protected var velocity:Vector3D = new Vector3D ;
 
 		//描画用
 		protected var _renderpos:Point = new Point ;
